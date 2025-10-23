@@ -467,11 +467,7 @@ def clear():
 
 def move(obj, x, y): 
   try:
-    x1, y1, x2, y2 = __canvas.bbox(obj)
-    if x==0:
-        x = 0.000001
-    if y==0:
-        y = 0.000001        
+    x1, y1, x2, y2 = __canvas.bbox(obj)       
     __canvas.move(obj, x-x1, y-y1)    
   except AttributeError:
     pass;
