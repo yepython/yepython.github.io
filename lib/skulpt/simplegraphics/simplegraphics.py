@@ -374,11 +374,12 @@ def lineSpace(s=""):
 
 def resize(w, h):
   global __background
-
+  __master.geometry(f"{w}x{h}")
   __canvas.config(width=w, height=h)
-  __canvas.delete(__background)
-  __background = __canvas.create_rectangle(0, 0, w+1, h+1, fill=__bgcolor, outline=__bgcolor, tag="__background")
-  __canvas.lower(__background)
+  # Не видаляємо фон, а просто змінюємо його розмір
+  __canvas.coords(__background, 0, 0, w+1, h+1)
+  __canvas.itemconfig(__background, fill=__bgcolor, outline=__bgcolor)
+  
 
 def getWidth(what=None):
   if what == None:
