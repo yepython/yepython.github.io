@@ -22,94 +22,7 @@
              border: none;
       }
 
-        /* ── Save dialog: 4 fieldsets, full width, 2/3 viewport height ── */
-        #save_grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: repeat(4, 1fr);
-            gap: 8px;
-            box-sizing: border-box;
-            padding: 6px 4px;
-        }
-
-        #save_grid fieldset {
-            display: flex;
-            flex-direction: row;
-            align-items: stretch;
-            margin: 0;
-            box-sizing: border-box;
-            border-radius: 6px;
-            border: 2px solid #aaa;
-        }
-
-        #save_grid fieldset legend {
-            font-weight: bold;
-            font-size: 0.95em;
-            padding: 0 6px;
-        }
-
-        .save_btn_area {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            border-radius: 6px;
-            padding: 8px 16px;
-            text-align: left;
-            cursor: pointer;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            gap: 20px;
-            transition: filter 0.15s;
-            width: 97%;
-        }
-
-        .save_btn_area:hover {
-            filter: brightness(0.93);
-        }
-
-        .save_btn_area h2 {
-            margin: 4px 0 2px;
-            font-size: 1.1em;
-        }
-
-        .save_btn_area h3 {
-            margin: 4px 0 0;
-            font-size: 0.85em;
-            color: #444;
-        }
-
-        .save_btn_area p {
-            margin: 2px 0;
-            font-size: 0.88em;
-            color: #333;
-        }
-
-        .fs_icon {
-            width: auto;
-            height: 56px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .save_btn_text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        #fs_load label {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        #fs_load .save_btn_area {
-            flex: 1;
-        }
-      
+     
     </style>
 
     <meta charset="UTF-8">
@@ -379,7 +292,48 @@
         <img title="Налаштування" data-i18n-title="settings_title" alt="Налаштувати екран" data-i18n-alt="settings_alt" id="btn_show_settings" class="toolButton hiddenButton" src="./media/settings.png">
     </span>
    
-    <div id="recover" title="Відновлення коду" style="display:none"></div>
+    <div id="recover" title="Відновлення коду" style="display:none">
+        <!-- Fieldset 1: опис, слайдер, час -->
+        <fieldset id="fs_recover_slider">
+            <legend data-i18n="recover_legend_1">Вибір копії</legend>
+            <p data-i18n="recover_info_1">Копія вашого коду зберігається у сховищі вашого вебоглядача кожного разу, коли ви його запускаєте.</p>
+            <p>
+                <span data-i18n="recover_vault_count_label">Кількість збережених копій:</span>
+                <strong id="recover_vault_count"></strong>
+            </p>
+            <div id="recover_slider_row">
+                <div id="slider_recover"></div>
+            </div>
+            <div id="recover_datetime">
+                <span data-i18n="recover_date_label">Дата:</span>
+                <span id="recover_date_val">—</span>
+                <span data-i18n="recover_time_label">Час:</span>
+                <span id="recover_time_hours">--</span>:<span id="recover_time_mins">--</span>
+            </div>
+        </fieldset>
+
+        <!-- Fieldset 2: превʼю коду + кнопка відновлення -->
+        <fieldset id="fs_recover_restore">
+            <legend data-i18n="recover_legend_2">Зразок збереженого коду</legend>
+            <pre id="recover_code_preview"></pre>
+            <button id="btn_recover" data-i18n="recover_restore_btn">
+                <i class="fa fa-history"></i> Відновити
+            </button>
+        </fieldset>
+
+        <!-- Fieldset 3: видалення всіх копій -->
+        <fieldset id="fs_recover_clear">
+            <legend data-i18n="recover_legend_3">Очищення сховища</legend>
+            <p data-i18n="recover_clear_info">За потреби ви можете видалити всі копії коду, що зберігаються у сховищі відновлення.</p>
+            <p>
+                <i class="fa fa-warning"></i>
+                <span data-i18n="recover_clear_warning">Будьте обережні: після натискання кнопки скасувати дію буде неможливо.</span>
+            </p>
+            <button id="btn_recover_clear" data-i18n="recover_clear_btn">
+                <i class="fa fa-trash"></i> Видалити все зі Сховища
+            </button>
+        </fieldset>
+    </div>
     <div id="dlg" title="mycode.py" data-i18n-title="file_tab_name_title" style="display:none">        
         <div id="p5Sketch"></div>
         <div id="output"></div>        
@@ -389,7 +343,7 @@
     <div id="dlg_processing" title="Processing" style="display:none; padding:0; overflow:hidden;">
         <canvas id="pjs_canvas" style="display:block;"></canvas>
     </div>
-    <div id="save" title="Файли - збереження, отримання, відновлення" style="display:none;">
+    <div id="save" title="Файли - збереження, отримання, відновлення" data-i18n-title="save_title" style="display:none;">
         <div id="save_grid">
 
             <fieldset id="fs_save">
@@ -435,22 +389,44 @@
         </div>
     </div>
 
-    <div id="project_settings" title="Проєкт" style="display:none">
-        <p data-i18n="project_rename_help">Перейменування проєкту допоможе вам упорядкувати збережений код</p>
-        <label for="txt_project_name" data-i18n="project_name_label">Назва проєкту:</label><input id="txt_project_name" name="txt_project_name"
-            value="mycode">
-        <button id="btn_project_ok" data-i18n="ok">OK</button>
-        <button id="btn_project_cancel" data-i18n="cancel">Скасувати</button>
-    </div>
-    <div id="file_settings" title="Файл" style="display:none">
-        <p data-i18n="file_warning">Будьте обережні: якщо ви вирішите видалити файл, ви не зможете відновити його, якщо не збережете копію</p>
-        <label for="txt_file_name" data-i18n="file_rename_label">Перейменувати файл:</label><input id="txt_file_name" name="txt_file_name" value="">
-        <button id="btn_file_rename" data-i18n="rename_file">Перейменувати</button>
-        <button id="btn_file_delete" data-i18n="delete_file">Видалити</button>
-        <button id="btn_file_cancel" data-i18n="cancel">Скасувати</button>
+    <!-- Діалог підтвердження збереження файлу -->
+    <div id="save_confirm" title="Зберегти файл" style="display:none">
+        <fieldset>
+            <legend data-i18n="save_confirm_legend">Ім'я файлу</legend>
+            <label for="save_confirm_name" data-i18n="save_confirm_label">Вкажіть ім'я файлу для збереження:</label>
+            <input type="text" id="save_confirm_name" />
+        </fieldset>
     </div>
 
-    <div id="settings" title="Налаштування" style="display:none">
+    <div id="project_settings" title="Проєкт" style="display:none">
+        <fieldset>
+            <legend data-i18n="project_name_label">Назва проєкту</legend>
+            <p data-i18n="project_rename_help">Перейменування проєкту допоможе вам упорядкувати збережений код.</p>
+            <label for="txt_project_name" data-i18n="project_name_label">Нова назва:</label>
+            <input type="text" id="txt_project_name" name="txt_project_name" value="mycode" />
+        </fieldset>
+        <!-- кнопки залишаються для lib.js -->
+        <button id="btn_project_ok" style="display:none" data-i18n="ok">OK</button>
+        <button id="btn_project_cancel" style="display:none" data-i18n="cancel">Скасувати</button>
+    </div>
+
+    <div id="file_settings" title="Файл" style="display:none">
+        <fieldset>
+            <legend data-i18n="file_rename_label">Перейменувати файл</legend>
+            <label for="txt_file_name" data-i18n="file_rename_label">Нова назва файлу:</label>
+            <input type="text" id="txt_file_name" name="txt_file_name" value="" />
+        </fieldset>
+        <fieldset id="fs_file_danger">
+            <legend data-i18n="delete_file">Видалити файл</legend>
+            <p><i class="fa fa-warning"></i> <span data-i18n="file_warning">Будьте обережні: якщо ви вирішите видалити файл, ви не зможете відновити його, якщо не збережете копію.</span></p>
+        </fieldset>
+        <!-- кнопки залишаються для lib.js -->
+        <button id="btn_file_rename" style="display:none" data-i18n="rename_file">Перейменувати</button>
+        <button id="btn_file_delete" style="display:none" data-i18n="delete_file">Видалити</button>
+        <button id="btn_file_cancel" style="display:none" data-i18n="cancel">Скасувати</button>
+    </div>
+
+    <div id="settings" title="Налаштування" data-i18n-title="settings_title" style="display:none">
         <fieldset>
             <legend data-i18n="text_size_legend">Розміри тексту</legend>
             <label for="txt_code_size" data-i18n="code_font_size">Розмір шрифту коду:</label><input type="text" id="txt_code_size" readonly>
@@ -494,82 +470,23 @@
             </br></br>         
             <label for="txt_step_anim_time" data-i18n="delay_time">Час затримки між виконанням кожного рядка:</label><input type="text"
                 id="txt_step_anim_time" readonly>
-            <div id="slider_step_anim_time" class="slider"></div>
-             </br>
+            <div id="slider_step_anim_time" class="slider"></div>            
             <p data-i18n="output_transparency_hint">Зробивши вікно виведення прозорим, ви зможете бачити свій код під ним</p>
             <label for="txt_output_transparency" data-i18n="output_transparency">Прозорість вікна</label><input type="text" id="txt_output_transparency"
                 readonly>
             <div id="slider_output_transparency" class="slider"></div>
         </fieldset>
         <div style="margin-top:12px; text-align:center;">
-            <button id="btn_open_runtime" style="padding:8px 20px; font-size:1em; cursor:pointer; background:#aaa; color:#fff; border:none; border-radius:6px;">
-                <i class="fa fa-cogs"></i> Середовище виконання
+            <button id="btn_open_runtime" 
+                title = "Середовище виконання" 
+                style="padding:8px 20px; font-size:1.5em; cursor:pointer; background:#5b7fa6; color:#fff; border:none; border-radius:6px 6px 50% 50%;height: 1.8em;width: 20%;">
+                <i class="fa fa-cogs"></i>
             </button>
         </div>
     </div>
 
     <!-- Runtime Environment Dialog -->
     <div id="runtime_env" title="Середовище виконання" style="display:none;">
-        <style>
-            #runtime_env .rt-info-block {
-                background: #f4f7fb;
-                border: 1px solid #ccd6e0;
-                border-radius: 6px;
-                padding: 10px 16px;
-                margin-bottom: 12px;
-                font-size: 0.97em;
-            }
-            #runtime_env .rt-info-block b {
-                color: #2c5282;
-            }
-            #runtime_env .rt-libs-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.93em;
-                margin-top: 4px;
-            }
-            #runtime_env .rt-libs-table th {
-                background: #4a7fc1;
-                color: #fff;
-                padding: 6px 10px;
-                text-align: left;
-                border: 1px solid #3a6aa0;
-            }
-            #runtime_env .rt-libs-table td {
-                padding: 5px 10px;
-                border: 1px solid #d0dcea;
-                vertical-align: middle;
-            }
-            #runtime_env .rt-libs-table tr:nth-child(even) td {
-                background: #edf3fb;
-            }
-            #runtime_env .rt-libs-table tr:hover td {
-                background: #ddeaff;
-            }
-            #runtime_env .rt-section-title {
-                font-weight: bold;
-                color: #2c5282;
-                margin: 10px 0 6px;
-                font-size: 1em;
-                border-bottom: 2px solid #4a7fc1;
-                padding-bottom: 3px;
-            }
-            #runtime_env .rt-checkbox-cell {
-                text-align: center;
-            }
-            #runtime_env .rt-checkbox-cell input[type=checkbox] {
-                width: 16px;
-                height: 16px;
-                cursor: pointer;
-            }
-            #runtime_env .rt-save-note {
-                font-size: 0.82em;
-                color: #666;
-                margin-top: 8px;
-                text-align: center;
-            }
-        </style>
-
         <div class="rt-info-block">
             <div><b>Версія Skulpt:</b> <span id="rt_skulpt_version">—</span></div>
             <div style="margin-top:4px;"><b>Python:</b> <span id="rt_python_version">3.7+</span></div>
@@ -595,132 +512,12 @@
 
         <div class="rt-save-note">Автори: Pete Dring, Michael Ebert, Nebojša Vasiljević, mohayonao, Олександр Мізюк,</br> Григорій Громко</div>
     </div>
-
-    <script>
-    (function() {
-        // Library definitions
-        var RT_LIBS = [
-            { name: 'arduino',        desc: 'Симулятор Arduino',			      configurable: false },
-            { name: 'matplotlib',     desc: 'Побудова графіків і діаграм',        configurable: false },
-            { name: 'microbit',       desc: 'Симулятор micro:bit',                configurable: false },
-            { name: 'music',          desc: 'Відтворення музики / MML',           configurable: false },
-            { name: 'numpy',          desc: 'Числові масиви та математика',       configurable: false },
-            { name: 'p5',             desc: 'Графіка p5 (p5-python)',             configurable: true  },
-            { name: 'pandas',         desc: 'Аналіз та обробка даних',            configurable: true  },
-            { name: 'processing',     desc: 'Графіка Processing',				  configurable: true  },
-            { name: 'pygame',         desc: 'Розробка ігор Pygame',               configurable: false },
-            { name: 'pgzrun',         desc: 'Pygame Zero — спрощений Pygame',     configurable: false },
-            { name: 'SimpleGraphics', desc: 'Проста графіка(simlegraphics-python)',configurable: false },
-            { name: 'sqlite3',        desc: 'Вбудована база даних SQLite',        configurable: true  },
-            { name: 'soundfx',        desc: 'Звукові ефекти',                     configurable: false },
-            { name: 'tkinter',        desc: 'Створення GUI з Tkinter',            configurable: false },
-            { name: 'turtle',         desc: 'Черепашача графіка',                 configurable: false },
-            { name: 'withcode',       desc: 'Додаткові засоби WithCode',          configurable: false },
-            { name: 'os',             desc: 'Робота з файловою системою',         configurable: false },
-        ];
-
-        var LS_KEY = 'epython_runtime_libs';
-
-        function getStoredLibs() {
-            try {
-                var val = localStorage.getItem(LS_KEY);
-                if (val) return JSON.parse(val);
-            } catch(e) {}
-            // Defaults: p5, pandas, sqlite3, processing checked
-            return { p5: true, pandas: true, sqlite3: true, processing: true };
-        }
-
-        function saveLibs(state) {
-            try {
-                localStorage.setItem(LS_KEY, JSON.stringify(state));
-            } catch(e) {}
-        }
-
-        function buildTable() {
-            var stored = getStoredLibs();
-            var tbody = document.getElementById('rt_libs_tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            for (var i = 0; i < RT_LIBS.length; i++) {
-                var lib = RT_LIBS[i];
-                var tr = document.createElement('tr');
-
-                // Name
-                var tdName = document.createElement('td');
-                tdName.style.fontWeight = 'bold';
-                tdName.style.fontFamily = 'monospace';
-                tdName.textContent = lib.name;
-                tr.appendChild(tdName);
-
-                // Description
-                var tdDesc = document.createElement('td');
-                tdDesc.textContent = lib.desc;
-                tr.appendChild(tdDesc);
-
-                // Status — checkbox for all; disabled+checked for built-in, active for configurable
-                var tdStatus = document.createElement('td');
-                tdStatus.className = 'rt-checkbox-cell';
-                var cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.id = 'rt_cb_' + lib.name;
-                if (lib.configurable) {
-                    cb.checked = !!stored[lib.name];
-                    cb.disabled = false;
-                    cb.style.cursor = 'pointer';
-                    (function(libName, checkbox) {
-                        checkbox.addEventListener('change', function() {
-                            var s = getStoredLibs();
-                            s[libName] = checkbox.checked;
-                            saveLibs(s);
-                        });
-                    })(lib.name, cb);
-                } else {
-                    cb.checked = true;
-                    cb.disabled = true;
-                    cb.style.opacity = '0.5';
-                    cb.style.cursor = 'default';
-                }
-                tdStatus.appendChild(cb);
-                tr.appendChild(tdStatus);
-
-                tbody.appendChild(tr);
-            }
-        }
-
-        function openRuntimeDialog() {
-            // Fill Skulpt version
-            var el = document.getElementById('rt_skulpt_version');
-            if (el) el.textContent = '1.3.0';
-
-            buildTable();
-
-            $('#runtime_env').dialog({
-                modal: true,
-                width: 620,
-                maxHeight: 720,
-                title: 'Середовище виконання',
-                buttons: [
-                    {
-                        text: 'Закрити',
-                        click: function() { $(this).dialog('close'); }
-                    }
-                ]
-            });
-        }
-
-        // Bind button after DOM ready
-        $(document).ready(function() {
-            $('#btn_open_runtime').on('click', function() {
-                openRuntimeDialog();
-            });
-        });
-    })();
-    </script>
     <dialog id='filemanager'> 
 	</div>
 
     <script src="./lib/addfuncs.js"></script> 
     <script src="./lib/main.js"></script>
+
 
 </body>
 </html>
