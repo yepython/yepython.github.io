@@ -773,7 +773,8 @@ li.CodeMirror-hint-active {
   padding: 8px;
   resize: none;
   overflow: auto;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 #fs_recover_restore {
   display: flex;
