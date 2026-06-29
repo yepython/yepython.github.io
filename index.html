@@ -95,9 +95,6 @@
             document.write('<script src="./lib/sql-wasm.js"><\/script>');
         }
     })();
-    </script>
-
-    <script>
     Sk.builtin.jsfswrite = new Sk.builtin.func(function(filename, data) {
     Sk.builtin.pyCheckArgs("jsfswrite", arguments, 2, 2);
 
@@ -124,18 +121,13 @@
 
     return Sk.builtin.none.none$;
 });
-
-    
-    
-    </script>
-    <script>
+  
         let script = document.createElement('script');
         script.src = selectedLang === 'en' ? './lib/filedialog-en.js' : './lib/filedialog.js';
         document.head.appendChild(script);
     </script>
     <script src="./lib/customfile.js"></script>
-    <script src="./lib/samplefile.js"></script>   
-    
+    <script src="./lib/samplefile.js"></script>    
     <!-- Підключення мовного файла -->
     <script src="./lib/translations.js"></script>
     
