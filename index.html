@@ -22,7 +22,70 @@
              border: none;
       }
 
-     
+      /* --- Адаптивність вікна "Середовище виконання" --- */
+      div.ui-dialog:has(#runtime_env) {
+          position: fixed !important;
+          top: 50% !important;
+          left: 50% !important;
+          transform: translate(-50%, -50%) !important;
+          margin: 0 !important;
+          width: auto !important;
+          height: auto !important;
+          max-width: 90vw !important;
+          max-height: 85vh !important;
+          min-width: 280px;
+          box-sizing: border-box;
+      }
+      div.ui-dialog:has(#runtime_env) .ui-dialog-content {
+          width: auto !important;
+          height: auto !important;
+          max-height: calc(85vh - 60px) !important;
+          box-sizing: border-box;
+          overflow-y: auto;
+          overflow-x: hidden;
+      }
+      #runtime_env {
+          width: 100% !important;
+          max-width: 90vw;
+          box-sizing: border-box;
+      }
+      #runtime_env .rt-libs-table {
+          width: 100%;
+          table-layout: fixed;
+      }
+
+      /* --- Круглі та більші чекбокси у "Середовищі програмування" --- */
+      #runtime_env input[type="checkbox"],
+      #settings input[type="checkbox"] {
+          appearance: none !important;
+          -webkit-appearance: none !important;
+          width: 24px !important;
+          height: 24px !important;
+          min-width: 24px !important;
+          min-height: 24px !important;
+          border: 2px solid #5b7fa6 !important;
+          border-radius: 50% !important;
+          background-color: #fff;
+          cursor: pointer;
+          padding: 0;
+          margin: 0 4px;
+          vertical-align: middle;
+          box-sizing: border-box;
+          flex-shrink: 0;
+          transition: background-color 0.15s ease, border-color 0.15s ease;
+      }
+      #runtime_env input[type="checkbox"]:checked,
+      #settings input[type="checkbox"]:checked {
+          background-color: #3c5c80 !important;
+          border-color: #3c5c80 !important;
+          box-shadow: inset 0 0 0 4px #fff;
+      }
+      #runtime_env input[type="checkbox"]:disabled,
+      #settings input[type="checkbox"]:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+      }
+
     </style>
 
     <meta charset="UTF-8">
@@ -59,6 +122,9 @@
     <script src="./lib/skulpt/skulpt-stdlib.js"></script>
     <script src="./lib/skulpt/deps/math.js"></script>
     <script src="./lib/skulpt/deps/chart.js"></script>
+    <script src="./lib/extlibs.js"></script>
+    <script src="./lib/jsfs.js"></script>    
+    <script src="./lib/mml-emitter.js"></script>
     <script>
     // Динамічне завантаження бібліотек відповідно до налаштувань у localStorage
     (function() {
@@ -77,23 +143,7 @@
         if (stored.processing) loadScript('./lib/skulpt/deps/processing.js');
         if (stored.p5)         loadScript('./lib/skulpt/deps/p5.js');
         if (stored.pandas)     loadScript('./lib/skulpt/deps/bundle.js');
-    })();
-    </script>
-    <script src="./lib/extlibs.js"></script>
-    <script src="./lib/jsfs.js"></script>    
-    <script src="./lib/mml-emitter.js"></script>
-    <script>
-    (function() {
-        var LS_KEY = 'epython_runtime_libs';
-        var defaults = { p5: true, pandas: true, sqlite3: true, processing: true };
-        var stored = defaults;
-        try {
-            var val = localStorage.getItem(LS_KEY);
-            if (val) stored = JSON.parse(val);
-        } catch(e) {}
-        if (stored.sqlite3) {
-            document.write('<script src="./lib/sql-wasm.js"><\/script>');
-        }
+        if (stored.sqlite3)    loadScript('./lib/sql-wasm.js');
     })();
     Sk.builtin.jsfswrite = new Sk.builtin.func(function(filename, data) {
     Sk.builtin.pyCheckArgs("jsfswrite", arguments, 2, 2);
@@ -379,7 +429,7 @@
     </div>
 
     <!-- Діалог підтвердження збереження файлу -->
-    <div id="save_confirm" title="Зберегти файл" style="display:none">
+    <div id="save_confirm" title="Зберегти файл" data-i18n-title="save_confirm_title" style="display:none">
         <fieldset>
             <legend data-i18n="save_confirm_legend">Ім'я файлу</legend>
             <label for="save_confirm_name" data-i18n="save_confirm_label">Вкажіть ім'я файлу для збереження:</label>
