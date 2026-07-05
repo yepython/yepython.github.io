@@ -468,7 +468,10 @@ def clear():
 
 def move(obj, x, y): 
   try:
-    x1, y1, x2, y2 = __canvas.bbox(obj)       
+    box = __canvas.bbox(obj)
+    if box is None:
+      return
+    x1, y1, x2, y2 = box
     __canvas.move(obj, x-x1, y-y1)    
   except AttributeError:
     pass;
@@ -485,7 +488,10 @@ def delete(obj):
 
 def scale(obj, xs, ys):
   try:
-    x1, y1, x2, y2 = __canvas.coords(obj)   
+    parts = __canvas.coords(obj)
+    if len(parts) < 2:
+      return
+    x1, y1 = parts[0], parts[1]
     __canvas.scale(obj, x1, y1, xs, ys)    
   except AttributeError:
     pass;
@@ -517,16 +523,22 @@ def itemConfig(obj, **kwargs):
   __update()
 
 def checkCollision(obj1, obj2):
+    try:
+        box1 = __canvas.bbox(obj1)
+        box2 = __canvas.bbox(obj2)
 
-    x1_min, y1_min, x1_max, y1_max = __canvas.bbox(obj1)
-    x2_min, y2_min, x2_max, y2_max = __canvas.bbox(obj2)
+        if box1 is None or box2 is None:
+            return False
 
-    if (x1_max >= x2_min and  
-        x1_min <= x2_max and  
-        y1_max >= y2_min and  
-        y1_min <= y2_max):    
-        return True
-    return False
+        x1_min, y1_min, x1_max, y1_max = box1
+        x2_min, y2_min, x2_max, y2_max = box2
+
+        return (x1_max >= x2_min and
+                x1_min <= x2_max and
+                y1_max >= y2_min and
+                y1_min <= y2_max)
+    except AttributeError:
+        return False
 
 def setAutoUpdate(status):
   global __autoupdate
@@ -553,9 +565,10 @@ def drawImage(img, x, y):
   global __image_references
 
   try:
-    __canvas.create_image(x+1, y+1, image=img, anchor="nw")
+    __shape = __canvas.create_image(x+1, y+1, image=img, anchor="nw")
     __image_references.add(img)
     __update()
+    return __shape
 
   except Exception as e:
     if __canvas == None:
