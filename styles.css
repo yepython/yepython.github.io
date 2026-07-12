@@ -998,3 +998,34 @@ li.CodeMirror-hint-active {
   flex: 1;
   width: 100%;
 }
+/* --- Адаптивність та вигляд вікна "Розпорядник файлів" --- */
+div.ui-dialog:has(#filemanager) .ui-dialog-content{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    height:100%;
+    min-height:0;
+}
+
+#filemanager,
+#filemanager #fm,
+#filemanager .fm-root{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-height:0;
+}
+
+#filemanager .fm-list-frame{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+}
+div.ui-dialog:has(#filemanager) {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.25),
+        0 20px 60px rgba(0,0,0,.35);
+}
