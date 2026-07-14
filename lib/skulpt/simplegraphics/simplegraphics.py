@@ -647,7 +647,8 @@ def circle(x, y, d):
 
 def text(x, y, what, align="c", ang=0):
   try:
-    __shape = __canvas.create_text(x + 1, y + 1, text=str(what), fill=__outline, font=(__font, __font_size, __font_modifiers))
+    __anchor = "center" if align == "c" else align
+    __shape = __canvas.create_text(x + 1, y + 1, text=str(what), fill=__outline, font=(__font, __font_size, __font_modifiers), anchor=__anchor, angle=ang)
     __update()
     return __shape
   except Exception as e:
