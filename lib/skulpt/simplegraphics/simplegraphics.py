@@ -132,8 +132,12 @@ def __init():
 
   # Give the window keyboard focus right away so that key presses are
   # picked up without the user having to click into the canvas first.
+  # Focus has to land on the canvas itself (the actual focusable DOM
+  # element) rather than on the abstract root window - some tkinter
+  # shims (e.g. Skulpt's) only implement focus_set() on widgets that
+  # correspond to a real focusable element, which the root window isn't.
   try:
-    __master.focus_set()
+    __canvas.focus_set()
   except AttributeError:
     pass
 
