@@ -1,0 +1,291 @@
+@import "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap";
+
+:root {
+  --background: #fff;
+  --foreground: #0a0a0a;
+  --border: #e5e5e5;
+  --ring: #a1a1a1;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  border-color: var(--border);
+  outline-color: var(--ring);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow-y: scroll;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  padding: 20px;
+}
+
+hr {
+  height: 0;
+  color: inherit;
+  border-top-width: 1px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+b, strong {
+  font-weight: bolder;
+}
+
+code, kbd, samp, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 1em;
+}
+/*
+ol, ul {
+  list-style: none;
+}*/
+/* ==========================================================
+   Загальний стиль інформаційних блоків
+   ========================================================== */
+
+.insight,
+.warning,
+.info,
+.knowmore,
+.books {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    column-gap: 20px;
+    align-items: start;
+
+    max-width: 800px;
+    padding: 20px;
+    margin: 20px 0;
+
+    border: 2px solid;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
+
+.insight::before,
+.warning::before,
+.info::before,
+.knowmore::before,
+.books::before {
+    content: "";
+    grid-row: 1 / span 2;
+    width: 54px;
+    height: 54px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.insight h3,
+.warning h3,
+.info h3,
+.knowmore h3,
+.books h3 {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+}
+
+.insight p,
+.warning p,
+.info p,
+.knowmore p,
+.books p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: .95rem;
+}
+
+.insight {
+    background: #eef7f2;
+    border-color: #2d6a4f;
+}
+
+.insight h3,
+.insight p {
+    color: #2d6a4f;
+}
+
+.insight::before {
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='22' font-size='22'>💡</text></svg>");
+}
+
+.warning {
+    background: #fff8e6;
+    border-color: #d97706;
+}
+
+.warning h3,
+.warning p {
+    color: #92400e;
+}
+
+.warning::before {
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='22' font-size='22'>⚠️</text></svg>");
+}
+
+
+
+.info {
+    background: #edf6ff;
+    border-color: #2563eb;
+}
+
+.info h3,
+.info p {
+    color: #1d4ed8;
+}
+
+.info::before {
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>\
+<circle cx='32' cy='32' r='30' fill='%232563eb'/>\
+<text x='32' y='45' text-anchor='middle' font-size='42' font-family='Arial,Helvetica,sans-serif' font-weight='bold' fill='white'>i</text>\
+</svg>");
+}
+
+.knowmore {
+    background: #f4efff;
+    border-color: #7c3aed;
+}
+
+.knowmore h3,
+.knowmore p {
+    color: #6d28d9;
+}
+
+.knowmore::before {
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>\
+<text x='32' y='54' text-anchor='middle' font-size='52'>🦉</text>\
+</svg>");
+}
+
+
+.books {
+    background: #f5f5f5;
+    border-color: #4b5563;
+}
+
+.books h3,
+.books p {
+    color: #374151;
+}
+
+.books::before {
+    background-image:
+        url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='22' font-size='22'>📚</text></svg>\");
+}
+
+.custom-list {
+  list-style: none;          /* Ховаємо стандартні круглі маркери */
+  padding: 0 0 0 20px;       /* Внутрішній відступ зліва для тексту */
+  margin: 20px 0;            /* Зовнішні відступи зверху/знизу */
+  
+  /* Створення вертикальної лінії ліворуч */
+  border-left: 5px solid #90e0ef; /* Товста сіро-блакитна лінія (колір можна змінити, наприклад, на #a8dadc або #b0c4de) */
+}
+
+.custom-list li {
+  position: relative;        /* Контекст для позиціонування галочки */
+  padding-left: 30px;        /* Відступ для тексту, щоб звільнити місце під галочку */
+  margin-bottom: 12px;       /* Відступ між елементами списку */
+  font-family: sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333333;
+}
+
+/* Останній елемент списку не потребує нижнього відступу */
+.custom-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Створення зеленої "галочки" */
+.custom-list li::before {
+  content: "";
+  position: absolute;
+  left: 5px;                 /* Позиція галочки відносно лівого краю li */
+  top: 4px;                  /* Вирівнювання галочки по висоті першого рядка тексту */
+  
+  /* Малюємо галочку за допомогою меж (border) прямокутника */
+  width: 6px;
+  height: 12px;
+  border: solid #2a9d8f;     /* Гарний темно-зелений колір */
+  border-width: 0 3px 3px 0; /* Малюємо тільки праву та нижню грані */
+  
+  /* Повертаємо прямокутник на 45 градусів, щоб утворилася галочка */
+  transform: rotate(45deg);
+}
+img {
+  margin-top: 20px;    /* відступ зверху */
+  margin-right: 15px;  /* відступ праворуч */
+  margin-bottom: 20px; /* відступ знизу */
+  margin-left: 15px;   /* відступ ліворуч */
+}
+
+/* Нумерований список */
+.custom-numlist {
+    counter-reset: item;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.custom-numlist li {
+    counter-increment: item;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.custom-numlist li::before {
+    content: counter(item);
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #bfefff;      /* блакитне коло */
+    color: #1f9d2a;           /* зелені цифри */
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-numlist li .title {
+    position: relative;
+    padding-right: 18px;
+    font-weight: 600;
+}
+
+

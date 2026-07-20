@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch20</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-20-робота-із-зображеннями-у-pillow">РОЗДІЛ 20. Робота із зображеннями у Pillow</h1>
+<h2 id="201-растрові-зображення-та-бібліотека-pillow">20.1 Растрові зображення та бібліотека Pillow</h2>
+<p>До цього часу ми створювали зображення за допомогою <strong>графічних примітивів</strong> — ліній, прямокутників, кіл, багатокутників та інших фігур. Кожен такий малюнок описувався набором геометричних параметрів: координатами, розмірами, кольорами тощо. Під час відтворення програма сама визначала, які пікселі потрібно зафарбувати.</p>
+<p>Але існує й інший спосіб подання зображень — <strong>растровий</strong>. Саме так зберігаються фотографії, скани та більшість цифрових малюнків у форматах <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, <code>.bmp</code> та інших. Растрове зображення — це прямокутна таблиця кольорових <strong>пікселів</strong> (від англ. <em>picture element</em> — «елемент зображення»). Кожен піксель має власний колір, і разом вони утворюють цілісне зображення. Якщо достатньо збільшити таке зображення, можна побачити окремі кольорові квадратики.</p>
+<p><img src="./media/ch20/104e5cccbf03713cf08200df9c83e3e8.png" alt="Растрове зображення" title="Растрове зображення"></p>
+<p>Стандартні засоби Python мають дуже обмежені можливості для роботи з растровими зображеннями. Тому для відкривання, редагування та збереження файлів поширених графічних форматів використовують бібліотеку <strong>Pillow</strong> — сучасний і активно підтримуваний форк старішої бібліотеки <em>Python Imaging Library</em> (PIL). Саме тому, попри назву пакета <code>Pillow</code>, у коді ми імпортуємо модуль з історичною назвою <code>PIL</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+</code></pre>
+<h3 id="встановлення">Встановлення</h3>
+<p>Pillow не входить до стандартної бібліотеки Python, тому її потрібно встановити один раз через <code>pip</code>:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">pip install Pillow
+</code></pre>
+<p>У Linux або macOS:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">pip3 install Pillow
+</code></pre>
+<h3 id="формати-зображень">Формати зображень</h3>
+<table>
+<thead>
+<tr>
+<th>Формат</th>
+<th>Особливість</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>BMP</strong></td>
+<td>без стиснення, застарілий, кожен піксель зберігається «як є»</td>
+</tr>
+<tr>
+<td><strong>JPEG / JPG</strong></td>
+<td>стиснення з втратою якості, чудово підходить для фотографій, <strong>не підтримує прозорість</strong></td>
+</tr>
+<tr>
+<td><strong>PNG</strong></td>
+<td>стиснення без втрати якості, підтримує прозорість (альфа-канал), сучасна заміна GIF</td>
+</tr>
+<tr>
+<td><strong>GIF</strong></td>
+<td>обмежена палітра (до 256 кольорів), підтримує анімацію (послідовність кадрів)</td>
+</tr>
+<tr>
+<td><strong>TIFF</strong></td>
+<td>велике й високоякісне, часто використовується для інженерних креслень</td>
+</tr>
+</tbody></table>
+<h2 id="202-відкриття-зображення-та-його-атрибути">20.2 Відкриття зображення та його атрибути</h2>
+<p>Найпростіший спосіб перевірити, що Pillow встановлено правильно, — спробувати відкрити файл функцією <code>Image.open()</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+shliakh_do_faylu = <span class="hljs-string">"photo.png"</span>
+zobr_1 = Image.<span class="hljs-built_in">open</span>(shliakh_do_faylu)
+
+shyryna = zobr_1.size[<span class="hljs-number">0</span>]
+vysota = zobr_1.size[<span class="hljs-number">1</span>]
+rezhym = zobr_1.mode
+format_faylu = zobr_1.<span class="hljs-built_in">format</span>
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Розмір:"</span>, shyryna, vysota)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Режим:"</span>, rezhym)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Формат:"</span>, format_faylu)
+
+zobr_1.show()
+</code></pre>
+<p><img src="./media/ch20/9d227326c2eea24ee6b5039e414ade6e.png" alt="9d227326c2eea24ee6b5039e414ade6e.png"></p>
+<p>Як це працює:</p>
+<ul>
+<li><code>Image.open()</code> <strong>не</strong> зчитує одразу всі пікселі файлу — вона лише читає заголовок, щоб визначити формат і базові властивості. Решта даних зображення обробляється лише тоді, коли ви дасте відповідну команду  (<code>show()</code>, <code>resize()</code>, <code>rotate()</code> тощо). Це економить і час, і пам'ять.</li>
+<li><code>zobr_1.size</code> — кортеж <code>(ширина, висота)</code> у пікселях; <code>zobr_1.size[0]</code> — ширина, <code>zobr_1.size[1]</code> — висота. Ті самі значення доступні і як окремі властивості <code>zobr_1.width</code> та <code>zobr_1.height</code>.</li>
+<li><code>zobr_1.mode</code> — <strong>колірний режим</strong>: найчастіше зустрічаються <code>"RGB"</code> (звичайне кольорове зображення), <code>"RGBA"</code> (кольорове + альфа-канал прозорості) і <code>"L"</code> (відтінки сірого, від англ. <em>luminance</em>).</li>
+<li><code>zobr_1.format</code> — формат, з якого зчитано файл (<code>"JPEG"</code>, <code>"PNG"</code>, <code>"GIF"</code> тощо).</li>
+<li><code>zobr_1.show()</code> відкриває зображення в стандартному переглядачі зображень операційної системи — зручно для швидкої перевірки результату під час розробки.</li>
+</ul>
+<div class="warn">
+У ЄPython <code>.show()</code> показує зображення у новій вкладці браузера.
+</div>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Напишіть скрипт, який відкриває будь-яке ваше фото і виводить у консоль рядок на кшталт <code>"Це PNG-зображення розміром 1920x1080 у режимі RGB"</code>, підставляючи реальні значення атрибутів.
+</p></div>
+<h2 id="203-збереження-та-конвертація-форматів">20.3 Збереження та конвертація форматів</h2>
+<p>Дуже часто потрібно працювати із зображенням у «неправильному» форматі — наприклад, більшість зображень з інтернету є JPEG, а нам для збереження прозорості потрібен PNG.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"lev_1.jpg"</span>)
+zobr_1.save(<span class="hljs-string">"lev_2.png"</span>, <span class="hljs-string">"PNG"</span>)
+</code></pre>
+<p>Як це працює: ми відкриваємо зображення у форматі JPEG і вказуємо <code>save()</code> записати його на диск у форматі PNG — другий аргумент явно задає формат, а вся складна конвертація відбувається «під капотом» бібліотеки.</p>
+<p>Не всі формати сумісні з усіма режимами. Формат JPEG <strong>не вміє зберігати прозорість</strong>. Якщо ви спробуєте зберегти зображення в режимі <code>"RGBA"</code> (з альфа-каналом) чи <code>"P"</code> (палітра, як у GIF) одразу у <code>.jpg</code>, Pillow або підніме помилку, або збереже картинку з неправильними кольорами. Перед збереженням у JPEG завжди конвертуйте зображення в режим <code>"RGB"</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"> zobr_bez_prozorosti = zobr_1.convert(<span class="hljs-string">"RGB"</span>)
+ zobr_bez_prozorosti.save(<span class="hljs-string">"pics/rezultaty/rezultat.jpg"</span>, <span class="hljs-string">"JPEG"</span>)
+</code></pre>
+<div class="warn">
+PIL у ЄPython працює тільки з форматом PNG, <code>.save()</code> зберігає зображення у теці завантажень браузера - <code>Завантаження</code>(Downloads)
+</div>
+<h2 id="204-створення-власних-зображень-imagenew-та-imagedraw">20.4 Створення власних зображень: <code>Image.new()</code> та <code>ImageDraw</code></h2>
+<p>Pillow вміє не лише редагувати готові файли, а й створювати зображення «з нуля» — наприклад, порожнє чорне полотно для подальшого малювання.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+<span class="hljs-comment"># Аргументи: режим, розмір (ширина, висота), колір фону</span>
+zobr_1 = Image.new(<span class="hljs-string">"RGB"</span>, (<span class="hljs-number">200</span>, <span class="hljs-number">200</span>), <span class="hljs-string">"black"</span>)
+zobr_1.save(<span class="hljs-string">"black_square.png"</span>)
+</code></pre>
+<p><img src="./media/ch20/da19402e6476d8322aacc806b1fbe1d5.png" alt="da19402e6476d8322aacc806b1fbe1d5.png">
+Колір фону можна задати назвою (<code>"black"</code>, <code>"cornflowerblue"</code> — так само, як у <code>SimpleGraphics</code> або <code>tkinter</code>) або кортежем <code>(r, g, b)</code>.</p>
+<p>Щоб намалювати щось на такому полотні — прямокутник, коло, лінію чи текст, — потрібен допоміжний об'єкт <code>ImageDraw</code>, який «прикріплюється» до конкретного зображення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image, ImageDraw
+
+zobr_1 = Image.new(<span class="hljs-string">"RGB"</span>, (<span class="hljs-number">300</span>, <span class="hljs-number">200</span>), <span class="hljs-string">"white"</span>)
+maliar = ImageDraw.Draw(zobr_1)
+
+maliar.rectangle([<span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">120</span>, <span class="hljs-number">100</span>], fill=<span class="hljs-string">"cornflowerblue"</span>, outline=<span class="hljs-string">"black"</span>)
+maliar.ellipse([<span class="hljs-number">150</span>, <span class="hljs-number">20</span>, <span class="hljs-number">250</span>, <span class="hljs-number">100</span>], fill=<span class="hljs-string">"tomato"</span>)
+maliar.line([<span class="hljs-number">20</span>, <span class="hljs-number">150</span>, <span class="hljs-number">280</span>, <span class="hljs-number">150</span>], fill=<span class="hljs-string">"mediumseagreen"</span>, width=<span class="hljs-number">4</span>)
+maliar.text((<span class="hljs-number">20</span>, <span class="hljs-number">160</span>), <span class="hljs-string">"Намальовано в Pillow!"</span>, fill=<span class="hljs-string">"black"</span>)
+
+zobr_1.save(<span class="hljs-string">"simple_drawing.png"</span>)
+</code></pre>
+<p><img src="./media/ch20/b1c88433f32707495ee232675df762e4.png" alt="b1c88433f32707495ee232675df762e4.png"></p>
+<p>Як це працює:</p>
+<ul>
+<li><code>ImageDraw.Draw(zobr_1)</code> створює «пензлик», прив'язаний саме до <code>zobr_1</code> — усе, що ми малюємо через <code>maliar</code>, одразу з'являється на цьому зображенні (порівняйте з тим, як команди <code>SimpleGraphics</code> малювали прямо у вікні).</li>
+<li>Геометричні фігури (<code>rectangle</code>, <code>ellipse</code>, <code>polygon</code> тощо) приймають список координат обмежувального прямокутника <code>[x1, y1, x2, y2]</code> — верхній лівий і нижній правий кути, а також іменовані параметри <code>fill</code> (заливка) та <code>outline</code> (контур).</li>
+<li><code>line([x1, y1, x2, y2], fill=..., width=...)</code> малює відрізок, а <code>text((x, y), рядок, fill=...)</code> — напис звичайним вбудованим шрифтом. Для власного шрифту й розміру символів можна створити об'єкт <code>ImageFont.truetype("шлях_до_шрифту.ttf", розмір)</code> і передати його параметром <code>font=</code> у <code>text()</code>.</li>
+<li></li>
+</ul>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Створіть однокольорове зображення 400×300 і намалюйте на ньому «смайлик»: два кола-ока, одне більше коло-обличчя та лінію-посмішку.
+</p></div>
+<h2 id="205-зміна-розміру-та-кадрування">20.5 Зміна розміру та кадрування</h2>
+<h3 id="resize"><code>resize()</code></h3>
+<p>Функція <code>resize((нова_ширина, нова_висота), фільтр)</code> повертає <strong>нове</strong> зображення заданого розміру — оригінал вона не змінює.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+shyryna, vysota = <span class="hljs-number">300</span>, <span class="hljs-number">300</span>
+zobr_2 = zobr_1.resize((shyryna, vysota), Image.NEAREST)
+zobr_2.save(<span class="hljs-string">"resized_photo.png"</span>)
+</code></pre>
+<p><img src="./media/ch20/7988cec6a2adeac54085c1deb76c8807.png" alt="Зміна розміру" title="Зміна розміру"></p>
+<p>Оскільки нове зображення зазвичай може мати інакше співвідношення пікселів, ніж оригінал, Pillow повинна або <strong>додати</strong> нові пікселі (якщо зображення збільшується), або <strong>прибрати</strong> зайві (якщо зменшується). Алгоритм, який вирішує, як саме це зробити, називається <strong>фільтром ресемплінгу</strong>: найпростіший — <code>Image.NEAREST</code> (швидкий, але «сходинками» на діагональних лініях), більш якісні — <code>Image.BILINEAR</code>, <code>Image.BICUBIC</code> і <code>Image.LANCZOS</code> (повільніші, але плавніші).</p>
+<p>Якщо не вказати фільтр явно, Pillow використає стандартний якісний фільтр (згладжування). Це чудово для фотографій, але <strong>зіпсує чіткість</strong> пікселізованих спрайтів чи ікон із різкими краями — вони стануть трохи розмитими. Для чіткого, «незгладженого» масштабування пікель-артів завжди вказуйте <code>Image.NEAREST</code> явно.</p>
+<p>Якщо потрібно зберегти правильні пропорції (щоб зображення не спотворилося), спочатку зчитайте оригінальний розмір і порахуйте нову ширину та висоту з однаковим коефіцієнтом:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+shyryna, vysota = zobr_1.size
+
+koefitsiient = <span class="hljs-number">0.2</span>   <span class="hljs-comment"># зменшуємо в 5 разів</span>
+nova_shyryna = <span class="hljs-built_in">int</span>(shyryna * koefitsiient)
+nova_vysota = <span class="hljs-built_in">int</span>(vysota * koefitsiient)
+
+zobr_2 = zobr_1.resize((nova_shyryna, nova_vysota), Image.NEAREST)
+zobr_2.save(<span class="hljs-string">"resized_photo1.png"</span>)
+</code></pre>
+<p>Ще простіший спосіб отримати «мініатюру» зі збереженням пропорцій — метод <code>thumbnail()</code>. На відміну від <code>resize()</code>, він <strong>змінює зображення на місці</strong> (нічого не повертає) і сам підбирає розмір так, щоб зображення вписалося в задану рамку, не спотворившись:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+zobr_1.thumbnail((<span class="hljs-number">150</span>, <span class="hljs-number">150</span>))   <span class="hljs-comment"># впишеться в 150x150, пропорції збережуться автоматично</span>
+zobr_1.save(<span class="hljs-string">"thumb_photo.png"</span>)
+</code></pre>
+<h3 id="crop-та-paste"><code>crop()</code> та <code>paste()</code></h3>
+<p><code>crop([x1, y1, x2, y2])</code> вирізає прямокутну ділянку зображення (той самий формат координат, що й у <code>ImageDraw</code>), а <code>paste(інше_зображення, (x, y))</code> вставляє одне зображення в інше, розташовуючи його лівий верхній кут у точці <code>(x, y)</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+<span class="hljs-comment"># Вирізаємо частину зображення</span>
+zobr_2 = zobr_1.crop([<span class="hljs-number">100</span>, <span class="hljs-number">50</span>, <span class="hljs-number">400</span>, <span class="hljs-number">400</span>])
+zobr_2.save(<span class="hljs-string">"crop_photo.png"</span>)
+
+<span class="hljs-comment"># Вставляємо мініатюру в правий нижній кут того самого фото</span>
+zobr_2.thumbnail((<span class="hljs-number">150</span>, <span class="hljs-number">150</span>))
+
+zobr_1.paste(zobr_2, (zobr_1.width - <span class="hljs-number">160</span>, zobr_1.height - <span class="hljs-number">160</span>))
+zobr_1.show()
+</code></pre>
+<p><img src="./media/ch20/905ab4d6f600d94be174ac0542396760.png" alt="crop() та paste()" title="crop() та paste()"></p>
+<p><code>paste()</code> змінює зображення, до якого його викликано, <strong>на місці</strong> (як і <code>thumbnail()</code>) — нічого не повертає. 
+</p><div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Візьміть будь-яке фото, виріжте (<code>crop()</code>) із нього квадратний фрагмент по центру, а потім зробіть із нього мініатюру 64×64 за допомогою <code>thumbnail()</code>.
+</p></div>
+<h2 id="206-обертання-та-віддзеркалення">20.6 Обертання та віддзеркалення</h2>
+<h3 id="rotate"><code>rotate()</code></h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+zobr_2 = zobr_1.rotate(-<span class="hljs-number">90</span>)
+zobr_2.show()
+</code></pre>
+<p><img src="./media/ch20/b1b4bb685f3974c72415daa0b800fa1f.png" alt="Обертання" title="Обертання"></p>
+<p><code>rotate(кут)</code> обертає зображення проти годинникової стрілки на задану кількість градусів (від'ємне значення — за годинниковою). На відміну від фігур у <code>SimpleGraphics</code>, тут можна вказати будь-який кут, включно з дробовим (наприклад, <code>rotate(1.5)</code>).</p>
+<p>Якщо кут не кратний 90°, кути прямокутного зображення після повороту «випадають» за межі початкового розміру полотна — за замовчуванням Pillow просто <strong>обрізає</strong> їх, а порожні кути заповнює прозорим або чорним кольором. Щоб зображення не обрізалося, а полотно автоматично розширилося під новий розмір, додайте <code>expand=True</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">zobr_2 = zobr_1.rotate(<span class="hljs-number">15</span>, expand=<span class="hljs-literal">True</span>)
+</code></pre>
+<h3 id="transpose-віддзеркалення-та-повороти-на-90"><code>transpose()</code>: віддзеркалення та повороти на 90°</h3>
+<p>Для швидких, «безвтратних» перетворень (кратних 90°, а також дзеркального відображення) зручніше використовувати <code>transpose()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+vydz_horyzont = zobr_1.transpose(Image.FLIP_LEFT_RIGHT)   <span class="hljs-comment"># дзеркало по горизонталі</span>
+vydz_vertyk   = zobr_1.transpose(Image.FLIP_TOP_BOTTOM)   <span class="hljs-comment"># дзеркало по вертикалі</span>
+vydz_90       = zobr_1.transpose(Image.ROTATE_90)
+vydz_180      = zobr_1.transpose(Image.ROTATE_180)
+vydz_270      = zobr_1.transpose(Image.ROTATE_270)
+
+vydz_horyzont.save(<span class="hljs-string">"horyzont_photo.png"</span>)
+vydz_vertyk.save(<span class="hljs-string">"vertykal_photo.png"</span>)
+</code></pre>
+<p>На відміну від <code>rotate(90)</code>, <code>transpose(Image.ROTATE_90)</code> ніколи нічого не обрізає і не згладжує пікселі — це проста перестановка вже наявних рядків/стовпців пікселів, тому вона майже миттєва.</p>
+<h2 id="207-кольори-канали-змішування-та-фільтри">20.7 Кольори, канали, змішування та фільтри</h2>
+<h3 id="розділення-та-обєднання-каналів-split-merge">Розділення та об'єднання каналів: <code>split()</code> / <code>merge()</code></h3>
+<p>Кольорове зображення в режимі <code>"RGB"</code> насправді складається з трьох накладених одна на одну чорно-білих «карт» — по одній на червоний, зелений і синій канали. <code>split()</code> розкладає зображення на ці карти, а <code>Image.merge()</code> збирає їх назад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+dzherelo = zobr_1.split()
+R, G, B = <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>
+
+vykhid_chervonyi = dzherelo[R].point(<span class="hljs-keyword">lambda</span> i: i * <span class="hljs-number">2.0</span>)    <span class="hljs-comment"># підсилюємо червоний удвічі</span>
+vykhid_zelenyi   = dzherelo[G].point(<span class="hljs-keyword">lambda</span> i: i * <span class="hljs-number">0.8</span>)    <span class="hljs-comment"># послаблюємо зелений на 20%</span>
+vykhid_synii     = dzherelo[B].point(<span class="hljs-keyword">lambda</span> i: i * <span class="hljs-number">0.0</span>)    <span class="hljs-comment"># прибираємо синій повністю</span>
+
+nove_dzherelo = [vykhid_chervonyi, vykhid_zelenyi, vykhid_synii]
+zobr_2 = Image.merge(zobr_1.mode, nove_dzherelo)
+zobr_2.show()
+</code></pre>
+<p><img src="./media/ch20/a87804cc43ca6bbd710b0b7243fdc5a3.png" alt="Розділення та об'єднання каналів" title="Розділення та об'єднання каналів">
+Метод <code>point(функція)</code> застосовує передану функцію до <strong>кожного пікселя</strong> окремого каналу — тут ми просто множимо яскравість кожного пікселя на потрібний коефіцієнт (від <code>0.0</code> — прибрати канал повністю, до значень більших за <code>1.0</code> — підсилити його).</p>
+<h3 id="відтінки-сірого-негатив-convert">Відтінки сірого, негатив: <code>convert()</code></h3>
+<p><code>convert(режим)</code> переводить зображення в інший колірний режим. Найкорисніший приклад — переведення в градації сірого:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+zobr_chb = zobr_1.convert(<span class="hljs-string">"L"</span>)   <span class="hljs-comment"># "L" = відтінки сірого (Luminance)</span>
+zobr_chb.s![Відтінки сірого](./media/ch20/7094a40d68698d80ec2a11c911e95e21.png <span class="hljs-string">"Відтінки сірого"</span>)<span class="hljs-number">95e21</span>.png)
+
+«Негатив» (інвертовані кольори) отримують тим самим прийомом `point()`, що й окремі канали вище, — обертаючи яскравість кожного пікселя:
+
+```python
+<span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+zobr_negatyv = zobr_1.point(<span class="hljs-keyword">lambda</span> i: <span class="hljs-number">255</span> - i)
+zobr_negatyv.show()
+</code></pre>
+<p><img src="./media/ch20/291aa111a2aef787ec5fd55082d246ff.png" alt="Негатив" title="Негатив"></p>
+<h3 id="змішування-двох-зображень-blend-та-composite">Змішування двох зображень: <code>blend()</code> та <code>composite()</code></h3>
+<p><code>Image.blend(зобр_1, зобр_2, proportsiia)</code> змішує два зображення <strong>однакового розміру й режиму</strong> так, ніби проєктор показує їх одночасно на одному екрані — параметр <code>proportsiia</code> (від <code>0.0</code> до <code>1.0</code>) визначає, скільки «світла» дає друге зображення (<code>0.0</code> — суцільно перше, <code>1.0</code> — суцільно друге, <code>0.5</code> — порівну):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+zobr_2 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"duck.png"</span>) 
+
+zobr_3 = Image.blend(zobr_1, zobr_2, <span class="hljs-number">0.5</span>)
+zobr_3.show()
+</code></pre>
+<p>Якщо ж потрібно змішати два зображення не рівномірно по всій площі, а по-різному в різних місцях (наприклад, зробити плавний перехід лише в одній частині картинки), використовують <code>Image.composite(зобр_1, зобр_2, maska)</code>. Маска — це чорно-біле зображення того самого розміру: білі ділянки маски показують <code>зобр_1</code>, чорні — <code>зобр_2</code>, а відтінки сірого змішують їх пропорційно яскравості:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+zobr_2 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"duck.png"</span>) 
+
+maska  = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"maska.png"</span>).convert(<span class="hljs-string">"L"</span>)   <span class="hljs-comment"># маска - завжди "L"</span>
+
+zobr_4 = Image.composite(zobr_1, zobr_2, maska)
+zobr_4.show()
+</code></pre>
+<h3 id="готові-фільтри-модуль-imagefilter">Готові фільтри: модуль <code>ImageFilter</code></h3>
+<p>Для типових ефектів обробки фотографій не потрібно нічого рахувати вручну — модуль <code>ImageFilter</code> вже містить готові фільтри:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image, ImageFilter
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+zobr_1.<span class="hljs-built_in">filter</span>(ImageFilter.BLUR).save(<span class="hljs-string">"photo_BLUR.png"</span>)
+zobr_1.<span class="hljs-built_in">filter</span>(ImageFilter.SHARPEN).save(<span class="hljs-string">"photo_SHARPEN.png"</span>)
+zobr_1.<span class="hljs-built_in">filter</span>(ImageFilter.CONTOUR).save(<span class="hljs-string">"photo_CONTOUR.png"</span>)
+zobr_1.<span class="hljs-built_in">filter</span>(ImageFilter.EMBOSS).save(<span class="hljs-string">"photo_EMBOSS.png"</span>)
+zobr_1.<span class="hljs-built_in">filter</span>(ImageFilter.FIND_EDGES).save(<span class="hljs-string">"photo_FIND_EDGES.png"</span>)
+</code></pre>
+<p>Інші корисні фільтри з того самого модуля: <code>DETAIL</code>, <code>EDGE_ENHANCE</code>, <code>EDGE_ENHANCE_MORE</code>, <code>SMOOTH</code>, <code>SMOOTH_MORE</code>.</p>
+<div class="warn">
+У ЄPython підтримуються фільтри BLUR, SHARPEN, CONTOUR, DETAIL, EMBOSS, EDGE_ENHANCE, SMOOTH, SHARPEN, FIND_EDGES, GaussianBlur
+</div>
+<h2 id="208-доступ-до-окремих-пікселів">20.8 Доступ до окремих пікселів</h2>
+<p>Іноді готових методів недостатньо, і потрібно прочитати або змінити колір конкретного пікселя вручну. Для цього служать <code>getpixel()</code> і <code>putpixel()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"photo.png"</span>)
+
+<span class="hljs-comment"># Читаємо колір пікселя в точці (10, 10)</span>
+kolir = zobr_1.getpixel((<span class="hljs-number">10</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Колір пікселя (10, 10):"</span>, kolir)   <span class="hljs-comment"># наприклад, (120, 85, 40)</span>
+
+<span class="hljs-comment"># Перефарбовуємо весь верхній лівий квадрат 50x50 у червоний колір</span>
+<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">50</span>):
+    <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">50</span>):
+        zobr_1.putpixel((x, y), (<span class="hljs-number">255</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))
+
+zobr_1.show()
+</code></pre>
+<p><img src="./media/ch20/02b9384c9f1b60e26b782d64e4a2570d.png" alt="Доступ до окремих пікселів" title="Доступ до окремих пікселів"></p>
+<p><code>getpixel()</code>/<code>putpixel()</code> викликані по одному разу на кожен піксель зручні для розуміння, але порівняно повільні на великих зображеннях чи в подвійних циклах. Якщо потрібно обробити багато пікселів одразу, швидше буде спершу викликати <code>zobr_1.load()</code> — цей метод повертає спеціальний об'єкт прямого доступу до пікселів, індексований так само, як <code>pixels[x, y]</code>, але значно швидший за повторні виклики <code>getpixel()</code>/<code>putpixel()</code>.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Напишіть скрипт, який проходить по всіх пікселях невеликого зображення і замінює кожен піксель, чия яскравість (середнє значення <code>R</code>, <code>G</code>, <code>B</code>) менша за 128, на чорний, а решту — на білий. Такий ефект називають <strong>порогова (бінарна) обробка</strong> зображення.
+</p></div>
+<h2 id="209-типові-помилки-під-час-роботи-з-pillow">20.9 Типові помилки під час роботи з Pillow</h2>
+<p><strong>1. Спроба зберегти зображення з прозорістю у форматі JPEG.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"logotyp.png"</span>)   <span class="hljs-comment"># режим RGBA</span>
+zobr_1.save(<span class="hljs-string">"logotyp.jpg"</span>, <span class="hljs-string">"JPEG"</span>)  <span class="hljs-comment"># Помилка або зіпсовані кольори!</span>
+</code></pre>
+<p>Як виправити: конвертуйте зображення в <code>"RGB"</code> перед збереженням у JPEG: <code>zobr_1.convert("RGB").save(...)</code> (див. 20.3).</p>
+<p><strong>2. Забули вказати фільтр ресемплінгу при зменшенні пікселізованого зображення.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">sprait = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"sprait_16x16.png"</span>)
+sprait_velykyi = sprait.resize((<span class="hljs-number">256</span>, <span class="hljs-number">256</span>))   <span class="hljs-comment"># За замовчуванням - згладжування!</span>
+</code></pre>
+<p>Як виправити: для чіткого, «незгладженого» масштабування вкажіть <code>Image.NEAREST</code> другим аргументом: <code>sprait.resize((256, 256), Image.NEAREST)</code> (див. 20.5.1).</p>
+<p><strong>3. Забули <code>expand=True</code> при обертанні на кут, не кратний 90°.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">zobr_2 = zobr_1.rotate(<span class="hljs-number">30</span>)   <span class="hljs-comment"># Кути зображення обрізані!</span>
+</code></pre>
+<p>Як виправити: додайте <code>expand=True</code>, якщо потрібно, щоб полотно розширилося й нічого не обрізалося: <code>zobr_1.rotate(30, expand=True)</code> (див. 20.6.1).</p>
+<p><strong>4. Спроба змішати (<code>blend()</code>) або накласти через маску (<code>composite()</code>) зображення різного розміру чи режиму.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">zobr_1 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"a.png"</span>)   <span class="hljs-comment"># RGBA, 200x200</span>
+zobr_2 = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"b.jpg"</span>)   <span class="hljs-comment"># RGB,  300x300</span>
+zobr_3 = Image.blend(zobr_1, zobr_2, <span class="hljs-number">0.5</span>)   <span class="hljs-comment"># ValueError!</span>
+</code></pre>
+<p>Як виправити: перед <code>blend()</code>/<code>composite()</code> обидва зображення (і маска) мають мати <strong>однаковий розмір</strong> і <strong>однаковий режим</strong>. Приведіть режим через <code>convert()</code>, а розмір — через <code>resize()</code> (див. 20.7.3).</p>
+<p><strong>5. Плутанина порядку аргументів: <code>(ширина, висота)</code>, а не <code>(x, y)</code> при створенні зображення.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">Image.new(<span class="hljs-string">"RGB"</span>, (висота, ширина), <span class="hljs-string">"white"</span>)   <span class="hljs-comment"># Розміри переплутано місцями!</span>
+</code></pre>
+<p>Як виправити: і в <code>Image.new()</code>, і в <code>resize()</code>, і в <code>.size</code> перший елемент кортежу завжди <strong>ширина</strong>, другий — <strong>висота</strong> (див. 20.2 та 20.4).</p>
+<p><strong>6. Забули, що <code>paste()</code> і <code>thumbnail()</code> змінюють зображення «на місці», а <code>resize()</code>, <code>rotate()</code>, <code>crop()</code>, <code>transpose()</code>, <code>filter()</code> — повертають нове.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">zobr_1.resize((<span class="hljs-number">100</span>, <span class="hljs-number">100</span>), Image.NEAREST)   <span class="hljs-comment"># Результат ніде не збережено!</span>
+zobr_1.save(<span class="hljs-string">"rezultat.png"</span>)                 <span class="hljs-comment"># Збереже ОРИГІНАЛЬНИЙ розмір!</span>
+</code></pre>
+<p>Як виправити: присвоюйте результат перетворення новій змінній (<code>zobr_2 = zobr_1.resize(...)</code>) і зберігайте саме її — на відміну від <code>paste()</code> та <code>thumbnail()</code>, які самі змінюють об'єкт, до якого викликані.</p>
+<h2 id="210-основні-функції-та-методи-бібліотеки-pillow-pil">2.10 Основні функції та методи бібліотеки Pillow (PIL)</h2>
+<table>
+<thead>
+<tr>
+<th>Назва</th>
+<th>Тип</th>
+<th>Для чого використовується</th>
+<th>Приклад коду</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>Image.open()</code></strong></td>
+<td>Функція</td>
+<td>Відкриває файл зображення з диска.</td>
+<td><code>img = Image.open("photo.jpg")</code></td>
+</tr>
+<tr>
+<td><strong><code>Image.new()</code></strong></td>
+<td>Функція</td>
+<td>Створює нове (порожнє) зображення із заданим колірним режимом та розміром.</td>
+<td><code>canvas = Image.new("RGB", (800, 600), "white")</code></td>
+</tr>
+<tr>
+<td><strong><code>save()</code></strong></td>
+<td>Метод</td>
+<td>Зберігає зображення на диск у вказаному форматі.</td>
+<td><code>img.save("result.png")</code></td>
+</tr>
+<tr>
+<td><strong><code>show()</code></strong></td>
+<td>Метод</td>
+<td>Тимчасово відкриває зображення у системній програмі перегляду (для тестів).</td>
+<td><code>img.show()</code></td>
+</tr>
+<tr>
+<td><strong><code>resize()</code></strong></td>
+<td>Метод</td>
+<td>Змінює розмір зображення (приймає кортеж <code>(ширина, висота)</code>).</td>
+<td><code>small_img = img.resize((300, 200))</code></td>
+</tr>
+<tr>
+<td><strong><code>thumbnail()</code></strong></td>
+<td>Метод</td>
+<td>Пропорційно зменшує зображення під задані рамки <strong>на місці</strong> (змінює оригінал).</td>
+<td><code>img.thumbnail((120, 120))</code></td>
+</tr>
+<tr>
+<td><strong><code>crop()</code></strong></td>
+<td>Метод</td>
+<td>Обрізає зображення за заданими координатами <code>(left, upper, right, lower)</code>.</td>
+<td><code>cropped = img.crop((50, 50, 200, 200))</code></td>
+</tr>
+<tr>
+<td><strong><code>rotate()</code></strong></td>
+<td>Метод</td>
+<td>Повертає зображення на заданий градус проти годинникової стрілки.</td>
+<td><code>rotated = img.rotate(90)</code></td>
+</tr>
+<tr>
+<td><strong><code>transpose()</code></strong></td>
+<td>Метод</td>
+<td>Дзеркально відображає або повертає зображення на фіксований кут.</td>
+<td><code>flipped = img.transpose(Image.FLIP_LEFT_RIGHT)</code></td>
+</tr>
+<tr>
+<td><strong><code>convert()</code></strong></td>
+<td>Метод</td>
+<td>Змінює колірний режим зображення (наприклад, з кольорового в чорно-біле.</td>
+<td><code>bw_img = img.convert("L")</code> (чорно-біле)</td>
+</tr>
+<tr>
+<td><strong><code>paste()</code></strong></td>
+<td>Метод</td>
+<td>Вставляє одне зображення поверх іншого (змінює оригінал). Можна передати маску для прозорості.</td>
+<td><code>background.paste(logo, (10, 10))</code></td>
+</tr>
+<tr>
+<td><strong><code>filter()</code></strong></td>
+<td>Метод</td>
+<td>Застосовує ефекти та фільтри (розмиття, чіткість тощо) з модуля <code>ImageFilter</code>.</td>
+<td><code>blurred = img.filter(ImageFilter.BLUR)</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 Окрім методів, у об'єкта зображення часто використовують три головні <strong>атрибути</strong> (вони викликаються без дужок):</p>
+<ul>
+<li><code>img.size</code> — повертає кортеж з шириною та висотою <code>(ширина, висота)</code>.</li>
+<li><code>img.format</code> — показує оригінальний формат файлу (наприклад, <code>'JPEG'</code>).</li>
+<li><code>img.mode</code> — показує колірний режим (наприклад, <code>'RGB'</code>, <code>'RGBA'</code>, <code>'L'</code>).</li>
+</ul>
+</blockquote>
+<div class="exers">
+<h2 id="2011-вправи">20.11 Вправи</h2>
+<h3 id="1-пакетна-конвертація">1. Пакетна конвертація</h3>
+<p>Напишіть скрипт, який перебирає список імен файлів <code>.jpg</code> у папці <code>pics_jpg</code> і зберігає копію кожного у форматі <code>.png</code> у папці <code>pics_png</code> з тим самим іменем (але іншим розширенням).</p>
+<h3 id="2-галерея-мініатюр">2. Галерея мініатюр</h3>
+<p>Маючи п'ять фотографій різного розміру, створіть для кожної мініатюру не більшу за 120×120 пікселів (<code>thumbnail()</code>), а потім за допомогою <code>Image.new()</code> та <code>paste()</code> розташуйте всі п'ять мініатюр в один рядок на спільному полотні — вийде проста «стрічка попереднього перегляду».</p>
+<h3 id="3-водяний-знак">3. Водяний знак</h3>
+<p>Створіть текстовий напис (наприклад, назву вашого проєкту) на прозорому зображенні в режимі <code>"RGBA"</code> за допомогою <code>ImageDraw</code>, а потім накладіть цей напис у нижній правий кут довільної фотографії функцією <code>paste()</code> з параметром маски (<code>paste(napys, (x, y), napys)</code> — саме зображення, використане як третій аргумент, використовується як власна маска прозорості).</p>
+<h3 id="4-чорно-біле-та-негатив">4. Чорно-біле та негатив</h3>
+<p>Візьміть кольорову фотографію та збережіть три її варіанти: оригінал, чорно-білу версію (<code>convert("L")</code>) і «негатив» (<code>point(lambda i<span class="hl-char">:</span> 255 - i)</code>).</p>
+<h3 id="5-пікселізація">5. Пікселізація</h3>
+<p>Створіть ефект «пікель-арту» з фотографії: спочатку зменшіть зображення до, наприклад, 32×32 пікселів фільтром <code>Image.NEAREST</code>, а потім збільшіть його назад до оригінального розміру тим самим фільтром <code>Image.NEAREST</code>. Порівняйте результат зі збільшенням фільтром <code>Image.BICUBIC</code> — у чому різниця?
+</p></div>
+<div class="project">
+<h2 id="2012-творча-майстерня-вітряк">20.12 Творча майстерня: «Вітряк»</h2>
+<p><strong>Умова завдання</strong>
+<strong>Створити програму мовою Python, яка демонструє анімацію обертання крил вітряка з використанням бібліотек <code>PIL</code> та <code>SimpleGraphics</code>.</strong>
+Для виконання роботи використати два графічні файли:</p>
+<ul>
+<li><code>wmill_1.png</code> — будівля вітряка;</li>
+<li><code>wmill_2.png</code> — крила вітряка.</li>
+</ul>
+<p>За допомогою бібліотеки <strong>PIL</strong> сформувати <strong>18 кадрів анімації</strong>, послідовно повертаючи зображення крил на кути від <strong>0° до 85°</strong> з кроком <strong>5°</strong>. Створені кадри <strong>зберігати в оперативній пам'яті</strong> (без запису у графічні файли), перетворивши їх у формат <code>ImageTk.PhotoImage</code>.
+За допомогою засобів <strong>SimpleGraphics</strong> відобразити будівлю вітряка та реалізувати анімацію, послідовно змінюючи зображення крил із використанням функції <code>itemConfig()</code>. Частоту оновлення анімації налаштувати за допомогою <code>animationTime()</code>, забезпечивши плавне відтворення обертання.
+</p></div><p>
+<img src="./media/ch20/c32eb4dae9494b0a866077ebadb94318.png" alt="c32eb4dae9494b0a866077ebadb94318.png">
+</p><div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+<span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image, ImageTk
+
+<span class="hljs-comment"># Будівля вітряка</span>
+windmill = loadImage(<span class="hljs-string">"wmill_1.png"</span>)
+
+<span class="hljs-comment"># Крила</span>
+original = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"wmill_2.png"</span>)
+
+<span class="hljs-comment"># Створюємо кадри в пам'яті</span>
+frames = []
+<span class="hljs-keyword">for</span> angle <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">90</span>, <span class="hljs-number">5</span>):
+    img = original.rotate(angle)
+    frames.append(ImageTk.PhotoImage(img))
+
+<span class="hljs-comment"># Малюємо будівлю</span>
+drawImage(windmill, <span class="hljs-number">135</span>, <span class="hljs-number">130</span>)
+
+<span class="hljs-comment"># Малюємо перший кадр крил</span>
+index = <span class="hljs-number">0</span>
+wings = drawImage(frames[index], <span class="hljs-number">140</span>, <span class="hljs-number">120</span>)
+
+counter = <span class="hljs-number">0</span>
+animationTime(<span class="hljs-number">5</span>)
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> index, counter, wings
+
+    counter += <span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">if</span> counter % <span class="hljs-number">10</span> == <span class="hljs-number">0</span>:
+        index = (index + <span class="hljs-number">1</span>) % <span class="hljs-built_in">len</span>(frames)
+
+        <span class="hljs-comment">#delete(wings)</span>
+        <span class="hljs-comment">#wings = drawImage(frames[index], 140, 120)</span>
+        itemConfig(wings, image=frames[index])
+        
+doAnimate(kadr)
+</code></pre>
+</div></div>
+<p><strong>Пояснення роботи програми</strong></p>
+<p><strong>1. Завантаження зображень</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">windmill = loadImage(<span class="hljs-string">"wmill_1.png"</span>)
+original = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"wmill_2.png"</span>)
+</code></pre>
+<p>Спочатку завантажуються два зображення:</p>
+<ul>
+<li><strong><code>wmill_1.png</code></strong> — будівля вітряка, яка не змінюється під час анімації;</li>
+<li><strong><code>wmill_2.png</code></strong> — початкове зображення крил, яке буде повертатися.
+Для будівлі використовується функція <code>loadImage()</code> бібліотеки <strong>SimpleGraphics</strong>, а для крил — <code>Image.open()</code> з бібліотеки <strong>PIL</strong>, оскільки саме вона дозволяє повертати зображення на заданий кут.</li>
+</ul>
+<p><strong>2. Створення кадрів анімації</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">frames = []
+<span class="hljs-keyword">for</span> angle <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">90</span>, <span class="hljs-number">5</span>):
+    img = original.rotate(angle)
+    frames.append(ImageTk.PhotoImage(img))
+</code></pre>
+<p>Анімація складається з окремих кадрів.
+У циклі крила повертаються на кути від <strong>0° до 85°</strong> з кроком <strong>5°</strong>. Для кожного кута створюється нове зображення.
+Після повороту об'єкт <code>PIL.Image</code> перетворюється на <code>ImageTk.PhotoImage</code>, оскільки саме такий формат може відображатися засобами <strong>tkinter</strong>, на яких побудована бібліотека <strong>SimpleGraphics</strong>.
+Усі готові кадри зберігаються у списку <code>frames</code>.</p>
+<p><strong>3. Малювання нерухомих об'єктів</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">drawImage(windmill, <span class="hljs-number">135</span>, <span class="hljs-number">130</span>)
+</code></pre>
+<p>Будівля вітряка малюється лише один раз, оскільки вона не бере участі в анімації.</p>
+<p><strong>4. Показ першого кадру</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">index = <span class="hljs-number">0</span>
+wings = drawImage(frames[index], <span class="hljs-number">140</span>, <span class="hljs-number">120</span>)
+</code></pre>
+<p>На полотно виводиться перший кадр анімації (крила без повороту).
+Змінна <code>wings</code> містить ідентифікатор створеного графічного об'єкта, що дозволяє надалі змінювати його зображення.</p>
+<p><strong>5. Налаштування швидкості анімації</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">animationTime(<span class="hljs-number">5</span>)
+</code></pre>
+<p>Функція задає інтервал між викликами функції анімації — <strong>5 мс</strong>.
+Чим менше це значення, тим частіше оновлюється зображення і тим плавніше виглядає рух.</p>
+<p><strong>6. Функція анімації</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> index, counter, wings
+
+    counter += <span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">if</span> counter % <span class="hljs-number">10</span> == <span class="hljs-number">0</span>:
+        index = (index + <span class="hljs-number">1</span>) % <span class="hljs-built_in">len</span>(frames)
+        itemConfig(wings, image=frames[index])
+</code></pre>
+<p>Функція <code>kadr()</code> автоматично викликається бібліотекою <strong>SimpleGraphics</strong>.
+Під час кожного виклику:</p>
+<ol>
+<li>збільшується лічильник <code>counter</code>;</li>
+<li>кожні 10 викликів вибирається наступний кадр;</li>
+<li>якщо досягнуто останній кадр, індекс знову стає рівним нулю;</li>
+<li>функція <code>itemConfig()</code> замінює зображення крил на наступне.
+Таким чином створюється ілюзія безперервного обертання.</li>
+</ol>
+<p><strong>7. Запуск анімації</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">doAnimate(kadr)
+</code></pre>
+<p>Функція <code>doAnimate()</code> запускає цикл анімації та починає регулярно викликати функцію <code>kadr()</code></p>
+<p><strong>Чому обрано саме такий алгоритм</strong></p>
+<p>Для створення анімації використано <strong>покадровий (спрайтовий) алгоритм</strong>.
+Його ідея полягає в тому, що всі необхідні зображення створюються <strong>лише один раз</strong> на початку роботи програми. Під час анімації комп'ютеру не потрібно щоразу обчислювати поворот зображення — достатньо лише показувати наступний уже готовий кадр.</p>
+<p>Такий підхід має кілька переваг:</p>
+<ul>
+<li>обертання виконується швидко, оскільки всі кадри вже знаходяться в пам'яті;</li>
+<li>процесор не витрачає час на багаторазове виконання операції повороту;</li>
+<li>анімація виходить плавною навіть при великій кількості кадрів;</li>
+<li>не потрібно створювати тимчасові графічні файли, оскільки всі кадри зберігаються в оперативній пам'яті.</li>
+</ul>
+<p>Крім того, для зміни кадру використано функцію <code>itemConfig()</code>, яка лише замінює зображення вже існуючого графічного об'єкта. Це ефективніше, ніж видаляти старий об'єкт (<code>delete()</code>) і створювати новий (<code>drawImage()</code>), оскільки кількість операцій над полотном значно менша, а анімація виглядає більш плавною.</p>
+<p>У результаті отримано простий, швидкий та ефективний алгоритм анімації, який широко використовується в комп'ютерній графіці та під час створення двовимірних ігор.</p>
+<hr>
+<div class="read">
+<h2 id="для-додаткового-читання">Для додаткового читання</h2>
+<ol>
+<li><a href="https://pillow.readthedocs.io/en/stable/reference/Image.html">Pillow (офіційна документація) — Image Module</a>.</li>
+<li><a href="https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html">Pillow — ImageDraw Module</a>.</li>
+<li><a href="https://pillow.readthedocs.io/en/stable/reference/ImageFilter.html">Pillow — ImageFilter Module</a>.</li>
+<li><a href="https://pillow.readthedocs.io/en/stable/handbook/concepts.html">Pillow — Concepts (колірні режими, фільтри ресемплінгу)</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html">Python Docs — math.cos, math.radians</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

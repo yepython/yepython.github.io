@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch4</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-4-списки">РОЗДІЛ 4. Списки</h1>
+<h2 id="41-навіщо-потрібні-списки">4.1 Навіщо потрібні списки?</h2>
+<p>Досі ми працювали зі змінними, які могли зберігати лише одне значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">city = <span class="hljs-string">"Київ"</span>  <span class="hljs-comment"># Одна змінна — одне місто</span>
+</code></pre>
+<p>Якби нам знадобилося зберегти п'ять міст, довелося б писати:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">city1 = <span class="hljs-string">"Київ"</span>
+city2 = <span class="hljs-string">"Львів"</span>
+city3 = <span class="hljs-string">"Одеса"</span>
+city4 = <span class="hljs-string">"Харків"</span>
+city5 = <span class="hljs-string">"Дніпро"</span>
+</code></pre>
+<p>Це займає багато місця, а головне — з такими даними важко працювати. Наприклад, якби ми захотіли дізнатися, чи є в цьому переліку місто «Львів», нам довелося б перевіряти кожну змінну окремо.</p>
+<p><strong>Список</strong> вирішує цю проблему: він об'єднує групу пов'язаних між собою даних в один об'єкт.</p>
+<h2 id="42-що-таке-список">4.2 Що таке "список"?</h2>
+<blockquote>
+<p>Список (<em>list</em>) — це структура даних, яка містить впорядковану сукупність об'єктів Python, що зберігається під одним іменем.</p>
+</blockquote>
+<p>Це спеціальний тип даних — як і цілі числа, <code>float</code>, логічні значення та рядки, які ми розглядали раніше. Список також називають складеним об'єктом, оскільки він містить інші об'єкти.</p>
+<p><img src="./media/ch4/4f1205b19e6f760260fef299ca59d2f9.png" alt="4f1205b19e6f760260fef299ca59d2f9.png"></p>
+<p>Щоб створити список у Python, використовують <strong>квадратні дужки</strong> <code>[]</code>. Список оголошується послідовністю значень (не забувайте про лапки, якщо це рядки), розділених комами. Python дозволяє створювати списки, що містять значення різних типів одночасно (наприклад, цілі числа та рядки), що надає їм великої гнучкості:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+rozmiry = [<span class="hljs-number">5</span>, <span class="hljs-number">2.5</span>, <span class="hljs-number">1.75</span>, <span class="hljs-number">0.15</span>]
+zmishany = [<span class="hljs-string">"жираф"</span>, <span class="hljs-number">5</span>, <span class="hljs-string">"миша"</span>, <span class="hljs-number">0.15</span>]
+<span class="hljs-built_in">print</span>(tvaryny)
+<span class="hljs-built_in">print</span>(rozmiry)
+<span class="hljs-built_in">print</span>(zmishany)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+<span class="hljs-selector-attr">[5, 2.5, 1.75, 0.15]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, 5, <span class="hljs-string">'миша'</span>, 0.15]</span>
+</code></pre>
+<p>Коли ми виводимо список, Python повертає його таким самим, яким він був введений.</p>
+<h3 id="421-створення-списків-різних-типів">4.2.1 Створення списків різних типів</h3>
+<p>Списки можуть містити будь-які типи даних і бути будь-якого розміру:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">items = []                              <span class="hljs-comment"># Порожній список (елементів ще немає)</span>
+scores = [<span class="hljs-number">10</span>, <span class="hljs-number">8.5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">12</span>, <span class="hljs-number">7.3</span>]          <span class="hljs-comment"># Список чисел (можна змішувати int і float)</span>
+names = [<span class="hljs-string">"Оля"</span>, <span class="hljs-string">"Петро"</span>, <span class="hljs-string">"Іван"</span>]        <span class="hljs-comment"># Список рядків</span>
+answers = [<span class="hljs-literal">True</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">True</span>, <span class="hljs-literal">True</span>]     <span class="hljs-comment"># Список логічних значень</span>
+mixed = [<span class="hljs-string">"Марко"</span>, <span class="hljs-number">14</span>, <span class="hljs-number">3.14</span>, <span class="hljs-literal">True</span>]       <span class="hljs-comment"># Змішаний список (на практиці — рідко)</span>
+</code></pre>
+<div class="warn">
+Елементи списку обов'язково розділяються комами. Запис <code>["яблуко" "банан" "апельсин"]</code> (без ком) — помилка: Python сприйме сусідні рядкові літерали як один рядок, а не три окремі елементи.
+</div>
+<h2 id="43-виведення-списку-та-доступ-до-елементів-індекси">4.3 Виведення списку та доступ до елементів (індекси)</h2>
+<p>Щоб побачити весь список, достатньо передати його ім'я функції <code>print()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+<span class="hljs-built_in">print</span>(colors)  <span class="hljs-comment"># ['red', 'green', 'blue']</span>
+</code></pre>
+<p>Однією з великих переваг списку є те, що можна отримати доступ до його окремого елемента за позицією. Цей номер називається <strong>індексом</strong>:</p>
+<pre><code data-highlighted="yes" class="hljs language-less">список : <span class="hljs-selector-attr">[<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]</span>
+індекс :   <span class="hljs-number">0</span>        <span class="hljs-number">1</span>       <span class="hljs-number">2</span>        <span class="hljs-number">3</span>
+</code></pre>
+<div class="warn">
+Нумерація (індексація) в програмуванні завжди починається з <strong>нуля</strong>, а не з одиниці! Тобто індекси списку з <code>n</code> елементів починаються з <code>0</code> і закінчуються на <code>n-1</code>.
+</div>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">1</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">3</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">жираф
+тигр
+миша
+</code></pre>
+<p>Якщо викликати елемент з індексом, якого немає у списку (наприклад, індекс 4 у списку з чотирьох елементів), Python поверне помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">4</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">IndexError: list index <span class="hljs-keyword">out</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">range</span>
+</code></pre>
+<p>Не забувайте про це, інакше ризикуєте отримати неочікувані помилки!</p>
+<h2 id="44-відємне-індексування">4.4 Від'ємне індексування</h2>
+<p>Список також можна індексувати за допомогою від'ємних чисел:</p>
+<p><img src="./media/ch4/9b90a16f67a99fa4447a8a87a3215782.png" alt="9b90a16f67a99fa4447a8a87a3215782.png"></p>
+<p>Від'ємні індекси рахують елементи з кінця списку. Їхня головна перевага — доступ до останнього елемента за допомогою індексу <code>-1</code>, навіть не знаючи довжини списку. Передостанній елемент має індекс <code>-2</code>, передпередостанній — <code>-3</code> тощо:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[-<span class="hljs-number">1</span>])
+<span class="hljs-built_in">print</span>(tvaryny[-<span class="hljs-number">2</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">миша
+мавпа
+</code></pre>
+<p>Щоб отримати перший елемент за допомогою від'ємного індексу, потрібно знати довжину списку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[-<span class="hljs-number">4</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">жираф
+</code></pre>
+<p>У цьому випадку простіше й надійніше використовувати <code>tvaryny[0]</code>.</p>
+<h2 id="45-зміна-елементів-списку">4.5 Зміна елементів списку</h2>
+<p>Списки є <strong>змінюваними</strong> (<em>mutable</em>): можна легко замінити будь-яке значення всередині списку на інше, звернувшись до нього за індексом — так само, як зі звичайною змінною:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors[<span class="hljs-number">1</span>] = <span class="hljs-string">"yellow"</span>  <span class="hljs-comment"># Замінюємо "green" (індекс 1) на "yellow"</span>
+<span class="hljs-built_in">print</span>(colors)          <span class="hljs-comment"># ['red', 'yellow', 'blue']</span>
+</code></pre>
+<p>Спроба змінити елемент, якого немає (наприклад, <code>colors[5] = "black"</code> у списку з трьох елементів), спричинить ту саму помилку <code>IndexError<span class="hl-char">:</span> list assignment index out of range</code>.</p>
+<h2 id="46-довжина-списку-функція-len">4.6 Довжина списку — функція len()</h2>
+<p>Функція <code>len()</code> дозволяє дізнатися довжину списку, тобто кількість елементів, які він містить (від англійського <em>length</em> — довжина):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(tvaryny))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>]))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+8
+</code></pre>
+<p>Де це використовується на практиці:</p>
+<ul>
+<li>скільки учнів сьогодні у класі (довжина списку присутніх);</li>
+<li>скільки оцінок отримав учень за семестр;</li>
+<li>скільки товарів покупець поклав у кошик.</li>
+</ul>
+<blockquote>
+<p>Довжина порожнього списку <code>empty = []</code> дорівнює <code>0</code>. Якщо довжина списку дорівнює 10, індекс останнього елемента — <code>9</code> (тобто <code>len(spysok) - 1</code>).</p>
+</blockquote>
+<h2 id="47-додавання-елементів-конкатенація-append-та-insert">4.7 Додавання елементів: конкатенація, append() та insert()</h2>
+<h3 id="471-конкатенація-за-допомогою-">4.7.1 Конкатенація за допомогою <code>+</code></h3>
+<p>Як і рядки, списки підтримують оператор <code>+</code> для конкатенації. Розглянемо порожній список і додамо до нього елементи, спочатку за допомогою конкатенації:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = []
+<span class="hljs-built_in">print</span>(spysok1)
+spysok1 = spysok1 + [<span class="hljs-number">15</span>]
+<span class="hljs-built_in">print</span>(spysok1)
+spysok1 = spysok1 + [-<span class="hljs-number">5</span>]
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[]</span>
+<span class="hljs-selector-attr">[15]</span>
+<span class="hljs-selector-attr">[15, -5]</span>
+</code></pre>
+<h3 id="472-метод-append-додавання-в-кінець">4.7.2 Метод .append() — додавання в кінець</h3>
+<p>Метод <code>.append()</code> додає один елемент у кінець списку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = [<span class="hljs-number">15</span>, -<span class="hljs-number">5</span>]
+spysok1.append(<span class="hljs-number">13</span>)
+<span class="hljs-built_in">print</span>(spysok1)
+spysok1.append(-<span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">15, -5, 13</span>]
+[<span class="hljs-meta">15, -5, 13, -3</span>]
+</code></pre>
+<blockquote>
+<p>У цьому конкретному випадку радимо використовувати метод <code>.append()</code> — його синтаксис елегантніший, ніж конкатенація <code>spysok1 = spysok1 + [15]</code>. Ми детально розглянемо метод <code>.append()</code> у Розділі «Більше про списки».</p>
+</blockquote>
+<p>Часто списки створюють порожніми чи маленькими, а потім поступово наповнюють у процесі роботи програми:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">todo_list = []  <span class="hljs-comment"># Порожній список справ</span>
+todo_list.append(<span class="hljs-string">"Зробити зарядку"</span>)
+todo_list.append(<span class="hljs-string">"Вивчити Python"</span>)
+<span class="hljs-built_in">print</span>(todo_list)  <span class="hljs-comment"># ['Зробити зарядку', 'Вивчити Python']</span>
+</code></pre>
+<h3 id="473-метод-insert-вставлення-в-довільне-місце">4.7.3 Метод .insert() — вставлення в довільне місце</h3>
+<p>Якщо <code>.append()</code> завжди додає елемент лише в кінець, метод <code>.insert()</code> дозволяє помістити елемент у будь-яке місце списку. Йому передають два аргументи: <code>insert(індекс, значення)</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors.insert(<span class="hljs-number">1</span>, <span class="hljs-string">"white"</span>)  <span class="hljs-comment"># Вставляємо "white" на місце з індексом 1</span>
+<span class="hljs-built_in">print</span>(colors)                <span class="hljs-comment"># ['red', 'white', 'green', 'blue']</span>
+</code></pre>
+<p>Усі елементи, що стояли після вказаного індексу, автоматично «посуваються» вправо, звільняючи місце для нового елемента. Якщо вказати індекс, що перевищує довжину списку (наприклад, <code>insert(100, "item")</code> для списку з 3 елементів), елемент буде просто додано в кінець — помилки не виникне.</p>
+<h2 id="48-видалення-елементів-remove-pop-та-clear">4.8 Видалення елементів: remove(), pop() та clear()</h2>
+<p>В Python є кілька способів прибрати елементи зі списку.</p>
+<p><strong>Спосіб 1. За значенням — <code>.remove()</code>.</strong> Якщо відоме саме значення, яке слід видалити, але не відомий його точний індекс:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors.remove(<span class="hljs-string">"green"</span>)  <span class="hljs-comment"># Видаляємо саме "green"</span>
+<span class="hljs-built_in">print</span>(colors)             <span class="hljs-comment"># ['red', 'blue']</span>
+</code></pre>
+<p><strong>Спосіб 2. За індексом — <code>.pop(індекс)</code>.</strong> Якщо відомий номер (індекс) елемента, який слід видалити:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors.pop(<span class="hljs-number">2</span>)  <span class="hljs-comment"># Видаляємо елемент з індексом 2 (це "blue")</span>
+<span class="hljs-built_in">print</span>(colors)    <span class="hljs-comment"># ['red', 'green']</span>
+</code></pre>
+<p><strong>Спосіб 3. Видалення останнього елемента — <code>.pop()</code> без аргументів.</strong> Якщо викликати <code>.pop()</code> без дужок з аргументом, він автоматично видалить найостанній елемент списку — це дуже зручно й часто використовується:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors.pop()  <span class="hljs-comment"># Видаляє останній елемент ("blue")</span>
+<span class="hljs-built_in">print</span>(colors)  <span class="hljs-comment"># ['red', 'green']</span>
+</code></pre>
+<p><strong>Повне очищення — <code>.clear()</code>.</strong> Якщо потрібно видалити геть усі елементи й зробити список абсолютно порожнім (наприклад, покупець скасував замовлення, і кошик потрібно очистити):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+colors.clear()  <span class="hljs-comment"># Видаляє геть усе</span>
+<span class="hljs-built_in">print</span>(colors)     <span class="hljs-comment"># []</span>
+</code></pre>
+<blockquote>
+<p>Після <code>.clear()</code> список продовжує існувати — просто стає порожнім (<code>[]</code>), на відміну від повного видалення змінної.</p>
+</blockquote>
+<h2 id="49-перевірка-наявності-елемента-оператор-in">4.9 Перевірка наявності елемента — оператор in</h2>
+<p>Перед тим як видаляти елемент чи щось із ним робити, корисно дізнатися, чи є він взагалі у списку. Для цього в Python є оператор <code>in</code>. Результатом перевірки буде логічне значення <code>True</code> або <code>False</code>; зручно поєднувати таку перевірку з умовою <code>if</code> (докладніше про умови — в Розділі 6):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"blue"</span>]
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"blue"</span> <span class="hljs-keyword">in</span> colors)    <span class="hljs-comment"># True</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"yellow"</span> <span class="hljs-keyword">in</span> colors)  <span class="hljs-comment"># False</span>
+
+<span class="hljs-keyword">if</span> <span class="hljs-string">"blue"</span> <span class="hljs-keyword">in</span> colors:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Ура! Синій колір є у списку."</span>)
+</code></pre>
+<blockquote>
+<p>Оператор <code>in</code> враховує регістр літер: <code>"Red" in ["red", "green"]</code> поверне <code>False</code>, оскільки <code>"Red"</code> (з великої літери) відрізняється від <code>"red"</code>.</p>
+</blockquote>
+<p>Перевірка через <code>in</code> особливо корисна перед видаленням за значенням: спроба <code>.remove()</code> елемента, якого немає у списку, спричинить помилку <code>ValueError<span class="hl-char">:</span> list.remove(x)<span class="hl-char">:</span> x not in list</code>.</p>
+<h2 id="410-обєднання-та-повторення-списків">4.10 Об'єднання та повторення списків</h2>
+<h3 id="4101-обєднання-за-допомогою-">4.10.1 Об'єднання за допомогою <code>+</code></h3>
+<p>Якщо є два окремі списки, які потрібно об'єднати в один, достатньо скласти їх за допомогою оператора <code>+</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny1 = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>]
+tvaryny2 = [<span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny1 + tvaryny2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+</code></pre>
+<p>Оператор <code>+</code> дуже зручний саме для конкатенації двох списків. Зверніть увагу: початкові списки (<code>tvaryny1</code>, <code>tvaryny2</code>) при цьому не змінюються — результат <code>+</code> це новий список.</p>
+<h3 id="4102-повторення-за-допомогою-">4.10.2 Повторення за допомогою <code>*</code></h3>
+<p>Списки, як і рядки, підтримують оператор <code>*</code> для дублювання:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny1 = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>]
+<span class="hljs-built_in">print</span>(tvaryny1 * <span class="hljs-number">3</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>]</span>
+</code></pre>
+<p>Це особливо корисно, коли потрібно швидко створити великий список з однаковими початковими значеннями:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">zeros = [<span class="hljs-number">0</span>] * <span class="hljs-number">10</span>       <span class="hljs-comment"># [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+words = [<span class="hljs-string">"Привіт"</span>] * <span class="hljs-number">3</span>  <span class="hljs-comment"># ['Привіт', 'Привіт', 'Привіт']</span>
+</code></pre>
+<h2 id="411-зрізи">4.11 Зрізи</h2>
+<p>Ще однією перевагою списків є можливість вибрати частину списку — <strong>зріз</strong> (<em>slice</em>) — використовуючи індексацію за моделлю <code>[m<span class="hl-char">:</span>n]</code>, щоб отримати всі елементи від <code>m</code>-го включно до <code>n</code>-го <strong>виключно</strong>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>:<span class="hljs-number">3</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>:])
+<span class="hljs-built_in">print</span>(tvaryny[:])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">1</span>:])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>]</span>
+</code></pre>
+<p>Якщо жоден індекс не вказано ліворуч або праворуч від двокрапки <code><span class="hl-char">:</span></code>, Python за замовчуванням бере всі елементи від початку або до кінця відповідно (тому <code>tvaryny[<span class="hl-char">:</span>]</code> — це копія всього списку, а <code>numbers[<span class="hl-char">:</span>3]</code> — перші три елементи, <code>numbers[-3<span class="hl-char">:</span>]</code> — останні три елементи).</p>
+<p>Можна також вказати крок, додавши другу двокрапку і крок цілим числом:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = [<span class="hljs-string">"жираф"</span>, <span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>, <span class="hljs-string">"миша"</span>]
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>:<span class="hljs-number">3</span>:<span class="hljs-number">2</span>])
+x = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>]
+<span class="hljs-built_in">print</span>(x[::<span class="hljs-number">1</span>])
+<span class="hljs-built_in">print</span>(x[::<span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(x[::<span class="hljs-number">3</span>])
+<span class="hljs-built_in">print</span>(x[<span class="hljs-number">1</span>:<span class="hljs-number">6</span>:<span class="hljs-number">3</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'мавпа'</span>]</span>
+<span class="hljs-selector-attr">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+<span class="hljs-selector-attr">[0, 2, 4, 6, 8]</span>
+<span class="hljs-selector-attr">[0, 3, 6, 9]</span>
+<span class="hljs-selector-attr">[1, 4]</span>
+</code></pre>
+<p>Отже, доступ до вмісту списку працює за загальною моделлю <code>spysok[pochatok<span class="hl-char">:</span>kinets<span class="hl-char">:</span>krok]</code>.</p>
+<h2 id="412-копіювання-списків">4.12 Копіювання списків</h2>
+<p>Зверніть увагу на поведінку Python, яка може здатися дивною при копіюванні списку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>))
+<span class="hljs-built_in">print</span>(spysok1)
+spysok2 = spysok1
+<span class="hljs-built_in">print</span>(spysok2)
+spysok1[<span class="hljs-number">3</span>] = -<span class="hljs-number">50</span>
+<span class="hljs-built_in">print</span>(spysok1)
+<span class="hljs-built_in">print</span>(spysok2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, 3, 4</span>]
+[<span class="hljs-meta">0, 1, 2, 3, 4</span>]
+[<span class="hljs-meta">0, 1, 2, -50, 4</span>]
+[<span class="hljs-meta">0, 1, 2, -50, 4</span>]
+</code></pre>
+<p>Як бачите, зміна <code>spysok1</code> після присвоєння <code>spysok1[3] = -50</code> також змінила <code>spysok2</code>! Це відбувається тому, що інструкція <code>spysok2 = spysok1</code> не створює новий список, а лише пов'язує новий список зі старим списком — обидва імені вказують на один і той самий об'єкт у пам'яті.</p>
+<p>Щоб зробити <code>spysok2</code> дійсно окремим списком, є два рівноцінні способи.</p>
+<p><strong>Спосіб 1 — функція <code>list()</code>:</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>))
+spysok2 = <span class="hljs-built_in">list</span>(spysok1)
+spysok1[<span class="hljs-number">3</span>] = -<span class="hljs-number">50</span>
+<span class="hljs-built_in">print</span>(spysok1)
+<span class="hljs-built_in">print</span>(spysok2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, -50, 4</span>]
+[<span class="hljs-meta">0, 1, 2, 3, 4</span>]
+</code></pre>
+<p><strong>Спосіб 2 — метод <code>.copy()</code>:</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">a = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+b = a.copy()  <span class="hljs-comment"># Справжня, окрема копія</span>
+b[<span class="hljs-number">0</span>] = <span class="hljs-number">999</span>
+<span class="hljs-built_in">print</span>(b)  <span class="hljs-comment"># [999, 2, 3]</span>
+<span class="hljs-built_in">print</span>(a)  <span class="hljs-comment"># [1, 2, 3] — оригінал не змінився</span>
+</code></pre>
+<blockquote>
+<p> Цей трюк (як через <code>list()</code>, так і через <code>.copy()</code>) працює лише для одновимірних списків, тобто списків, які містять лише елементи простого типу (цілі числа, <code>float</code>, рядки, булеві значення), але не для списків списків. Розділ «Більше про списки» пояснює походження цієї поведінки та як з нею впоратися в загальному випадку.</p>
+</blockquote>
+<h2 id="413-функції-range-та-list">4.13 Функції range() та list()</h2>
+<p>Функція <code>range()</code> — спеціальна функція Python, яка генерує цілі числа в заданому інтервалі. У поєднанні з функцією <code>list()</code> вона дає список цілих чисел:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, 3, 4, 5, 6, 7, 8, 9</span>]
+</code></pre>
+<p>Вказівка <code>list(range(10))</code> згенерувала список усіх цілих чисел від 0 включно до 10 виключно. Використання <code>range()</code> самостійно (без <code>list()</code>) ми побачимо в Розділі 5 «Цикли та порівняння».</p>
+<p>Функція <code>range()</code> може приймати один, два або три аргументи:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>)))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">15</span>, <span class="hljs-number">20</span>)))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1000</span>, <span class="hljs-number">200</span>)))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">1</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, 3, 4</span>]
+[<span class="hljs-meta">15, 16, 17, 18, 19</span>]
+[<span class="hljs-meta">0, 200, 400, 600, 800</span>]
+[<span class="hljs-meta">2, 1, 0, -1</span>]
+</code></pre>
+<p>Інструкція <code>range()</code> працює за моделлю <code>range([pochatok,] kinets[, krok])</code>. Аргументи в квадратних дужках необов'язкові. Щоб отримати список цілих чисел, <code>range()</code> систематично поєднують з <code>list()</code>.</p>
+<p>Обережно з аргументами за замовчуванням (0 для початку і 1 для кроку):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[]</span>
+</code></pre>
+<p>Список порожній, оскільки крок за замовчуванням дорівнює 1: рухаючись від 10 з кроком 1, ми ніколи не досягнемо 0. Щоб отримати список спадних цілих чисел, потрібно явно вказати від'ємний крок:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, -<span class="hljs-number">1</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">10, 9, 8, 7, 6, 5, 4, 3, 2, 1</span>]
+</code></pre>
+<h2 id="414-списки-списків">4.14 Списки списків</h2>
+<p>Цілком можливо створювати списки списків — ця можливість часто буває дуже зручною:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna1 = [<span class="hljs-string">"жираф"</span>, <span class="hljs-number">4</span>]
+tvaryna2 = [<span class="hljs-string">"тигр"</span>, <span class="hljs-number">2</span>]
+tvaryna3 = [<span class="hljs-string">"мавпа"</span>, <span class="hljs-number">5</span>]
+zoopark = [tvaryna1, tvaryna2, tvaryna3]
+<span class="hljs-built_in">print</span>(zoopark)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[[<span class="hljs-string">'жираф'</span>, 4]</span>, <span class="hljs-selector-attr">[<span class="hljs-string">'тигр'</span>, 2]</span>, <span class="hljs-selector-attr">[<span class="hljs-string">'мавпа'</span>, 5]</span>]
+</code></pre>
+<p>У цьому прикладі кожен підсписок містить категорію тварин і кількість тварин цієї категорії.</p>
+<p><img src="./media/ch4/3adf646b994189ec0fbc51b2c64c1fd2.png" alt="3adf646b994189ec0fbc51b2c64c1fd2.png"></p>
+<p>Щоб отримати доступ до елемента списку, використовують звичайне індексування:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna1 = [<span class="hljs-string">"жираф"</span>, <span class="hljs-number">4</span>]
+tvaryna2 = [<span class="hljs-string">"тигр"</span>, <span class="hljs-number">2</span>]
+tvaryna3 = [<span class="hljs-string">"мавпа"</span>, <span class="hljs-number">5</span>]
+zoopark = [tvaryna1, tvaryna2, tvaryna3]
+<span class="hljs-built_in">print</span>(zoopark[<span class="hljs-number">1</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'тигр'</span>, 2]</span>
+</code></pre>
+<p>Щоб отримати доступ до елемента підсписку, використовують подвійне індексування:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna1 = [<span class="hljs-string">"жираф"</span>, <span class="hljs-number">4</span>]
+tvaryna2 = [<span class="hljs-string">"тигр"</span>, <span class="hljs-number">2</span>]
+tvaryna3 = [<span class="hljs-string">"мавпа"</span>, <span class="hljs-number">5</span>]
+zoopark = [tvaryna1, tvaryna2, tvaryna3]
+<span class="hljs-built_in">print</span>(zoopark[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>])
+<span class="hljs-built_in">print</span>(zoopark[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">тигр
+2
+</code></pre>
+<p>Ми побачимо трохи далі, що в Python є словники, дуже зручні для зберігання структурованої інформації, а також модуль NumPy, який дозволяє створювати списки або масиви чисел (вектори та матриці) і маніпулювати ними.</p>
+<h2 id="415-мінімум-максимум-сума-та-інші-корисні-функціїметоди-списків">4.15 Мінімум, максимум, сума та інші корисні функції/методи списків</h2>
+<h3 id="4151-min-max-sum">4.15.1 min(), max(), sum()</h3>
+<p>Функції <code>min()</code>, <code>max()</code> та <code>sum()</code> повертають відповідно мінімум, максимум та суму списку, переданого як аргумент:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(spysok1)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">sum</span>(spysok1))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">min</span>(spysok1))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">max</span>(spysok1))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, 3, 4, 5, 6, 7, 8, 9</span>]
+<span class="hljs-number">45</span>
+<span class="hljs-number">0</span>
+<span class="hljs-number">9</span>
+</code></pre>
+<p>Хоча теоретично ці функції можуть приймати список рядків, зазвичай їх використовують із числовими типами. Спроба знайти <code>sum(["кіт", "песик"])</code> спричинить помилку <code>TypeError</code>.</p>
+<p>Ми вже зустрічали <code>min()</code> і <code>max()</code> у Розділі 2 «Змінні» — там вони приймали кілька окремих цілих та/або <code>float</code> аргументів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">min</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+</code></pre>
+<p>Обережно: не змішуйте окремі числа зі списком в одному викликові — це поверне помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">min</span>(spysok1, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-javascript"><span class="hljs-title class_">TypeError</span>: <span class="hljs-string">'&lt;'</span> not supported between instances <span class="hljs-keyword">of</span> <span class="hljs-string">'int'</span> and <span class="hljs-string">'list'</span>
+</code></pre>
+<p>Або передавайте кілька окремих чисел, або передавайте один список.</p>
+<h3 id="4152-методи-sort-reverse-count-index">4.15.2 Методи sort(), reverse(), count(), index()</h3>
+<p>Ще кілька корисних інструментів для роботи зі списками:</p>
+<ul>
+<li><code>.sort()</code> — сортує елементи списку (числа від найменшого до найбільшого, текст — за алфавітом);</li>
+<li><code>.reverse()</code> — розгортає список «задом наперед»;</li>
+<li><code>.count(значення)</code> — рахує, скільки разів певне значення зустрічається у списку;</li>
+<li><code>.index(значення)</code> — шукає значення у списку і повертає його індекс.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes">numbers = [<span class="hljs-number">8</span>, <span class="hljs-number">2</span>, <span class="hljs-number">5</span>, <span class="hljs-number">1</span>]
+numbers.sort()
+<span class="hljs-built_in">print</span>(numbers)     <span class="hljs-comment"># [1, 2, 5, 8] — відсортовано</span>
+
+numbers.reverse()
+<span class="hljs-built_in">print</span>(numbers)     <span class="hljs-comment"># [8, 5, 2, 1] — розгорнуто</span>
+
+items = [<span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>]
+<span class="hljs-built_in">print</span>(items.count(<span class="hljs-number">5</span>))  <span class="hljs-comment"># 3 — число 5 зустрічається 3 рази</span>
+
+names = [<span class="hljs-string">"Оля"</span>, <span class="hljs-string">"Андрій"</span>, <span class="hljs-string">"Ігор"</span>]
+<span class="hljs-built_in">print</span>(names.index(<span class="hljs-string">"Андрій"</span>))  <span class="hljs-comment"># 1 — ім'я "Андрій" стоїть під індексом 1</span>
+</code></pre>
+<blockquote>
+<p>Метод <code>.index()</code> спричинить помилку <code>ValueError</code>, якщо шукане значення відсутнє у списку — перед пошуком індексу корисно перевірити наявність значення оператором <code>in</code> (§4.9).</p>
+</blockquote>
+<h2 id="416-типові-помилки">4.16 Типові помилки</h2>
+<p>При роботі зі списками початківці часто припускаються кількох класичних помилок.</p>
+<p><strong>Помилка 1. Індекс виходить за межі списку (<code>IndexError</code>)</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">colors = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>]
+<span class="hljs-built_in">print</span>(colors[<span class="hljs-number">5</span>])
+<span class="hljs-comment"># Помилка: IndexError: list index out of range</span>
+</code></pre>
+<p><em>Чому це сталося:</em> ви просите елемент під номером 5, але у списку всього 2 елементи (індекси <code>0</code> та <code>1</code>) — елемента 5 не існує. <em>Як виправити:</em> перевірити довжину списку за допомогою <code>len()</code> і переконатися, що індекс правильний.</p>
+<p><strong>Помилка 2. Переплутали дужки або звернулися до елемента як до функції</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">my_list = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)   <span class="hljs-comment"># Круглі дужки замість квадратних — це вже інший тип даних!</span>
+numbers = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+<span class="hljs-built_in">print</span>(numbers(<span class="hljs-number">1</span>))     <span class="hljs-comment"># Помилка: TypeError — так не звертаються до елемента списку</span>
+</code></pre>
+<p><em>Як виправити:</em> пам'ятайте, що списки завжди створюються квадратними дужками <code>[]</code>, а доступ до елемента — теж через квадратні дужки: <code>numbers[1]</code>, а не <code>numbers(1)</code>.</p>
+<p><strong>Помилка 3. Спроба знайти чи видалити елемент, якого немає</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">items = [<span class="hljs-string">"книга"</span>, <span class="hljs-string">"зошит"</span>]
+items.remove(<span class="hljs-string">"ручка"</span>)
+<span class="hljs-comment"># Помилка: ValueError: list.remove(x): x not in list</span>
+</code></pre>
+<p><em>Як виправити:</em> перед видаленням чи пошуком індексу перевірити наявність елемента через <code>if "ручка" in items<span class="hl-char">:</span></code> (§4.9).</p>
+<h2 id="417-примітка-щодо-термінології-та-синтаксису">4.17 Примітка щодо термінології та синтаксису</h2>
+<p>Повернемося на мить до поняття <strong>методу</strong>, з яким ми неодноразово стикалися в цьому розділі (<code>.append()</code>, <code>.insert()</code>, <code>.remove()</code>, <code>.pop()</code>, <code>.clear()</code>, <code>.sort()</code>, <code>.reverse()</code>, <code>.count()</code>, <code>.index()</code>, <code>.copy()</code>). У Python кожну змінну можна розглядати як об'єкт, до якого можна застосовувати методи. Метод — це функція, яка використовує та/або діє на сам об'єкт, і обидва вони з'єднані крапкою. Загальний синтаксис має вигляд <code>obiekt.metod()</code>.</p>
+<blockquote>
+<p><strong>Метод — це дія, яку вміє виконувати певний об'єкт.</strong></p>
+</blockquote>
+<p>У Python дії, що пов'язані з об'єктом називаються <strong>методами</strong>.</p>
+<p>Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">fruits = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"груша"</span>]
+fruits.append(<span class="hljs-string">"слива"</span>)
+</code></pre>
+<p>Тут:</p>
+<ul>
+<li><code>fruits</code> — це об'єкт (список);</li>
+<li><code>append()</code> — метод;</li>
+<li>він додає елемент до <strong>цього</strong> списку.</li>
+</ul>
+<h3 id="порівняння-з-функцією">Порівняння з функцією</h3>
+<p>Різниця між функцією і методом полягає в тому, <strong>як вони викликаються</strong> і <strong>звідки беруть об'єкт, з яким працюють</strong>.</p>
+<p>Функція - самостійна одиниця коду. Викликається сама по собі, а об'єкт, з яким вона має працювати, передається їй <strong>як аргумент усередині дужок</strong>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes">lst = [<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]
+<span class="hljs-built_in">len</span>(lst)        <span class="hljs-comment"># об'єкт lst передається ЯК аргумент</span>
+<span class="hljs-built_in">sorted</span>(lst)     <span class="hljs-comment"># так само</span>
+</code></pre>
+<p>Функція «не належить» жодному об'єкту — вона існує сама по собі (це може бути вбудована функція типу <code>len()</code>, <code>print()</code>, або функція, яку ви самі оголосили через <code>def</code>).</p>
+<p>Метод  - це, по суті, <strong>функція, яка «прив'язана» до конкретного об'єкта</strong> (є частиною його класу). Викликається <strong>через крапку</strong> від самого об'єкта, і цей об'єкт неявно передається методу як перший аргумент (<code>self</code>).</p>
+<pre><code class="language-python hljs" data-highlighted="yes">lst = [<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]
+lst.sort()      <span class="hljs-comment"># метод викликається ВІД lst через крапку</span>
+lst.append(<span class="hljs-number">4</span>)   <span class="hljs-comment"># так само</span>
+</code></pre>
+<p>Тобто <code>lst.sort()</code> — це фактично щось на кшталт «виклич функцію <code>sort</code>, яка живе всередині класу <code>list</code>, і застосуй її саме до <code>lst</code>».</p>
+<p>Методи можуть відрізнятися залежно від типу об'єкта. Наприклад, <code>.append()</code> є в списків, але його немає у рядків — натомість у рядків свій набір методів (<code>.upper()</code>, <code>.split()</code> тощо). А ось функції типу <code>len()</code> — універсальніші й працюють з багатьма типами (списками, рядками, словниками), якщо ті підтримують підрахунок довжини.</p>
+<p>У цьому прикладі:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]
+spysok1.append(<span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, 2, 3</span>]
+</code></pre>
+<p>метод <code>.append()</code> пов'язаний зі <code>spysok1</code>, який є об'єктом типу список. Метод змінює об'єкт-список, додаючи до нього елемент.</p>
+<h2 id="418-методи-та-функції-для-роботи-зі-списками-в-python">4.18 Методи та функції для роботи зі списками в Python</h2>
+<table>
+<thead>
+<tr>
+<th>Інструмент</th>
+<th>Тип</th>
+<th>Опис дії</th>
+<th>Приклад використання</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>len(lst)</code></strong></td>
+<td>Функція</td>
+<td>Повертає кількість елементів у списку (довжину)</td>
+<td><code>len([10, 20, 30])</code></td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><strong><code>max(lst)</code></strong></td>
+<td>Функція</td>
+<td>Повертає максимальний елемент списку</td>
+<td><code>max([5, 12, 3])</code></td>
+<td><code>12</code></td>
+</tr>
+<tr>
+<td><strong><code>min(lst)</code></strong></td>
+<td>Функція</td>
+<td>Повертає мінімальний елемент списку</td>
+<td><code>min([5, 12, 3])</code></td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><strong><code>sum(lst)</code></strong></td>
+<td>Функція</td>
+<td>Повертає суму всіх елементів (для числових списків)</td>
+<td><code>sum([1, 2, 3])</code></td>
+<td><code>6</code></td>
+</tr>
+<tr>
+<td><strong><code>sorted(lst)</code></strong></td>
+<td>Функція</td>
+<td>Повертає <strong>новий</strong> відсортований список, не змінюючи оригінальний</td>
+<td><code>lst = [3, 1, 2]</code><br><code>sorted(lst)</code></td>
+<td><code>[1, 2, 3]</code> (оригінальний <code>lst</code> лишиться <code>[3, 1, 2]</code>)</td>
+</tr>
+<tr>
+<td><strong><code>list(iterable)</code></strong></td>
+<td>Функція</td>
+<td>Конвертує інший тип даних (наприклад, рядок чи кортеж) у список</td>
+<td><code>list('abc')</code></td>
+<td><code>['a', 'b', 'c']</code></td>
+</tr>
+<tr>
+<td><strong><code>append(x)</code></strong></td>
+<td>Метод</td>
+<td>Додає елемент <code>x</code> в кінець списку</td>
+<td><code>lst = [1, 2]</code><br><code>lst.append(3)</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td><strong><code>extend(iterable)</code></strong></td>
+<td>Метод</td>
+<td>Розширює список елементами з іншої послідовності</td>
+<td><code>lst = [1, 2]</code><br><code>lst.extend([3, 4])</code></td>
+<td><code>[1, 2, 3, 4]</code></td>
+</tr>
+<tr>
+<td><strong><code>insert(i, x)</code></strong></td>
+<td>Метод</td>
+<td>Вставляє елемент <code>x</code> на позицію з індексом <code>i</code></td>
+<td><code>lst = [1, 3]</code><br><code>lst.insert(1, 2)</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td><strong><code>remove(x)</code></strong></td>
+<td>Метод</td>
+<td>Видаляє перший знайдений елемент зі значенням <code>x</code></td>
+<td><code>lst = [1, 2, 3, 2]</code><br><code>lst.remove(2)</code></td>
+<td><code>[1, 3, 2]</code></td>
+</tr>
+<tr>
+<td><strong><code>pop([i])</code></strong></td>
+<td>Метод</td>
+<td>Видаляє та повертає елемент за індексом <code>i</code> (або останній)</td>
+<td><code>lst = [1, 2, 3]</code><br><code>item = lst.pop(1)</code></td>
+<td><code>lst</code> → <code>[1, 3]</code>, <code>item</code> → <code>2</code></td>
+</tr>
+<tr>
+<td><strong><code>clear()</code></strong></td>
+<td>Метод</td>
+<td>Повністю очищає список</td>
+<td><code>lst = [1, 2, 3]</code><br><code>lst.clear()</code></td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><strong><code>index(x)</code></strong></td>
+<td>Метод</td>
+<td>Повертає індекс першого елемента зі значенням <code>x</code></td>
+<td><code>lst = ['a', 'b']</code><br><code>lst.index('b')</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><strong><code>count(x)</code></strong></td>
+<td>Метод</td>
+<td>Рахує, скільки разів елемент <code>x</code> зустрічається в списку</td>
+<td><code>lst = [1, 2, 2]</code><br><code>lst.count(2)</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><strong><code>sort()</code></strong></td>
+<td>Метод</td>
+<td>Сортує елементи оригінального списку <strong>на місці</strong></td>
+<td><code>lst = [3, 1, 2]</code><br><code>lst.sort()</code></td>
+<td><code>lst</code> стане <code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td><strong><code>reverse()</code></strong></td>
+<td>Метод</td>
+<td>Розвертає оригінальний список задом наперед <strong>на місці</strong></td>
+<td><code>lst = [1, 2, 3]</code><br><code>lst.reverse()</code></td>
+<td><code>lst</code> стане <code>[3, 2, 1]</code></td>
+</tr>
+<tr>
+<td><strong><code>copy()</code></strong></td>
+<td>Метод</td>
+<td>Створює копію списку</td>
+<td><code>lst = [1, 2]</code><br><code>new = lst.copy()</code></td>
+<td><code>[1, 2]</code></td>
+</tr>
+</tbody></table>
+<div class="warn">
+Зверніть увагу на пару <strong><code>sort()</code></strong> (метод) та <strong><code>sorted()</code></strong> (функція). Перший змінює ваш початковий список назавжди, а другий створює новий чистий дублікат уже у відсортованому вигляді, зберігаючи оригінал недоторканим.
+</div>
+<div class="exers">
+<h2 id="419-вправи">4.19 Вправи</h2>
+<h3 id="1-передбачити-виведення">1. Передбачити виведення</h3>
+<p>Дано наступні три рядки коду:</p>
+<pre><code data-highlighted="yes" class="hljs language-ini"><span class="hljs-attr">spysok1</span> = list(range(<span class="hljs-number">10</span>, <span class="hljs-number">15</span>))
+<span class="hljs-attr">zminna</span> = <span class="hljs-number">0</span>
+<span class="hljs-attr">zminna2</span> = <span class="hljs-number">10</span>
+</code></pre>
+<p>Передбачте поведінку кожної інструкції нижче, не переписуючи їх у скрипт чи інтерпретатор Python:</p>
+<ul>
+<li><code>print(spysok1[2])</code></li>
+<li><code>print(spysok1[zminna])</code></li>
+<li><code>print(spysok1[zminna2])</code></li>
+<li><code>print(spysok1["zminna"])</code></li>
+</ul>
+<p>Коли інструкція викликає помилку, визначте чому.</p>
+<h3 id="2-дні-тижня">2. Дні тижня</h3>
+<p>Складіть список <code>tyzhden</code>, що містить сім днів тижня.</p>
+<ol>
+<li>Як отримати з цього списку лише перші п'ять днів тижня, а вихідні — окремо? Використовуйте для цього індексацію (зрізи).</li>
+<li>Знайдіть інший спосіб досягти того самого результату (використовуючи іншу індексацію).</li>
+<li>Знайдіть два способи отримати доступ до останнього дня тижня.</li>
+<li>Інвертуйте дні тижня однією командою (підказка: подивіться на <code>.reverse()</code> та на зріз із кроком <code>-1</code>).</li>
+</ol>
+<h3 id="3-пори-року">3. Пори року</h3>
+<p>Створіть чотири списки <code>zyma</code>, <code>vesna</code>, <code>lito</code> та <code>osin</code>, що містять місяці, відповідні цим порам року. Потім створіть список <code>pory_roku</code>, що містить списки <code>zyma</code>, <code>vesna</code>, <code>lito</code> та <code>osin</code>. Передбачте, що повернуть наступні інструкції, а потім перевірте це в інтерпретаторі:</p>
+<ol>
+<li><code>pory_roku[2]</code></li>
+<li><code>pory_roku[1][0]</code></li>
+<li><code>pory_roku[1<span class="hl-char">:</span>2]</code></li>
+<li><code>pory_roku[<span class="hl-char">:</span>][1]</code>. Як ви поясните цей останній результат?</li>
+</ol>
+<h3 id="4-таблиця-множення-на-9">4. Таблиця множення на 9</h3>
+<p>Виведіть таблицю множення на 9 однією командою за допомогою інструкцій <code>range()</code> та <code>list()</code>.</p>
+<h3 id="5-парні-числа">5. Парні числа</h3>
+<p>Дайте відповідь на наступне запитання однією командою. Скільки парних чисел у інтервалі <code>[2, 10000]</code> включно?</p>
+<h3 id="6-створення-та-виведення-списків">6. Створення та виведення списків</h3>
+<ul>
+<li>Створіть список <code>my_friends</code> з іменами трьох ваших друзів і виведіть його на екран.</li>
+<li>Створіть список <code>temperatures</code> з п'яти числових значень температури за робочий тиждень.</li>
+<li>Створіть порожній список з назвою <code>shopping_cart</code>.</li>
+</ul>
+<h3 id="7-індекси">7. Індекси</h3>
+<ul>
+<li>Створіть список <code>animals = ["кіт", "собака", "папуга", "хом'як"]</code>. Який індекс має <code>"собака"</code>? Виведіть її, використовуючи цей індекс.</li>
+<li>Якщо у списку 5 елементів, який індекс матиме найостанніший елемент?</li>
+<li>Створіть список із п'яти чисел і виведіть останнє число за допомогою від'ємного індексу.</li>
+</ul>
+<h3 id="8-зміна-додавання-та-видалення-елементів">8. Зміна, додавання та видалення елементів</h3>
+<ul>
+<li>Створіть список <code>subjects = ["Математика", "Музика", "Фізика"]</code>. Замініть <code>"Музика"</code> на <code>"Інформатика"</code> і виведіть оновлений список.</li>
+<li>Створіть порожній список <code>numbers_list</code>. Послідовно додайте в нього числа 10, 20 та 30 методом <code>.append()</code> і виведіть результат.</li>
+<li>Створіть список <code>queue = ["Оля", "Іван", "Петро"]</code>. Вставте <code>"Андрій"</code> на перше місце (індекс 0) методом <code>.insert()</code>.</li>
+<li>Створіть список оцінок <code>[12, 10, 5, 11]</code>. Видаліть оцінку <code>5</code> за її значенням (<code>.remove()</code>), а потім — окремо — за індексом (<code>.pop()</code>).</li>
+<li>Створіть список справ на сьогодні й повністю очистіть його методом <code>.clear()</code>. Поясніть, чим це відрізняється від видалення самої змінної.</li>
+</ul>
+<h3 id="9-оператор-in">9. Оператор in</h3>
+<ul>
+<li>Створіть список <code>guests = ["Тарас", "Олена", "Максим"]</code>. Напишіть перевірку через <code>if</code>, яка виведе <code>"Заходь!"</code>, якщо у списку є ім'я <code>"Олена"</code>.</li>
+<li>Напишіть програму, яка перевіряє, чи є число 5 у списку оцінок <code>[10, 11, 12, 9]</code>.</li>
+<li>Що виведе код <code>print("Red" in ["red", "green"])</code>? Поясніть результат.</li>
+</ul>
+<h3 id="10-обєднання-повторення-зрізи-та-копіювання">10. Об'єднання, повторення, зрізи та копіювання</h3>
+<ul>
+<li>Об'єднайте два числових списки <code>[1, 2, 3]</code> та <code>[4, 5, 6]</code> за допомогою <code>+</code>. Чи змінюються початкові списки після об'єднання?</li>
+<li>Що виведе код <code>[1, 2] * 3</code>? Спробуйте передбачити результат, а потім перевірте.</li>
+<li>Маючи список <code>days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]</code>, виріжте з нього лише робочі дні, а потім — окремо — лише вихідні (<code>"Сб"</code> та <code>"Нд"</code>), використовуючи зрізи.</li>
+<li>Створіть список <code>a = [1, 2, 3]</code> і спробуйте скопіювати його в <code>b</code> спочатку через <code>b = a</code>, а потім через <code>b = a.copy()</code>. Змініть перший елемент <code>b</code> в обох випадках і поясніть різницю в результаті.</li>
+</ul>
+<h3 id="11-sort-reverse-count">11. sort(), reverse(), count()</h3>
+<ul>
+<li>Створіть список із п'яти хаотичних чисел, відсортуйте його методом <code>.sort()</code> і виведіть на екран.</li>
+<li>У списку <code>[1, 2, 3, 2, 4, 2]</code> порахуйте методом <code>.count()</code>, скільки разів повторюється число <code>2</code>.</li>
+<li>Створіть список ваших тижневих оцінок, відсортуйте від найменшої до найбільшої, а потім розгорніть список так, щоб найкращі оцінки були на початку.
+</li></ul></div><ul><li></li>
+</ul>
+<div class="project">
+<h2 id="420-творча-майстерня">4.20. Творча майстерня</h2>
+<p><strong>1. Телефонна книга вручну.</strong> Створіть порожній список <code>contacts</code>. Імітуйте додавання трьох контактів користувачем за допомогою <code>.append()</code>: спочатку <code>"Мама<span class="hl-char">:</span> 093..."</code>, потім <code>"Тато<span class="hl-char">:</span> 095..."</code>, потім <code>"Друг<span class="hl-char">:</span> 099..."</code>. Виведіть оновлений список контактів, а також окремо — перший і останній контакти.</p>
+<p><strong>2. Список покупок та чек.</strong> Створіть список покупок <code>cart = ["Хліб", "Молоко"]</code>. Додайте <code>"Сік"</code> за допомогою <code>.append()</code>, а <code>"Шоколад"</code> вставте на перше місце за допомогою <code>.insert()</code>. Виведіть весь список. Видаліть <code>"Хліб"</code>. Надрукуйте фінальний список товарів.</p>
+<p><strong>3. Оформлення меню кафе.</strong> Створіть список страв <code>menu = ["Піца", "Бургер", "Паста"]</code> та список цін <code>prices = [150, 90, 120]</code>. Виведіть меню у вигляді:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown">=== МЕНЮ ===
+<span class="hljs-bullet">1.</span> Піца — 150 грн
+<span class="hljs-bullet">2.</span> Бургер — 90 грн
+<span class="hljs-bullet">3.</span> Паста — 120 грн
+</code></pre>
+<p>(підказка: використовуйте виведення елементів за індексами <code>0</code>, <code>1</code>, <code>2</code> та коми у <code>print()</code>). Порахуйте за допомогою <code>sum()</code>, скільки коштуватиме замовлення, якщо клієнт купить абсолютно всі страви з меню.
+</p></div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><strong>Python Docs — More on Lists</strong>:   <a href="https://docs.python.org/3/tutorial/datastructures.html">https://docs.python.org/3/tutorial/datastructures.html</a></li>
+<li><strong>Python Docs — Built-in Type: list</strong>:   <a href="https://docs.python.org/3/library/stdtypes.html#list">https://docs.python.org/3/library/stdtypes.html#list</a></li>
+<li><strong>Python Docs — Sequence Types</strong>:   <a href="https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range">https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range</a></li>
+<li><strong>Real Python — Python Lists and Tuples</strong>:  <a href="https://realpython.com/python-lists-tuples/">https://realpython.com/python-lists-tuples/</a></li>
+<li><strong>Programiz — Python List</strong>: <a href="https://www.programiz.com/python-programming/list">https://www.programiz.com/python-programming/list</a></li>
+<li><strong>GeeksforGeeks — Python Lists</strong>: <a href="https://www.geeksforgeeks.org/python-list/">https://www.geeksforgeeks.org/python-list/</a></li>
+<li><strong>W3Schools — Python Lists</strong>:  <a href="https://www.w3schools.com/python/python_lists.asp">https://www.w3schools.com/python/python_lists.asp</a>
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

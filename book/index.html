@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python для початківців — електронний підручник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF7EF;
+    --panel:#FFFFFF;
+    --panel-alt:#F2F7FC;
+    --surface:#FFFFFF;
+    --ink:#26313F;
+    --ink-muted:#6C7A8C;
+    --rule:#E7EAE2;
+    --rule-strong:#D8DECF;
+    --primary:#2E7DC0;
+    --primary-dark:#1F5E96;
+    --primary-tint:#E4F0FA;
+    --primary-ink:#FFFFFF;
+    --accent:#FFC93C;
+    --accent-ink:#4A3600;
+    --accent-tint:#FFF4D6;
+    --shadow: 0 2px 6px rgba(38,49,63,.06), 0 14px 30px -16px rgba(46,125,192,.35);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --header-h: 84px;
+    --footer-h: 48px;
+    --sidebar-w: 336px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Nunito", sans-serif;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  ::selection{ background:var(--accent-tint); color:var(--ink); }
+  :focus-visible{ outline:3px solid var(--accent); outline-offset:2px; border-radius:6px; }
+  a{ color:inherit; }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    height:var(--header-h);
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:0 20px;
+    background:var(--panel);
+    border-bottom:3px solid var(--primary-tint);
+    position:relative;
+    z-index:20;
+  }
+  .menu-toggle{
+    display:none;
+    width:42px; height:42px;
+    border:2px solid var(--rule-strong);
+    background:var(--panel-alt);
+    border-radius:var(--radius-sm);
+    align-items:center; justify-content:center;
+    cursor:pointer;
+    flex:0 0 auto;
+    color:var(--ink);
+  }
+  .menu-toggle svg{ width:20px; height:20px; }
+  .brand{ display:flex; align-items:center; gap:14px; min-width:0; }
+  .logo{
+    height:auto;
+    width:96px;
+    object-fit:contain;
+    border-radius:var(--radius-sm);
+    flex:0 0 auto;
+    background:var(--panel-alt);
+  }
+  .logo:not([src]), .logo.is-broken{ display:none; }
+  .header-text{ min-width:0; }
+  .eyebrow{
+    display:block;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.7rem;
+    font-weight:600;
+    letter-spacing:.06em;
+    color:var(--primary-dark);
+    margin-bottom:2px;
+  }
+  .header-text h1{
+    margin:0;
+    font-family:"Nunito", sans-serif;
+    font-weight:900;
+    font-size:1.5rem;
+    line-height:1.15;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--ink);
+  }
+  .header-tag{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:"Nunito", sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    color:var(--primary-dark);
+    background:var(--primary-tint);
+    border-radius:999px;
+    padding:8px 16px;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout{
+    flex:1 1 auto;
+    display:flex;
+    min-height:0;
+    position:relative;
+  }
+  .overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(38,49,63,.35);
+    z-index:29;
+  }
+
+  /* ---------- Sidebar / TOC ---------- */
+  .toc{
+    width:var(--sidebar-w);
+    flex:0 0 auto;
+    background:var(--panel-alt);
+    border-right:1px solid var(--rule-strong);
+    overflow-y:auto;
+    padding:16px 12px 28px;
+  }
+  .toc-hint{
+    font-family:"Nunito", sans-serif;
+    font-weight:800;
+    font-size:.8rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    padding:2px 8px 12px;
+  }
+  .chapter{
+    background:var(--surface);
+    border:1px solid var(--rule-strong);
+    border-radius:var(--radius-md);
+    margin-bottom:8px;
+    overflow:hidden;
+    transition:box-shadow .15s ease, border-color .15s ease;
+  }
+  .chapter:hover{ border-color:var(--primary); }
+  .chapter.is-current{ box-shadow:var(--shadow); border-color:var(--primary); }
+
+  .chapter-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    background:transparent;
+    border:0;
+    cursor:pointer;
+    text-align:left;
+    font-family:"Nunito", sans-serif;
+    color:var(--ink);
+  }
+  .lane{
+    width:36px; height:36px;
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.15rem;
+    background:var(--primary-tint);
+    border-radius:var(--radius-sm);
+  }
+  .chapter.is-current .lane{
+    background:var(--primary);
+  }
+  .chapter-num{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.72rem;
+    font-weight:600;
+    color:var(--ink-muted);
+    flex:0 0 auto;
+    min-width:16px;
+  }
+  .chapter-title{
+    flex:1 1 auto;
+    font-size:.92rem;
+    font-weight:700;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  .chevron{
+    flex:0 0 auto;
+    width:16px; height:16px;
+    color:var(--ink-muted);
+    transition:transform .15s ease;
+  }
+  .chapter.is-open .chevron{ transform:rotate(90deg); }
+
+  .section-list{
+    list-style:none;
+    margin:0;
+    padding:0 10px 10px 54px;
+    display:none;
+  }
+  .chapter.is-open .section-list{ display:block; }
+  .section-list li{ margin:0; }
+  .section-link{
+    display:block;
+    padding:7px 10px;
+    margin:2px 0;
+    font-size:.86rem;
+    font-weight:600;
+    line-height:1.35;
+    color:var(--ink-muted);
+    text-decoration:none;
+    border-radius:var(--radius-sm);
+  }
+  .section-link .num{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.76rem;
+    font-weight:600;
+    color:var(--primary-dark);
+    margin-right:6px;
+  }
+  .section-link:hover{
+    background:var(--primary-tint);
+    color:var(--ink);
+  }
+  .section-link.is-active{
+    background:var(--accent);
+    color:var(--accent-ink);
+  }
+  .section-link.is-active .num{ color:var(--accent-ink); }
+
+  /* ---------- Viewer ---------- */
+  .viewer{
+    flex:1 1 auto;
+    min-width:0;
+    padding:22px;
+    display:flex;
+  }
+  .viewer iframe{
+    flex:1 1 auto;
+    width:100%;
+    height:100%;
+    border:1px solid var(--rule-strong);
+    border-radius:var(--radius-lg);
+    background:var(--surface);
+    box-shadow:var(--shadow);
+  }
+
+  /* ---------- Footer ---------- */
+  .site-footer{
+    flex:0 0 auto;
+    min-height:var(--footer-h);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:8px 22px;
+    background:var(--panel);
+    border-top:1px solid var(--rule-strong);
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.72rem;
+    color:var(--ink-muted);
+  }
+  .site-footer a{ color:var(--primary-dark); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px){
+    .menu-toggle{ display:flex; }
+    .header-text h1{ font-size:1.15rem; }
+    .logo{ height:40px; width:40px; }
+    .toc{
+      position:fixed;
+      top:var(--header-h);
+      bottom:0;
+      left:0;
+      width:min(88vw, 360px);
+      transform:translateX(-100%);
+      transition:transform .22s ease;
+      z-index:30;
+      box-shadow:var(--shadow);
+    }
+    .toc.is-open{ transform:translateX(0); }
+    .overlay.is-open{ display:block; }
+    .viewer{ padding:12px; }
+    .header-tag{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .toc, .chevron, .chapter{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Відкрити зміст" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img src="logo.png" alt="Логотип підручника" class="logo" id="logoImg">
+      <div class="header-text">
+        <span class="eyebrow">Дружній посібник із програмування</span>
+        <h1>Python для початківців</h1>
+      </div>
+    </div>
+    <div class="header-tag" id="headerTag">🐍 Розділ <span>1</span></div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc" aria-label="Зміст підручника">
+      <div class="toc-hint">Зміст</div>
+      <!-- chapters injected by JS -->
+    </nav>
+    <div class="overlay" id="overlay"></div>
+    <main class="viewer">
+      <iframe id="viewerFrame" title="Вміст обраного розділу" src="ch1.html"></iframe>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <span id="footerYear"></span>
+  </footer>
+
+<script>
+  const CHAPTERS = [[1, "Вступ до програмування", "🐍", [["1.1", "Що таке програма?"], ["1.2", "Мови програмування"], ["1.3", "Що таке Python?"], ["1.4", "Звідки беруться програми і хто їх створює?"], ["1.5", "Середовища програмування для Python"], ["1.6", "Поради щодо вивчення Python"], ["1.7", "Використані позначення"], ["1.8", "Виконання в командній оболонці (shell)"], ["1.9", "Перше знайомство з Python"], ["1.10", "Як виконуються інструкції в програмі"], ["1.11", "Коментарі"], ["1.12", "Поняття блоку інструкцій та відступів"], ["1.14", "Вправи"], ["1.13", "Інші ресурси"]]], [2, "Величини, змінні та типи даних", "🔢", [["2.1", "Величини, літерали та змінні"], ["2.2", "Типи даних"], ["2.3", "Іменування змінних та ідентифікатори"], ["2.4", "Науковий запис"], ["2.5", "Операції з величинами"], ["2.6", "Функція type()"], ["2.7", "Перетворення типів (casting)"], ["2.8", "Примітка щодо термінології та синтаксису"], ["2.9", "Мінімум і максимум"], ["2.10", "Вправи"]]], [3, "Виведення даних", "🖨️", [["3.1", "Навіщо програмі виводити дані?"], ["3.2", "Функція print()"], ["3.3", "Повідомлення про помилки"], ["3.4", "Форматоване виведення та f-рядки"], ["3.5", "Науковий запис"], ["3.6", "Приклади програм"], ["3.7", "Вправи"], ["3.8", "Творча майстерня"]]], [4, "Списки", "🧺", [["4.1", "Навіщо потрібні списки?"], ["4.2", "Що таке \"список\"?"], ["4.3", "Виведення списку та доступ до елементів (індекси)"], ["4.4", "Від'ємне індексування"], ["4.5", "Зміна елементів списку"], ["4.6", "Довжина списку — функція len()"], ["4.7", "Додавання елементів: конкатенація, append() та insert()"], ["4.8", "Видалення елементів: remove(), pop() та clear()"], ["4.9", "Перевірка наявності елемента — оператор in"], ["4.10", "Об'єднання та повторення списків"], ["4.11", "Зрізи"], ["4.12", "Копіювання списків"], ["4.13", "Функції range() та list()"], ["4.14", "Списки списків"], ["4.15", "Мінімум, максимум, сума та інші корисні функції/методи списків"], ["4.16", "Типові помилки"], ["4.17", "Примітка щодо термінології та синтаксису"], ["4.18", "Методи та функції для роботи зі списками в Python"], ["4.19", "Вправи"], ["4.20", "Творча майстерня"]]], [5, "Цикли та порівняння", "🔁", [["5.1", "Цикли `for`"], ["5.2", "Порівняння"], ["5.3", "Цикли `while`"], ["5.4", "Керування виконанням циклів"], ["5.5", "Типові алгоритми"], ["5.6", "Типові помилки"], ["5.7", "Вправи"], ["5.8", "Творча майстерня"]]], [6, "Умовні конструкції", "🔀", [["6.1", "Умови, порівняння та виконання за умовою"], ["6.2", "Перевірки з кількома варіантами"], ["6.3", "Важливість відступів"], ["6.4", "Поєднання умов"], ["6.5", "Вкладені умовні конструкції"], ["6.6", "Перевірка введених даних"], ["6.7", "Умови та списки"], ["6.8", "Тернарний умовний вираз"], ["6.9", "Інструкції `break` та `continue`"], ["6.10", "Перевірка значень для `float`"], ["6.11", "Типові алгоритми прийняття рішень"], ["6.12", "Типові помилки"], ["6.13", "Вправи"], ["6.14", "Творча майстерня"]]], [7, "Файли", "📁", [["7.1", "Читання з файлу"], ["7.2", "Запис у файл"], ["7.3", "Відкриття двох файлів з інструкцією `with`"], ["7.4", "Примітка про символи нового рядка в macOS/Linux та Windows"], ["7.5", "Кодування файлів (UTF-8)"], ["7.6", "Важливість перетворення типів при роботі з файлами"], ["7.7", "Дотримання форматів даних та файлів"], ["7.8", "Типові помилки"], ["7.9", "Вправи"], ["7.10", "Творча майстерня: Спіраль"]]], [8, "Словники та кортежі", "📚", [["8.1", "Словники"], ["8.2", "Кортежі"], ["8.3", "Порівняння колекцій: список, словник чи кортеж?"], ["8.4", "Вправи"], ["8.5", "Творча майстерня: Електронний телефонний довідник"]]], [9, "Модулі", "📦", [["9.1", "Навіщо потрібні модулі?"], ["9.2", "Що таке модуль?"], ["9.3", "Імпорт модулів"], ["9.4", "Отримання довідки про імпортовані модулі"], ["9.5", "Деякі поширені модулі"], ["9.6", "Модуль `random`: генерація випадкових чисел"], ["9.7", "Модуль `math`"], ["9.8", "Модуль `datetime`"], ["9.9", "Модуль `os`"], ["9.10", "Створення власних модулів"], ["9.11", "Типові помилки під час роботи з модулями"], ["9.12", "Вправи"], ["9.13", "Творча майстерня"]]], [10, "Функції", "⚙️", [["10.1", "Навіщо потрібні функції?"], ["10.2", "Як працюють функції?"], ["10.3", "Визначення функції"], ["10.4", "Аргументи функцій (вхідні дані)"], ["10.5", "Повернення результату (`return`)"], ["10.6", "Локальні та глобальні змінні"], ["10.7", "Позиційні аргументи та аргументи за ключовим словом"], ["10.8", "Повернення кількох значень"], ["10.9", "Документування функцій (docstrings)"], ["10.10", "Взаємодія: функції та списки, словники, файли"], ["10.11", "Рекурсія"], ["10.12", "Принцип DRY"], ["10.13", "Поділ великої програми на функції"], ["10.14", "Типові помилки початківців"], ["10.15", "Вправи"], ["10.16", "Творча майстерня: рефакторинг телефонного довідника"]]], [11, "Більше про рядки", "🔤", [["11.1", "Навіщо заглиблюватися в рядки?"], ["11.2", "Рядки та списки"], ["11.3", "Спеціальні символи"], ["11.4", "Префікси рядків"], ["11.5", "Методи, пов'язані з рядками"], ["11.6", "Вилучення числових значень з рядка"], ["11.7", "Функція `map()`"], ["11.8", "Тест на належність"], ["11.9", "Перетворення списку рядків на рядок"], ["11.10", "Ланцюжки методів (Method chaining)"], ["11.11", "Типові помилки"], ["11.12", "Вправи"], ["11.13", "Творча майстерня: розшифрування таємного повідомлення"]]], [12, "Більше про списки", "🧾", [["12.1", "Навіщо потрібно знати більше про списки?"], ["12.2", "Методи, пов'язані зі списками"], ["12.3", "Побудова списку шляхом ітерації"], ["12.4", "Тест на належність"], ["12.5", "Копіювання списків"], ["12.6", "Спискові включення"], ["12.7", "Функція `zip()`"], ["12.8", "Сортування списків через `key`"], ["12.9", "Типові помилки"], ["12.10", "Перелік методів списків"], ["12.11", "Вправи"], ["12.12", "Творча майстерня: Трикутник Паскаля"], ["12.13", "Що читати"]]], [13, "Більше про функції", "🛠️", [["13.1", "Навіщо заглиблюватися у функції?"], ["13.2", "Виклик функції з іншої функції"], ["13.3", "Рекурсивні функції"], ["13.4", "Область видимості змінних"], ["13.5", "Область видимості списків"], ["13.6", "Правило LGI"], ["13.7", "Рекомендації"], ["13.8", "Вправи"]]], [14, "Основи роботи з NumPy", "🧮", [["14.1", "Навіщо потрібен NumPy?"], ["14.2", "Підключення бібліотеки"], ["14.3", "Масиви NumPy"], ["14.4", "Одновимірні масиви"], ["14.5", "Двовимірні масиви"], ["14.6", "Створення масивів-заготовок"], ["14.7", "Векторизовані обчислення"], ["14.8", "Отримання підсумкових результатів (статистика)"], ["14.9", "Властивості масивів"], ["14.10", "Зміна форми масиву: `.reshape()`"], ["14.11", "Об'єднання та розділення масивів"], ["14.12", "Зрізи масивів (*slicing*)"], ["14.13", "Логічні маски (фільтрація даних)"], ["14.14", "Випадкові числа у NumPy"], ["14.15", "Збереження та завантаження масивів"], ["14.16", "NumPy та текстові файли"], ["14.17", "NumPy та Matplotlib"], ["14.18", "Типові помилки"], ["14.20", "Вправи"]]], [15, "Візуалізація даних за допомогою Matplotlib", "📈", [["15.1", "Навіщо потрібна Matplotlib?"], ["15.2", "Встановлення та підключення бібліотеки"], ["15.3", "Ваш перший графік"], ["15.4", "Побудова графіка за масивами NumPy"], ["15.5", "Оформлення графіка"], ["15.6", "Колір, стиль лінії та маркери"], ["15.7", "Кілька графіків на одному малюнку та легенда"], ["15.8", "Стовпчаста діаграма (`plt.bar`)"], ["15.9", "Кругова діаграма (`plt.pie`)"], ["15.10", "Точкова діаграма (`plt.scatter`)"], ["15.11", "Гістограма (`plt.hist`)"], ["15.12", "Побудова графіків математичних функцій"], ["15.13", "Додаткові інструменти оформлення"], ["15.14", "Візуалізація реальних даних"], ["15.15", "Збереження графіків у файл (`plt.savefig`)"], ["15.16", "Кілька графіків в одному вікні (`plt.subplot`)"], ["15.17", "Типові помилки"], ["15.18", "Найчастіше використовувані функції та типи графіків"], ["15.19", "Вправи"], ["15.20", "Творча майстерня: повний цикл аналізу та візуалізації даних"]]], [16, "Працюємо з Pandas", "🐼", [["16.1", "Навіщо потрібна Pandas?"], ["16.2", "Підключення бібліотеки"], ["16.3", "Основні об'єкти: DataFrame та Series"], ["3.3", "Series — це один стовпець"], ["16.4", "Читання та запис даних (CSV, Excel, JSON)"], ["16.5", "Робота зі стовпцями та рядками"], ["16.6", "Аналіз даних та статистика"], ["16.7", "Групування та сортування (groupby)"], ["16.8", "Типи даних та пропущені значення"], ["16.9", "Перейменування стовпців та індексів"], ["16.10", "Об'єднання таблиць: concat, join"], ["16.11", "Взаємодія Pandas та NumPy"], ["16.12", "Взаємодія Pandas та Matplotlib"], ["16.13", "Типові помилки"], ["16.14", "Можливості **pandas** для Skulpt (ЄPython)"], ["16.15", "Вправи"], ["16.16", "Творча майстерня"]]], [17, "Малюємо з SimpleGraphics", "🎨", [["17.1", "Встановлення бібліотеки SimpleGraphics"], ["17.2", "Система координат"], ["17.3", "Малюємо, використовуючи SimpleGraphics"], ["17.4", "Додаткові можливості"], ["17.5", "Робота з текстом"], ["17.6", "Основні **функції бібліотеки SimpleGraphics**"], ["17.7", "Вправи"], ["17.8", "Творча майстерня: Більш складніші малюнки."]]], [18, "Tkinter: Створення програм з графічним інтерфейсом", "🖼️", [["18.1", "Знайомимось з Tkinter"], ["18.2", "Створення головного вікна"], ["18.3", "Кольори"], ["18.5", "Label — текстовий напис"], ["18.6", "Створення кнопок у Tkinter"], ["18.8", "Однорядкове текстове поле для введення даних Entry"], ["18.9", "Вибір значень з переліку за допомогою лічильника Spinbox"], ["18.10", "Керувальні змінні та їх використання"], ["18.11", "Зачерк Checkbutton"], ["18.12", "Перемикач Radiobutton"], ["18.13", "Віджет Listbox (Список)"], ["18.12", "Багаторядкове текстове поле Text"], ["18.13", "Рамка-контейнер Frame"], ["18.14", "Стандартні властивості віджетів Tkinter"], ["18.15", "Меню в Tkinter"], ["18.16", "Pillow та Tkinter"], ["18.17", "Діалогові вікна файлів: модуль filedialog"], ["18.18", "Модуль tkinter.ttk"], ["18.19", "Вправи"], ["18.19", "Творча майстерня: текстовий редактор \"Блокнот\""]]], [19, "Анімації", "🎬", [["19.1", "Що таке анімація"], ["19.2", "Основні способи створення руху"], ["19.3", "Цикл анімації"], ["19.4", "Організація анімації в SimpleGraphics"], ["19.5", "Керування графічними об'єктами під час анімації"], ["19.6", "Вправи"], ["19.7", "Творча майстерня: гра «Вторгнення»"]]], [20, "Робота із зображеннями у Pillow", "🖌️", [["20.1", "Растрові зображення та бібліотека Pillow"], ["20.2", "Відкриття зображення та його атрибути"], ["20.3", "Збереження та конвертація форматів"], ["20.4", "Створення власних зображень: `Image.new()` та `ImageDraw`"], ["20.5", "Зміна розміру та кадрування"], ["20.6", "Обертання та віддзеркалення"], ["20.7", "Кольори, канали, змішування та фільтри"], ["20.8", "Доступ до окремих пікселів"], ["20.9", "Типові помилки під час роботи з Pillow"], ["2.10", "Основні функції та методи бібліотеки Pillow (PIL)"], ["20.11", "Вправи"], ["20.12", "Творча майстерня: «Вітряк»"]]]];
+
+  function slugify(text){
+    return text
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, '')
+      .trim()
+      .replace(/\s+/g, '-');
+  }
+
+  const toc = document.getElementById('toc');
+  const frame = document.getElementById('viewerFrame');
+  const headerTag = document.getElementById('headerTag');
+  const menuToggle = document.getElementById('menuToggle');
+  const overlay = document.getElementById('overlay');
+  const logoImg = document.getElementById('logoImg');
+
+  logoImg.addEventListener('error', () => logoImg.classList.add('is-broken'));
+
+  function closeMobileMenu(){
+    toc.classList.remove('is-open');
+    overlay.classList.remove('is-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function setActiveSection(linkEl){
+    toc.querySelectorAll('.section-link.is-active').forEach(el => el.classList.remove('is-active'));
+    if (linkEl) linkEl.classList.add('is-active');
+  }
+
+  function updateHeaderTag(emoji, num){
+    headerTag.innerHTML = `${emoji} Розділ <span>${num}</span>`;
+  }
+
+  function goToChapterRoot(num, emoji){
+    frame.src = `ch${num}.html`;
+    updateHeaderTag(emoji, num);
+    setActiveSection(null);
+  }
+
+  function goToSection(num, emoji, file, hash, linkEl){
+    frame.src = `${file}#${hash}`;
+    updateHeaderTag(emoji, num);
+    setActiveSection(linkEl);
+  }
+
+  function buildToc(){
+    CHAPTERS.forEach(([num, title, emoji, sections], idx) => {
+      const chapterEl = document.createElement('div');
+      chapterEl.className = 'chapter';
+      chapterEl.dataset.chapter = num;
+      if (idx === 0) chapterEl.classList.add('is-open', 'is-current');
+
+      const head = document.createElement('button');
+      head.type = 'button';
+      head.className = 'chapter-head';
+      head.setAttribute('aria-expanded', idx === 0 ? 'true' : 'false');
+      head.innerHTML = `
+        <span class="lane">${emoji}</span>
+        <span class="chapter-num">${num}</span>
+        <span class="chapter-title">${title}</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      `;
+
+      const list = document.createElement('ul');
+      list.className = 'section-list';
+
+      sections.forEach(([secNum, secTitle]) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'section-link';
+        const hash = slugify(`${secNum} ${secTitle}`);
+        a.innerHTML = `<span class="num">${secNum}</span>${secTitle}`;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelectorAll('.chapter').forEach(c => c.classList.remove('is-current'));
+          chapterEl.classList.add('is-current');
+          goToSection(num, emoji, `ch${num}.html`, hash, a);
+          closeMobileMenu();
+        });
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+
+      head.addEventListener('click', () => {
+        const willOpen = !chapterEl.classList.contains('is-open');
+        chapterEl.classList.toggle('is-open', willOpen);
+        head.setAttribute('aria-expanded', String(willOpen));
+        document.querySelectorAll('.chapter').forEach(c => c.classList.remove('is-current'));
+        chapterEl.classList.add('is-current');
+        goToChapterRoot(num, emoji);
+      });
+
+      chapterEl.appendChild(head);
+      chapterEl.appendChild(list);
+      toc.appendChild(chapterEl);
+    });
+  }
+
+  buildToc();
+
+  menuToggle.addEventListener('click', () => {
+    const willOpen = !toc.classList.contains('is-open');
+    toc.classList.toggle('is-open', willOpen);
+    overlay.classList.toggle('is-open', willOpen);
+    menuToggle.setAttribute('aria-expanded', String(willOpen));
+  });
+  overlay.addEventListener('click', closeMobileMenu);
+
+  document.getElementById('footerYear').textContent = `© ${new Date().getFullYear()}`;
+</script>
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch3</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-3-виведення-даних">РОЗДІЛ 3. Виведення даних</h1>
+<h2 id="31-навіщо-програмі-виводити-дані">3.1 Навіщо програмі виводити дані?</h2>
+<p>Програма може виконувати мільйони обчислень за секунду, але якщо вона не покаже результат, ми про нього ніколи не дізнаємося. <strong>Виведення інформації</strong> — це процес передачі даних від комп'ютера до користувача (через екран, колонки, принтер тощо).</p>
+<p>Усі ваші улюблені програми постійно щось виводять:</p>
+<ul>
+<li>месенджери виводять текст повідомлень вашого друга;</li>
+<li>ігри виводять графіку, рахунок та кількість «життів» персонажа;</li>
+<li>калькулятор виводить результат обчислень.</li>
+</ul>
+<p>Коли ми тільки починаємо вчити Python, вікном для спілкування з комп'ютером стає <strong>консоль</strong> (термінал, вікно результатів виконання програми) — просте текстове віконце, куди програма виводить свої «думки» у вигляді літер і чисел.</p>
+<p>Порівняйте дві програми:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-number">2</span> + <span class="hljs-number">2</span>  <span class="hljs-comment"># Комп'ютер порахував, але на екран нічого не вивів</span>
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт! Я твій комп'ютер."</span>)  <span class="hljs-comment"># Одразу бачимо текст на екрані</span>
+</code></pre>
+<p>У першому випадку обчислення відбулося, але результат ніде не з'явився — комп'ютер «мовчить». У другому — ми явно попросили вивести текст, і він з'явився в консолі.</p>
+<h2 id="32-функція-print">3.2 Функція print()</h2>
+<p>У Розділі 1 «Вступ» ми познайомилися з функцією <code>print()</code>, яка виводить рядок (відомий «Привіт, світе!»). Слово <em>print</em> англійською означає «друкувати». Дужки <code>()</code> після слова <code>print</code> вказують на те, що це функція (команда), а лапки всередині дужок кажуть комп'ютеру: «просто візьми цей текст і перенеси його на екран один в один».</p>
+<p>Насправді, функція <code>print()</code> виводить аргумент, переданий у дужках, та символ нового рядка. Цей перехід на новий рядок додається за замовчуванням. Якщо ж ви не хочете виводити цей символ, можна використати іменований аргумент <code>end</code> (докладніше — у §3.2.4):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт, світе!"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт, світе!"</span>, end=<span class="hljs-string">""</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Привіт, світе!
+Привіт, світе!
+</code></pre>
+<h3 id="321-текстові-повідомлення-та-лапки">3.2.1 Текстові повідомлення та лапки</h3>
+<p>У програмуванні будь-який текст (набір символів) називається <strong>рядком</strong> (англійською <em>string</em>). Щоб Python зрозумів, де текст починається і де закінчується, його обов'язково беруть у лапки. Якщо лапки пропустити, Python подумає, що це назва команди, і заплутається.</p>
+<p>У Python можна використовувати як подвійні, так і одинарні лапки — для комп'ютера вони абсолютно однакові:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Python"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">'Python'</span>)
+</code></pre>
+<p>Обидва рядки виведуть слово <code>Python</code>. Головне правило: якими лапками рядок відкрили, такими й закриваємо. Наприклад, код <code>print("Привіт')</code> <strong>не працюватиме</strong>, бо лапки різні.</p>
+<h3 id="322-виведення-чисел-та-обчислень">3.2.2 Виведення чисел та обчислень</h3>
+<p>Комп'ютер «обожнює» числа, тому для них лапки не потрібні: якщо поставити число в лапки, Python сприйме його просто як текст (рядок), а не як число. У Python числа поділяються на два основні типи (детальніше в Розділі 2): цілі числа (<code>int</code>) — без дробової частини, та дійсні (дробові) числа (<code>float</code>) — з крапкою.</p>
+<div class="warn">
+ У Python для розділення цілої та дробової частини використовується крапка, а не кома.
+</div>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">25</span>)    <span class="hljs-comment"># Ціле число</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">3.14</span>)  <span class="hljs-comment"># Дійсне число (число Пі)</span>
+</code></pre>
+<p>Python — це ще й потужний калькулятор. Якщо всередині <code>print()</code> написати математичний вираз без лапок, комп'ютер спочатку виконає обчислення, а вже потім виведе кінцевий результат:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">7</span> + <span class="hljs-number">5</span>)        <span class="hljs-comment"># Виведе: 12</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">10</span> * <span class="hljs-number">4</span>)       <span class="hljs-comment"># Виведе: 40 (зірочка * — це множення)</span>
+<span class="hljs-built_in">print</span>((<span class="hljs-number">8</span> + <span class="hljs-number">2</span>) / <span class="hljs-number">5</span>)  <span class="hljs-comment"># Виведе: 2.0 (коса риска / — це ділення)</span>
+</code></pre>
+<p>Дужки керують пріоритетом дій так само, як і на уроках математики.</p>
+<h3 id="323-виведення-значень-змінних">3.2.3 Виведення значень змінних</h3>
+<p>Функція <code>print()</code> також може виводити вміст будь-якої змінної, незалежно від її типу. Уявіть, що змінна — це коробка з назвою, у якій зберігається якась інформація; ми можемо покласти туди число чи текст, а потім попросити <code>print()</code> показати, що всередині:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">age = <span class="hljs-number">13</span>    <span class="hljs-comment"># Створили "коробку" з назвою age і поклали туди 13</span>
+<span class="hljs-built_in">print</span>(age)  <span class="hljs-comment"># Виведе те, що лежить у коробці, тобто: 13</span>
+</code></pre>
+<p>Для цілого числа так само:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">zminna = <span class="hljs-number">3</span>
+<span class="hljs-built_in">print</span>(zminna)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+</code></pre>
+<p>Порівняйте два рядки:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(age)    <span class="hljs-comment"># Виведе: 13 (вміст змінної)</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"age"</span>)  <span class="hljs-comment"># Виведе: age (просто текст у лапках)</span>
+</code></pre>
+<p>Лапки мають «магічне» значення: є лапки — друкуємо текст як є; немає лапок — Python шукає змінну з таким ім'ям. Якщо такої змінної не існує, ми отримаємо помилку <code>NameError</code> .</p>
+<p>Можна вивести вміст кількох змінних одразу (незалежно від їхнього типу), розділивши їх комами:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">32</span>
+nazva = <span class="hljs-string">"Яблука"</span>
+<span class="hljs-built_in">print</span>(nazva, <span class="hljs-string">"вартістю"</span>, x, <span class="hljs-string">"грн/кг"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Яблука вартістю 32 грн/кг
+</code></pre>
+<p>Python «написав» повне речення, замінивши змінні <code>x</code> та <code>nazva</code> їхнім вмістом. Зверніть увагу: для виведення кількох елементів в одному рядку ми використали роздільник <code>,</code> між ними, і Python автоматично додав пробіл на місці кожної коми. Цю поведінку можна змінити за допомогою іменованого аргументу <code>sep</code> .</p>
+<h3 id="324-параметр-sep-роздільник">3.2.4 Параметр sep — роздільник</h3>
+<p>Коли ми виводимо кілька значень через кому, Python за замовчуванням розділяє їх пробілом. Щоб змінити цю поведінку — наприклад, поставити дефіс, вертикальну риску чи взагалі прибрати роздільник — використовують іменований аргумент <code>sep</code> (від англійського <em>separator</em>, роздільник), який записується наприкінці через кому:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">32</span>
+nazva = <span class="hljs-string">"Яблука"</span>
+<span class="hljs-built_in">print</span>(nazva, <span class="hljs-string">"вартістю"</span>, x, <span class="hljs-string">"грн/кг"</span>, sep=<span class="hljs-string">""</span>)
+<span class="hljs-built_in">print</span>(nazva, <span class="hljs-string">"вартістю"</span>, x, <span class="hljs-string">"грн/кг"</span>, sep=<span class="hljs-string">"-"</span>)
+<span class="hljs-built_in">print</span>(nazva, <span class="hljs-string">"вартістю"</span>, x, <span class="hljs-string">"грн/кг"</span>, sep=<span class="hljs-string">"_"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Яблукавартістю32грн/кг
+Яблука-вартістю-32-грн/кг
+Яблука_вартістю_32_грн/кг
+</code></pre>
+<p>Ще кілька прикладів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)            <span class="hljs-comment"># Без sep (автоматичний пробіл): 1 2 3</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, sep=<span class="hljs-string">"-"</span>)   <span class="hljs-comment"># Роздільник дефіс: 1-2-3</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, sep=<span class="hljs-string">" | "</span>) <span class="hljs-comment"># Роздільник вертикальна риска: 1 | 2 | 3</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, sep=<span class="hljs-string">""</span>)    <span class="hljs-comment"># Без роздільника взагалі: 123</span>
+</code></pre>
+<p>Практичні приклади використання <code>sep</code>:</p>
+<ul>
+<li>дата: <code>print(25, 10, 2026, sep=".")</code> → <code>25.10.2026</code>;</li>
+<li>координати: <code>print("X", 45, "Y", 12, sep="<span class="hl-char">:</span>")</code> → <code>X<span class="hl-char">:</span>45<span class="hl-char">:</span>Y<span class="hl-char">:</span>12</code>;</li>
+<li>список чисел: <code>print("Номери", 1, 2, 3, sep="<span class="hl-char">#</span>")</code> → <code>Номери<span class="hl-char">#</span>1<span class="hl-char">#</span>2<span class="hl-char">#</span>3</code>.</li>
+</ul>
+<p>Щоб вивести два рядки один біля одного без пробілу, можна або конкатенувати їх, або використати <code>sep</code> з порожнім рядком:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna1 = <span class="hljs-string">"кіт"</span>
+tvaryna2 = <span class="hljs-string">"миша"</span>
+<span class="hljs-built_in">print</span>(tvaryna1, tvaryna2)
+<span class="hljs-built_in">print</span>(tvaryna1 + tvaryna2)
+<span class="hljs-built_in">print</span>(tvaryna1, tvaryna2, sep=<span class="hljs-string">""</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">кіт миша
+кітмиша
+кітмиша
+</code></pre>
+<h3 id="325-параметр-end">3.2.5 Параметр end</h3>
+<p>Зазвичай після виконання <code>print()</code> курсор автоматично переходить на новий рядок, і наступний <code>print()</code> починає писати вже знизу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Python"</span>)
+<span class="hljs-comment"># Результат у консолі:</span>
+<span class="hljs-comment"># Привіт</span>
+<span class="hljs-comment"># Python</span>
+</code></pre>
+<p>Якщо ми хочемо заборонити Python переходити на новий рядок, використовуємо іменований аргумент <code>end</code> (від англійського <em>end</em>, кінець), який вказує, чим завершити виведення (за замовчуванням — символом нового рядка):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>, end=<span class="hljs-string">" "</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Python"</span>)
+<span class="hljs-comment"># Результат у консолі:</span>
+<span class="hljs-comment"># Привіт Python</span>
+</code></pre>
+<p>Інший спосіб побачити ефект <code>end</code> — використати дві функції <code>print()</code> в одному рядку через <code>;</code>, який слугує роздільником інструкцій Python в одному рядку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">"Інна"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>, end=<span class="hljs-string">""</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">"Інна"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>, end=<span class="hljs-string">" "</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">"Інна"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Привіт
+Інна
+ПривітІнна
+Привіт Інна
+</code></pre>
+<p>Приклад використання <code>end</code> із циклом (докладніше про цикли):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>):
+    <span class="hljs-built_in">print</span>(i, end=<span class="hljs-string">" "</span>)
+<span class="hljs-comment"># Виведе все в один рядок: 0 1 2 3 4</span>
+</code></pre>
+<h3 id="326-керувальні-символи">3.2.6 Керувальні символи</h3>
+<p>Іноді потрібно перенести текст на новий рядок або зробити відступ (табуляцію) <em>всередині</em> одного рядка в лапках. Для цього використовують спеціальні поєднання символів, що починаються зі зворотної похилої риски <code>\</code>:</p>
+<ul>
+<li><code>\n</code> — перехід на новий рядок (<em>newline</em>);</li>
+<li><code>\t</code> — табуляція (кілька пробілів для вирівнювання тексту);</li>
+<li><code>\"</code> — дозволяє надрукувати подвійну лапку всередині рядка, обмеженого подвійними лапками;</li>
+<li><code>\\</code> — дозволяє надрукувати саму зворотну похилу риску.</li>
+</ul>
+<p>Приклади:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Перший рядок\nДругий рядок"</span>)
+<span class="hljs-comment"># Виведе:</span>
+<span class="hljs-comment"># Перший рядок</span>
+<span class="hljs-comment"># Другий рядок</span>
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Ім'я\tВік"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Марко\t14"</span>)
+<span class="hljs-comment"># Виведе охайну табличку:</span>
+<span class="hljs-comment"># Ім'я    Вік</span>
+<span class="hljs-comment"># Марко   14</span>
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Він сказав: \"Привіт!\""</span>)  <span class="hljs-comment"># Виведе: Він сказав: "Привіт!"</span>
+</code></pre>
+<h3 id="327-символи-unicode-та-емоційки">3.2.7 Символи Unicode та емоційки</h3>
+<p>Python — сучасна мова, яка чудово розуміє міжнародний стандарт символів Unicode. Це означає, що можна виводити в консоль не лише звичайні літери, а й емоційки, прапори країн та інші спеціальні знаки:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"😀"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"🇺🇦"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Програмування — це цікаво! 🚀"</span>)
+</code></pre>
+<p>Такі символи можна просто копіювати й вставляти всередину лапок у коді.</p>
+<h3 id="328-оформлення-виведення">3.2.8 Оформлення виведення</h3>
+<p>Коли програма показує результати, вони мають бути зручними для читання. Охайне оформлення — це прояв поваги до користувача. За допомогою дефісів, знаків рівності, зірочок та тексту можна створювати рамки, заголовки й меню:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">name = <span class="hljs-string">"Олена"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Ім'я:"</span>, name)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"----------------"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"=== Меню ==="</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"1. Старт гри"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"2. Налаштування"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"3. Вихід"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"----------------"</span>)
+</code></pre>
+<h2 id="33-повідомлення-про-помилки">3.3 Повідомлення про помилки</h2>
+<p>Ми вже стикалися з повідомленнями про помилки в попередньому розділі про змінні. Тут ми пояснимо, як їх читати. Помилятися — це нормально: навіть професійні програмісти щодня роблять помилки. Головне — навчитися читати повідомлення від Python (вони називаються <em>Error</em>), щоб швидко їх виправляти.</p>
+<p>Починаючи з версії 3.10 Python, інтерпретатор повертає зрозумілі повідомлення при синтаксичних помилках. Розглянемо скрипт (збережений у файлі <code>test.py</code>), який містить кілька помилок:</p>
+<pre><code data-highlighted="yes" class="hljs language-go"> <span class="hljs-built_in">print</span>(<span class="hljs-string">"кіт"</span>
+ <span class="hljs-built_in">print</span>(<span class="hljs-string">"миша"</span>)
+ <span class="hljs-built_in">print</span>(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>)
+ <span class="hljs-built_in">print</span>(<span class="hljs-type">int</span>(<span class="hljs-string">"два"</span>))
+</code></pre>
+<p>Ви, мабуть, помітили відсутність закриваючої дужки в рядку 1. Коли ми запускаємо скрипт, ми отримуємо:</p>
+<pre><code data-highlighted="yes" class="hljs language-php">$ python test.py
+  File <span class="hljs-string">"test.py"</span>, line <span class="hljs-number">1</span>
+    <span class="hljs-keyword">print</span>(<span class="hljs-string">"кіт"</span>
+            ^
+SyntaxError: <span class="hljs-string">'('</span> was <span class="hljs-keyword">never</span> closed
+</code></pre>
+<p><strong>Як читати повідомлення про помилку (Traceback)?</strong> Це завжди робиться знизу вгору:</p>
+<ul>
+<li><strong>У самому низу:</strong> тип згенерованої помилки (пізніше ми побачимо, що це називається винятком, або <em>exception</em>). Тут — синтаксична помилка <code>SyntaxError</code>, а в тому самому рядку — додаткова підказка (відсутність закритої дужки).</li>
+<li><strong>Трохи вище:</strong> опис помилки, де показано відкриту дужку, яка так і не була закрита.</li>
+<li><strong>Ще вище:</strong> номер рядка в коді, де було виявлено помилку.</li>
+</ul>
+<p>З таким Traceback стає легко виправити помилку.</p>
+<p>Якщо ми виправимо рядок 1, додавши кінцеву дужку, і знову запустимо скрипт, отримаємо помилку через ділення на нуль:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">$ python test.py
+кіт
+миша
+Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "test.py", line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print(<span class="hljs-number">1</span> <span class="hljs-operator">/</span> <span class="hljs-number">0</span>)
+          <span class="hljs-operator">~</span><span class="hljs-operator">~</span><span class="hljs-operator">^</span><span class="hljs-operator">~</span><span class="hljs-operator">~</span>
+ZeroDivisionError: division <span class="hljs-keyword">by</span> zero
+</code></pre>
+<p>Якщо виправити й цю помилку (наприклад, <code>print(1 / 1)</code>), виконання видасть інше повідомлення через рядок 4, де перетворення рядка на ціле число неможливе:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">$ python test.py
+кіт
+миша
+<span class="hljs-number">1</span>
+Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "test.py", line <span class="hljs-number">4</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print(<span class="hljs-type">int</span>("два"))
+          <span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span>
+ValueError: invalid literal <span class="hljs-keyword">for</span> <span class="hljs-type">int</span>() <span class="hljs-keyword">with</span> base <span class="hljs-number">10</span>: <span class="hljs-string">'два'</span>
+</code></pre>
+<p>У всіх наведених прикладах структура Traceback однакова: у самому низу — тип помилки, потім, піднімаючись вгору, — опис проблеми та номер рядка, де її виявлено.</p>
+<div class="warn">
+Важливо уважно читати кожне повідомлення про помилку, згенероване Python. Зазвичай ключ до проблеми міститься саме в цьому повідомленні.
+</div>
+<h3 id="331-типові-помилки-початківців">3.3.1 Типові помилки початківців</h3>
+<p><strong>Помилка 1. Забули або не закрили лапки</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт)
+# Помилка: SyntaxError: unterminated string literal
+</span></code></pre>
+<p><em>Як виправити:</em> перевірити, щоб наприкінці рядка стояла та сама лапка, що й на початку: <code>print("Привіт")</code>.</p>
+<p><strong>Помилка 2. Пропустили дужку</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Світ"</span>
+<span class="hljs-comment"># Помилка: SyntaxError: '(' was never closed</span>
+</code></pre>
+<p><em>Як виправити:</em> додати закриваючу дужку <code>)</code>. Скільки дужок відкрили — стільки маємо й закрити.</p>
+<p><strong>Помилка 3. Переплутали ім'я змінної з текстом</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">my_car = <span class="hljs-string">"Tesla"</span>
+<span class="hljs-built_in">print</span>(my_car)  <span class="hljs-comment"># Правильно — виведе Tesla</span>
+<span class="hljs-built_in">print</span>(my_сar)  <span class="hljs-comment"># Помилка: NameError: name '...' is not defined</span>
+</code></pre>
+<p><em>Як виправити:</em> уважно перевірити кожну літеру в назві змінної. Помилка <code>NameError</code> майже завжди означає друкарську помилку в імені змінної або використання літери з іншої розкладки клавіатури (наприклад, українська «с» замість англійської «c»).</p>
+<h2 id="34-форматоване-виведення-та-f-рядки">3.4 Форматоване виведення та f-рядки</h2>
+<h3 id="341-визначення">3.4.1 Визначення</h3>
+<p><strong>Визначення.</strong> Форматоване виведення — це механізм, який дозволяє виводити змінні з точним форматуванням: наприклад, вирівняними ліворуч або праворуч, або з певною кількістю десяткових знаків для <code>float</code>. Форматоване виведення незамінне, коли потрібно створювати файли чи звіти, організовані у «красиві стовпчики» — таблиці з результатами, списки товарів з цінами тощо.</p>
+<p>Починаючи з версії 3.6, Python запровадив f-рядки для реалізації форматованого виведення. Існують і старіші способи форматування рядків (розглянуті в Розділі 26 «Додаткові зауваження», онлайн), однак для початківців рекомендовано одразу використовувати f-рядки — вивчати старі методи немає сенсу.</p>
+<p><strong>Визначення.</strong> f-рядок — скорочення від <em>formatted string literals</em>. У попередньому розділі ми бачили звичайні рядки (<em>strings</em>) — текст, укладений в одинарні або подвійні лапки, наприклад <code>"Це рядок"</code>. Еквівалент у вигляді f-рядка — той самий рядок, перед яким без пробілу стоїть символ <code>f</code>:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash"><span class="hljs-string">"Це рядок"</span>
+f<span class="hljs-string">"Це рядок"</span>
+</code></pre>
+<p>Символ <code>f</code> перед лапками вказує Python, що це f-рядок, який задіює механізм форматованого виведення, на відміну від звичайного рядка. Детальніше про механізм, що лежить в основі — у Розділі 11 «Більше про рядки».</p>
+<h3 id="342-використання-f-рядків">3.4.2 Використання f-рядків</h3>
+<p>f-рядки дозволяють краще організувати виведення змінних. Повернемося до прикладу з Джоном:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">32</span>
+nazva = <span class="hljs-string">"Яблука"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{nazva}</span> вартістю <span class="hljs-subst">{x}</span> грн/кг"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Яблука вартістю 32 грн/кг
+</code></pre>
+<p>Достатньо передати ім'я змінної всередині пари фігурних дужок, і Python замінить їх вмістом. Синтаксис виглядає читабельнішим, ніж еквівалент через кому:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">32</span>
+nazva = <span class="hljs-string">"Яблука"</span>
+<span class="hljs-built_in">print</span>(nazva, <span class="hljs-string">"вартістю"</span>, x, <span class="hljs-string">"грн/кг"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Яблука вартістю 32 грн/кг
+</code></pre>
+<p>Не забувайте <code>f</code> перед першими лапками, інакше Python сприйме рядок як звичайний і не запустить механізм заміни у фігурних дужках:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">32</span>
+nazva = <span class="hljs-string">"Яблука"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"{nazva} вартістю {x} грн/кг"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">{nazva} вартістю {<span class="hljs-attribute">x</span>} грн/кг
+</code></pre>
+<p>Змінну можна використовувати більше одного разу в одному f-рядку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">zminna = <span class="hljs-string">"то"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{zminna}</span> та <span class="hljs-subst">{zminna}</span> утворюють <span class="hljs-subst">{zminna}</span><span class="hljs-subst">{zminna}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">то та то утворюють тото
+</code></pre>
+<p>У фігурні дужки можна поміщати й числові значення або рядки безпосередньо:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">f"Я виводжу ціле <span class="hljs-subst">{<span class="hljs-number">10</span>}</span> та float <span class="hljs-subst">{<span class="hljs-number">3.14</span>}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Я виводжу рядок <span class="hljs-subst">{<span class="hljs-string">'Python'</span>}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">Я виводжу ціле 10 та <span class="hljs-built_in">float</span> 3.14
+Я виводжу рядок Python
+</code></pre>
+<p>Це працює з будь-яким типом змінних. Зверніть увагу: для рядків усередині фігурних дужок використовуйте одинарні лапки, якщо сам f-рядок визначено подвійними.</p>
+<h3 id="343-специфікація-формату">3.4.3 Специфікація формату</h3>
+<p>f-рядки дозволяють не тільки замінювати змінні всередині рядка, а й вказувати формат їхнього виведення. Наприклад, обчислимо й виведемо частку правильних відповідей у тесті (4500 балів за правильні відповіді, 2575 — за частково правильні, максимум — 14800):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chastka_pravylnykh = (<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Частка правильних відповідей становить"</span>, chastka_pravylnykh)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Частка правильних відповідей становить 0.4780405405405405
+</code></pre>
+<p>Результат має занадто багато десяткових знаків. Щоб записати його читабельніше, вкажіть у фігурних дужках <code>{}</code> бажаний формат:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chastka_pravylnykh = (<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Частка правильних відповідей становить <span class="hljs-subst">{chastka_pravylnykh:<span class="hljs-number">.2</span>f}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Частка правильних відповідей становить <span class="hljs-subst">{chastka_pravylnykh:<span class="hljs-number">.3</span>f}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Частка правильних відповідей становить 0.48
+Частка правильних відповідей становить 0.478
+</code></pre>
+<p>Розберемо вміст фігурних дужок <code>{chastka_pravylnykh<span class="hl-char">:</span>.2f}</code>:</p>
+<ul>
+<li>спочатку йде ім'я змінної для форматування — <code>chastka_pravylnykh</code> (обов'язкове для f-рядків);</li>
+<li>далі двокрапка <code><span class="hl-char">:</span></code>, яка вказує, що далі буде вказано формат виведення;</li>
+<li>праворуч від двокрапки — <code>.2f</code>, де <code>f</code> означає, що змінну виводимо як <code>float</code>, а <code>.2</code> — бажану точність (дві цифри після коми).</li>
+</ul>
+<p>Форматування <code>.xf</code> (де <code>x</code> — додатне ціле число) повертає округлений результат. Цілі числа форматують літерою <code>d</code> (<em>decimal integer</em>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kilk_pravylnykh = <span class="hljs-number">4500</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"У тесті <span class="hljs-subst">{kilk_pravylnykh:d}</span> правильних відповідей"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-yaml"><span class="hljs-string">У</span> <span class="hljs-string">тесті</span> <span class="hljs-number">4500</span> <span class="hljs-string">правильних</span> <span class="hljs-string">відповідей</span>
+</code></pre>
+<p>Можна помістити й кілька чисел в один рядок; якщо інструкція довга, її можна розбити на кілька рядків коду, щоразу ставлячи <code>f</code> перед кожним фрагментом рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chastka_pravylnykh = (<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>
+kilk_pravylnykh = <span class="hljs-number">4500</span>
+kilk_chastkovykh = <span class="hljs-number">2575</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"У тесті <span class="hljs-subst">{kilk_pravylnykh:d}</span> правильних та <span class="hljs-subst">{kilk_chastkovykh:d}</span> часткових відповідей,"</span>
+      <span class="hljs-string">f"що становить частку <span class="hljs-subst">{chastka_pravylnykh:<span class="hljs-number">.2</span>f}</span>"</span>)
+vidsotok_pravylnykh = chastka_pravylnykh * <span class="hljs-number">100</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"У тесті <span class="hljs-subst">{kilk_pravylnykh:d}</span> правильних та <span class="hljs-subst">{kilk_chastkovykh:d}</span> часткових відповідей,"</span>
+      <span class="hljs-string">f"тобто <span class="hljs-subst">{vidsotok_pravylnykh:<span class="hljs-number">.2</span>f}</span>% успішності"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-yaml"><span class="hljs-string">У</span> <span class="hljs-string">тесті</span> <span class="hljs-number">4500</span> <span class="hljs-string">правильних</span> <span class="hljs-string">та</span> <span class="hljs-number">2575</span> <span class="hljs-string">часткових</span> <span class="hljs-string">відповідей,що</span> <span class="hljs-string">становить</span> <span class="hljs-string">частку</span> <span class="hljs-number">0.48</span>
+<span class="hljs-string">У</span> <span class="hljs-string">тесті</span> <span class="hljs-number">4500</span> <span class="hljs-string">правильних</span> <span class="hljs-string">та</span> <span class="hljs-number">2575</span> <span class="hljs-string">часткових</span> <span class="hljs-string">відповідей,тобто</span> <span class="hljs-number">47.80</span><span class="hljs-string">%</span> <span class="hljs-string">успішності</span>
+</code></pre>
+<blockquote>
+<p>Зверніть увагу: оскільки текст просто «склеюється» з двох сусідніх f-рядків, між комою та наступним словом немає пробілу, якщо його явно не додати на початку другого фрагмента (наприклад, <code>f" що становить..."</code>).</p>
+</blockquote>
+<p>Нарешті, можна вказати, на скільки символів має бути записаний результат і як відбувається вирівнювання (ліворуч, праворуч, по центру):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">10</span>); <span class="hljs-built_in">print</span>(<span class="hljs-number">1000</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">10</span>:&gt;6d}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1000</span>:&gt;6d}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">10</span>:&lt;6d}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1000</span>:&lt;6d}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">10</span>:^6d}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1000</span>:^6d}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">10</span>:*^6d}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1000</span>:*^6d}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">10</span>:<span class="hljs-number">0</span>&gt;6d}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1000</span>:<span class="hljs-number">0</span>&gt;6d}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-yaml"><span class="hljs-number">10</span>
+<span class="hljs-number">1000</span>
+    <span class="hljs-number">10</span>
+  <span class="hljs-number">1000</span>
+<span class="hljs-number">10</span>    
+<span class="hljs-number">1000</span>  
+  <span class="hljs-number">10</span>  
+ <span class="hljs-number">1000</span> 
+<span class="hljs-string">**10**</span>
+<span class="hljs-string">*1000*</span>
+<span class="hljs-number">000010</span>
+<span class="hljs-number">001000</span>
+</code></pre>
+<p><code>&gt;</code> вказує на вирівнювання праворуч, <code>&lt;</code> — ліворуч, <code>^</code> — по центру. Можна також вказати символ-заповнювач (за замовчуванням — пробіл).</p>
+<p>Це форматування можливе й для рядків, з літерою <code>s</code> (<em>string</em>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"товар: ручка"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">"товар: зошит"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"товар: <span class="hljs-subst">{<span class="hljs-string">'ручка'</span>:&gt;7s}</span>"</span>); <span class="hljs-built_in">print</span>(<span class="hljs-string">f"товар: <span class="hljs-subst">{<span class="hljs-string">'зошит'</span>:&gt;7s}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-makefile"><span class="hljs-section">товар: ручка</span>
+<span class="hljs-section">товар: зошит</span>
+<span class="hljs-section">товар:   ручка</span>
+<span class="hljs-section">товар:   зошит</span>
+</code></pre>
+<p>Форматоване виведення дозволяє писати ідеально вирівняні стовпчики — дуже зручно, наприклад, для списку товарів з цінами у вигляді таблиці.</p>
+<p>Для <code>float</code> можна комбінувати загальну кількість символів з кількістю десяткових знаків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vidsotok_pravylnykh = ((<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>) * <span class="hljs-number">100</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{vidsotok_pravylnykh:<span class="hljs-number">7.3</span>f}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{vidsotok_pravylnykh:<span class="hljs-number">10.3</span>f}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"> 47.804
+<span class="hljs-code">    47.804
+</span></code></pre>
+<p><code>7.3f</code> означає: <code>float</code> з 3 десятковими знаками, відформатований на 7 символів (за замовчуванням — вирівняно праворуч). <code>10.3f</code> робить те саме на 10 символах. Десятковий роздільник <code>.</code> (і знак <code>-</code> для від'ємних чисел) також враховується як окремий символ.</p>
+<h3 id="344-інші-деталі-про-f-рядки">3.4.4 Інші деталі про f-рядки</h3>
+<p>Щоб вивести літеральні фігурні дужки у f-рядку, їх потрібно подвоїти, щоб екранувати від форматування:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">f"Літеральні дужки {{}} або {{ або }}"</span>
+      <span class="hljs-string">f"а для форматування <span class="hljs-subst">{<span class="hljs-number">10</span>}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Літеральні дужки {} або { або }а для форматування 10
+</code></pre>
+<p>Якщо не помістити змінну для форматування між фігурними дужками, це призведе до помилки:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">f"дужки без змінної <span class="hljs-subst">{}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">SyntaxError: f-<span class="hljs-built_in">string</span>: valid expression <span class="hljs-keyword">required</span> before <span class="hljs-string">'}'</span>
+</code></pre>
+<p>f-рядок є незалежним від функції <code>print()</code>. Якщо передати f-рядок функції <code>print()</code>, Python спочатку обчислить f-рядок, і саме отриманий рядок буде виведено на екран — так само, як в інструкції <code>print(5 * 5)</code> спочатку обчислюється множення, а потім результат виводиться:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vidsotok_pravylnykh = ((<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>) * <span class="hljs-number">100</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{vidsotok_pravylnykh:<span class="hljs-number">10.3</span>f}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(<span class="hljs-string">f"<span class="hljs-subst">{vidsotok_pravylnykh:<span class="hljs-number">10.3</span>f}</span>"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-javascript">    <span class="hljs-number">47.804</span>
+&lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'str'</span>&gt;
+</code></pre>
+<p>Python розглядає результат f-рядка як рядок, і функція <code>type()</code> це підтверджує.</p>
+<h3 id="345-вирази-у-f-рядках">3.4.5 Вирази у f-рядках</h3>
+<p>Надзвичайно потужна функція f-рядків — підтримка виразів Python усередині фігурних дужок: туди можна безпосередньо помістити операцію або виклик функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">f"Результат 5 * 5 дорівнює <span class="hljs-subst">{<span class="hljs-number">5</span> * <span class="hljs-number">5</span>}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Результат операції з floats: <span class="hljs-subst">{(<span class="hljs-number">4.1</span> * <span class="hljs-number">6.7</span>)}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Мінімум дорівнює <span class="hljs-subst">{<span class="hljs-built_in">min</span>(<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, <span class="hljs-number">4</span>)}</span>"</span>)
+zminna = <span class="hljs-number">2</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Тип <span class="hljs-subst">{zminna}</span> — <span class="hljs-subst">{<span class="hljs-built_in">type</span>(zminna)}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-javascript">Результат <span class="hljs-number">5</span> * <span class="hljs-number">5</span> дорівнює <span class="hljs-number">25</span>
+Результат операції з <span class="hljs-attr">floats</span>: <span class="hljs-number">27.47</span>
+Мінімум дорівнює -<span class="hljs-number">2</span>
+Тип <span class="hljs-number">2</span> — &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'int'</span>&gt;
+</code></pre>
+<p>Можливості f-рядків численні; для повного огляду варіантів форматування зверніться до офіційної документації Python з форматованого виведення¹ (англійською).</p>
+<h2 id="35-науковий-запис">3.5 Науковий запис</h2>
+<p>Для дуже великих або дуже малих чисел форматоване виведення дозволяє показати число в науковому записі (у вигляді степеня 10) за допомогою літери <code>e</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">1_000_000_000</span>:e}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">0.000_000_001</span>:e}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1.000000e+09
+1.000000e-09
+</code></pre>
+<p>Можна також визначити кількість цифр після коми:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">avogadro_number = <span class="hljs-number">6.022_140_76e23</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{avogadro_number:<span class="hljs-number">.0</span>e}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{avogadro_number:<span class="hljs-number">.3</span>e}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{avogadro_number:<span class="hljs-number">.6</span>e}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">6e+23
+6.022e+23
+6.022141e+23
+</code></pre>
+<h2 id="36-приклади-програм">3.6 Приклади програм</h2>
+<p>Подивимось, як отримані знання працюють у маленьких навчальних проєктах.</p>
+<p><strong>1. Привітання користувача</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">user_name = <span class="hljs-string">"Андрій"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт,"</span>, user_name, <span class="hljs-string">"! Ласкаво просимо до нашої першої програми. 👋"</span>)
+</code></pre>
+<p><strong>2. Візитна картка</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"===================================="</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Ім'я:     Дмитро Петренко"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Посада:   Python-розробник"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Email:    dmitro@python.com"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"===================================="</span>)
+</code></pre>
+<p><strong>3. Розклад уроків</strong> (за допомогою <code>sep</code> з керувальними символами)</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Понеділок:"</span>, <span class="hljs-string">"1. Математика"</span>, <span class="hljs-string">"2. Інформатика"</span>, <span class="hljs-string">"3. Фізика"</span>, sep=<span class="hljs-string">"\n\t"</span>)
+</code></pre>
+<p><strong>4. Таблиця множення на 5</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"5 * 1 ="</span>, <span class="hljs-number">5</span> * <span class="hljs-number">1</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"5 * 2 ="</span>, <span class="hljs-number">5</span> * <span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"5 * 3 ="</span>, <span class="hljs-number">5</span> * <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"5 * 4 ="</span>, <span class="hljs-number">5</span> * <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"5 * 5 ="</span>, <span class="hljs-number">5</span> * <span class="hljs-number">5</span>)
+</code></pre>
+<p><strong>5. Малюнок із символів (ASCII-арт)</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"  * "</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">" *** "</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"*****"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">" *** "</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"  * "</span>)
+</code></pre>
+<div class="exers">
+<h2 id="37-вправи">3.7 Вправи</h2>
+<blockquote>
+<p><strong>Порада.</strong> Для вправ використовуйте інтерпретатор Python.</p>
+</blockquote>
+<h3 id="1-виведення-в-інтерпретаторі-та-в-програмі">1 Виведення в інтерпретаторі та в програмі</h3>
+<p>Відкрийте інтерпретатор Python і введіть інструкцію <code>1 + 1</code>. Що відбувається? Напишіть те саме у скрипті <code>test.py</code>, який ви створите в текстовому редакторі. Виконайте цей скрипт командою <code>python test.py</code> в оболонці. Що відбувається? Чому? Зробіть так, щоб результат додавання <code>1 + 1</code> було виведено під час виконання скрипта.</p>
+<h3 id="2-базове-виведення-тексту-чисел-і-змінних">2 Базове виведення тексту, чисел і змінних</h3>
+<ul>
+<li>Напишіть програму, яка виводить у консоль ваше ім'я, а також фразу <code>Я вивчаю Python!</code>.</li>
+<li>Виведіть назву улюбленого фільму, використовуючи подвійні лапки, і назву свого міста, використовуючи одинарні. Спробуйте <code>print("Книга 'Гаррі Поттер'")</code> і поясніть результат.</li>
+<li>Виведіть свій вік (цілим числом) і приблизну вартість хліба в магазині (числом з рухомою крапкою).</li>
+<li>Створіть змінну <code>my_name</code> зі своїм ім'ям і виведіть її. Створіть змінну <code>score = 100</code> і виведіть спочатку слово <code>"score"</code>, а на наступному рядку — значення змінної. Що буде, якщо написати <code>print(unknown_variable)</code>, яку раніше не створювали? Перевірте.</li>
+</ul>
+<h3 id="3-обчислення-в-print">3 Обчислення в print()</h3>
+<ul>
+<li>Напишіть програму, яка обчислює й виводить кількість годин у добі (<code>24 * 1</code>).</li>
+<li>Обчисліть за допомогою Python вираз <code>20 − 5 × 3</code>.</li>
+<li>Напишіть програму, яка ділить 100 на 4 і виводить результат.</li>
+</ul>
+<h3 id="4-роздільник-sep">4 Роздільник sep</h3>
+<ul>
+<li>Виведіть поточну дату (день, місяць, рік) через похилу риску (<code>/</code>), використовуючи <code>sep</code>.</li>
+<li>Виведіть слова <code>Один</code>, <code>Два</code>, <code>Три</code> так, щоб між ними стояв знак <code>+</code>.</li>
+<li>За допомогою <code>sep</code> виведіть три числа так, щоб вони злилися в одне велике число.</li>
+</ul>
+<h3 id="5-аргумент-end">5 Аргумент end</h3>
+<ul>
+<li>Напишіть три команди <code>print()</code>, які виведуть слова <code>Червоний</code>, <code>Жовтий</code>, <code>Зелений</code> в один рядок через пробіл.</li>
+<li>Спробуйте передати в <code>end</code> три крапки (<code>end="..."</code>). Що зміниться в оформленні виведення?</li>
+<li>Надрукуйте числа від 1 до 3 в один рядок без пробілів, використовуючи <code>end=""</code>.</li>
+</ul>
+<h3 id="6-керувальні-символи-та-unicode">6 Керувальні символи та Unicode</h3>
+<ul>
+<li>Напишіть один <code>print()</code>, що виведе вірш із чотирьох рядків, використовуючи <code>\n</code>.</li>
+<li>Створіть за допомогою <code>\t</code> список трьох улюблених страв та їхніх цін у вигляді рівних стовпчиків.</li>
+<li>Виведіть шлях до файлу <code>C<span class="hl-char">:</span>\Users\Programmer\Desktop</code> (підказка: використайте <code>\\</code>).</li>
+<li>Виведіть повідомлення зі смайликом свого поточного настрою; спробуйте міні-історію з трьох емодзі (наприклад: ☀️ + 🌲 = 🪵); виведіть символи стрілочок <code>←</code>, <code>↑</code>, <code>→</code>, <code>↓</code> в один рядок.</li>
+</ul>
+<h3 id="7-оформлення-виведення">7 Оформлення виведення</h3>
+<ul>
+<li>Створіть заголовок для програми «Особистий щоденник», обвівши його рамкою із символів <code>=</code>.</li>
+<li>Виведіть рахунок у грі у форматі: <code>==== РЕЗУЛЬТАТ<span class="hl-char">:</span> 150 балів ====</code>.</li>
+<li>За допомогою символів дефісу <code>---</code> відокремте три різні повідомлення у своєму коді.</li>
+</ul>
+<h3 id="8-пошук-і-виправлення-помилок">8 Пошук і виправлення помилок</h3>
+<ul>
+<li>Навмисно створіть у своєму редакторі помилку <code>SyntaxError</code> і подивіться, як її підсвічує програма.</li>
+<li>Виправте помилку в коді: <code>print(Привіт, як справи?")</code>.</li>
+<li>Виправте помилку в коді: <code>print("Разом" 5)</code>.</li>
+</ul>
+<h3 id="9-повторюваний-рядок">9 Повторюваний рядок</h3>
+<p>Згенеруйте рядок, що складається лише з символу <code>*</code>, довжиною 20 символів, не набираючи літерально всі символи (підказка: скористайтеся дублюванням рядків з Розділу 2).</p>
+<h3 id="10-комбінований-візерунок">10 Комбінований візерунок</h3>
+<p>За зразком попередньої вправи згенеруйте в один рядок коду рядок із символів <code>*</code>, повторених 20 разів, за яким слідує візерунок <code>ab</code>, повторений 40 разів.</p>
+<h3 id="11-форматоване-виведення">11 Форматоване виведення</h3>
+<p>Використовуючи форматоване виведення, виведіть в одному рядку змінні <code>a</code>, <code>b</code> та <code>c</code>, значеннями яких є рядок <code>"привіт"</code>, ціле число <code>102</code> та <code>float</code> <code>10.318</code> відповідно. Змінна <code>c</code> має бути виведена з двома десятковими знаками.</p>
+<h3 id="12-форматоване-виведення-2">12 Форматоване виведення 2</h3>
+<p>Обчисліть відсоток успішності:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vidsotok_uspishnosti = ((<span class="hljs-number">4500</span> + <span class="hljs-number">2575</span>) / <span class="hljs-number">14800</span>) * <span class="hljs-number">100</span>
+</code></pre>
+<p>Виведіть вміст змінної <code>vidsotok_uspishnosti</code> на екран з 0, 1, 2, а потім 3 десятковими знаками в округленому вигляді, використовуючи f-рядки. Програма має вивести:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Відсоток успішності становить 48 %
+Відсоток успішності становить 47.8 %
+Відсоток успішності становить 47.80 %
+Відсоток успішності становить 47.804 %
+</code></pre>
+<h3 id="13-розкладання-дробів">13 Розкладання дробів</h3>
+<p>Використайте оператор модуля (<code>%</code>) та оператор цілочисельного ділення (<code>//</code>) для спрощення дробів, знаючи їхній чисельник і знаменник, і виведіть результат за допомогою f-рядків. Наприклад, для дробу 7/3: чисельник дорівнює 7, знаменник — 3, результат виводиться у вигляді <code>7/3 = 2 + 1/3</code> (2 — частка від цілочисельного ділення, 1 — остача). Зробіть те саме для дробів: 9/4, 23/5, 21/8 та 7/2.</p>
+<blockquote>
+<p>Для кожного дробу створіть змінні <code>chyselnyk</code> та <code>znamennyk</code>. Потім створіть змінні <code>chastka</code> та <code>ostacha</code>, використовуючи оператори <code>//</code> та <code>%</code>. Нарешті, виведіть результат у запитаній формі за допомогою f-рядка.</p>
+</blockquote>
+</div>
+<div class="project">
+<h2 id="38-творча-майстерня">3.8. Творча майстерня</h2>
+<ol>
+<li><strong>Візитна картка.</strong> Створіть візитну картку вигаданої компанії (або власну) з рамкою з емодзі чи символів, вашим ім'ям, телефоном та улюбленим гаслом.</li>
+<li><strong>Шкільний розклад.</strong> Напишіть розклад занять на один день, використовуючи <code>\n</code> та <code>\t</code>, щоб назва уроку та час початку були вирівняні у красиву табличку.</li>
+<li><strong>Меню кафе.</strong> Уявіть, що відкриваєте IT-кафе. Надрукуйте меню з трьох страв (наприклад, «Піца Кілобайт», «Кава Скрипт»), використовуючи <code>sep="..."</code> або <code>sep=" — "</code> для з'єднання назви страви та її ціни.</li>
+<li><strong>Касовий чек.</strong> Напишіть програму, що імітує чек із супермаркету: зверху назва магазину (<code>=== SUPERMARKET ===</code>), далі три товари з цінами, внизу лінія відриву (<code>-------------------------</code>), а в останньому рядку — <code>РАЗОМ<span class="hl-char">:</span></code> із сумою трьох цін, обчисленою комп'ютером.</li>
+<li><strong>Таблиця результатів.</strong> Надрукуйте таблицю лідерів для трьох геймерів із трьома стовпцями: Місце, Нікнейм, Бали. Використайте керувальні символи для ідеального вирівнювання рядків, а переможцю поставте символ-емоційку кубка 🏆.
+</li></ol></div><ol><li></li>
+</ol>
+<div class="read">
+<ol>
+<li><a href="https://docs.python.org/3/library/string.html#format-specification-mini-language">https://docs.python.org/3/library/string.html#format-specification-mini-language</a>
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

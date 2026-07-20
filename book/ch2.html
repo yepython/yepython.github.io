@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch2</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-2-величини-змінні-та-типи-даних">РОЗДІЛ 2. Величини, змінні та типи даних</h1>
+<h2 id="21-величини-літерали-та-змінні">2.1 Величини, літерали та змінні</h2>
+<p>Дані в комп'ютерних програмах зберігаються та опрацьовуються у вигляді <strong>величин</strong>. Величини бувають:</p>
+<ul>
+<li><strong>непоіменовані</strong> — числа та рядки символів, з якими ми працюємо безпосередньо, наприклад <code>1</code>, <code>485</code>, <code>-62</code>, <code>58.14</code>, <code>"Computer"</code>, <code>"Мама мила раму"</code>. У Python такі непоіменовані величини називають <strong>літералами</strong>;</li>
+<li><strong>поіменовані</strong> — це і є <strong>змінні</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>Змінна</strong> — це область пам'яті комп'ютера, в якій зберігається значення. На думку програміста, ця змінна визначається ім'ям, тоді як для комп'ютера це фактично адреса, тобто конкретна область пам'яті.</p>
+</blockquote>
+<p><img src="./media/ch2/97ff0449b0ae9e0ab10bca32262181a9.png" alt="97ff0449b0ae9e0ab10bca32262181a9.png">
+Поняття «змінної» легко зрозуміти, якщо уявити її у вигляді «коробки» для даних: кожна коробка має унікальну назву. Наприклад, змінну <code>message</code> можна уявити як коробку з підписом <em>message</em> (повідомлення), у якій лежить значення <code>"Привіт!"</code>, причому в цю саму «коробку» можна будь-коли покласти інше значення.</p>
+<h3 id="211-визначення-та-створення-змінної">2.1.1 Визначення та створення змінної</h3>
+<p>У Python оголошення змінної та її ініціалізація (тобто перше значення, яке ми в неї записуємо) відбуваються одночасно. На відміну від деяких інших мов програмування (C++, Pascal), у Python змінну не потрібно окремо оголошувати (описувати) — вона створюється в момент першого присвоєння їй значення.</p>
+<p>Щоб переконатися в цьому, збережіть та виконайте такий скрипт:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2
+</code></pre>
+<p><strong>Рядок 1.</strong> У цьому прикладі ми оголосили, а потім ініціалізували змінну <code>x</code> зі значенням 2. Насправді відбулося кілька речей:</p>
+<ul>
+<li>Python «вгадав», що змінна є цілим числом. Кажуть, що Python — це мова з динамічною типізацією.</li>
+<li>Python виділив (зарезервував) місце в пам'яті для цілого числа. Кожен тип змінної займає більше або менше місця в пам'яті. Python подбав про те, щоб ми могли знайти цю змінну за ім'ям <code>x</code>.</li>
+<li>Нарешті, Python присвоїв значення 2 змінній <code>x</code>.</li>
+</ul>
+<p>В інших мовах (наприклад, у C) потрібно прописувати ці різні етапи один за одним. Оскільки Python — мова високого рівня, простої інструкції <code>x = 2</code> було достатньо, щоб виконати всі три етапи за один раз.</p>
+<p><strong>Рядок 2.</strong> Зверніть увагу, що ми одразу скористалися функцією <code>print(x)</code>, щоб побачити вміст змінної. Це важливо: в інтерактивному інтерпретаторі Python досить просто набрати ім'я змінної (<code>x</code>), і він одразу покаже її значення — це особливість інтерпретатора, дуже зручна для пошуку (налагодження) помилок у програмі. Однак рядок скрипту Python, який містить лише ім'я змінної (без жодних інших вказівок), не покаже значення змінної на екрані під час виконання (сама інструкція залишається валідною й не викличе помилки). Тому в скрипті обов'язково використовують функцію виведення <code>print()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">e = <span class="hljs-number">2.71828</span>
+<span class="hljs-built_in">print</span>(e)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2.71828
+</code></pre>
+<p><img src="./media/ch2/b5d5adefb9ee48fee671c4b6caa74f65.png" alt="b5d5adefb9ee48fee671c4b6caa74f65.png">
+Використовувати змінну можна лише після того, як їй надано значення — використання неініціалізованої змінної спричинить помилку.</p>
+<p>Починаючи з версії 3.10, інтерпретатор Python покращив свої повідомлення про помилки. Тепер він здатен підказувати існуючі імена змінних, коли ви робите одруківку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">holosni = <span class="hljs-string">"аеиоую"</span>
+<span class="hljs-built_in">print</span>(holosna)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">NameError: ім<span class="hljs-string">'я '</span>holosna<span class="hljs-string">' не визначено. Можливо, ви мали на увазі: '</span>holosni<span class="hljs-string">'?
+</span></code></pre>
+<p>Якщо набране слово не дуже відрізняється, це також спрацює, навіть якщо помилка в різних частинах слова:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">apteka = <span class="hljs-string">"продаж ліків"</span>
+<span class="hljs-built_in">print</span>(farmacia)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">NameError: ім<span class="hljs-string">'я '</span>farmacia<span class="hljs-string">' не визначено. Можливо, ви мали на увазі: '</span>apteka<span class="hljs-string">'?
+</span></code></pre>
+<h3 id="212-оператор-присвоювання">2.1.2 Оператор присвоювання</h3>
+<p>Символ <code>=</code> називається оператором присвоювання. Він дозволяє присвоїти значення змінній у Python. Важливо: у програмуванні <code>=</code> не означає «дорівнює» — цей символ читається як «присвоєно значення» або «надано значення».</p>
+<blockquote>
+<p><strong>Присвоєння</strong> — надання величині імені, за яким можна використовувати її значення.</p>
+</blockquote>
+<p>Оператор <code>=</code> завжди використовується справа наліво: у інструкції <code>x = 2</code> Python приписує значення, розташоване праворуч (тут, 2), змінній, розташованій ліворуч (тут, <code>x</code>). Інші мови програмування, наприклад R, використовують символи <code>&lt;-</code>, щоб зробити присвоювання більш явним: <code>x &lt;- 2</code>.</p>
+<p>Ось інші випадки використання оператора <code>=</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+y = x
+<span class="hljs-built_in">print</span>(y)
+x = <span class="hljs-number">5</span> - <span class="hljs-number">2</span>
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2
+3
+</code></pre>
+<p><strong>Рядок <code>y = x</code>.</strong> Тут ми маємо ім'я змінної праворуч (<code>x</code>) та ліворуч (<code>y</code>) від оператора <code>=</code>. Дотримуючись правила руху справа наліво, вміст змінної <code>x</code> присвоюється змінній <code>y</code> (тобто ми оголосили дві змінні й скопіювали дані з однієї в іншу).</p>
+<p><strong>Рядок <code>x = 5 - 2</code>.</strong> Якщо праворуч від оператора <code>=</code> стоїть вираз (тут — віднімання <code>5 - 2</code>), спочатку обчислюється він, і результат присвоюється змінній <code>x</code>. Попереднє значення <code>x</code> (2) при цьому перезаписується.</p>
+<blockquote>
+<p>Оператор присвоювання <code>=</code> систематично перезаписує значення змінної, розташованої ліворуч від нього, якщо вона вже існує. Коли значення змінюється, старі дані просто зникають, замінені новими.</p>
+</blockquote>
+<p>Можна також оголосити декілька змінних в одному рядку (наприклад, <code>a, b = 5, 8</code>), однак заради кращої читабельності коду рекомендується надавати кожній змінній значення в окремому рядку — такий спосіб трохи довший, але його легше читати.</p>
+<h2 id="22-типи-даних">2.2 Типи даних</h2>
+<blockquote>
+<p>Тип даних — це спосіб класифікації даних, від якого залежить, яким чином дані опрацьовуються комп'ютером. Тип даних визначає можливі операції з цими даними та спосіб представлення цих даних у пам'яті. Тип змінної відповідає її природі.</p>
+</blockquote>
+<p>Кожна мова програмування має власні правила опрацювання різних даних. У Python не потрібно окремо описувати тип даних — це визначається автоматично, але при роботі з даними важливо знати їхній тип.</p>
+<p>Три основні типи, які нам знадобляться насамперед:</p>
+<ul>
+<li><strong>цілі числа</strong> (integer, <code>int</code>) — цілі додатні та від'ємні числа і нуль: <code>-2; 0; 15; 25000; -655536</code>;</li>
+<li><strong>числа з рухомою крапкою</strong> (<code>float</code>) — числа з крапкою, яка відділяє дробову частину: <code>2.15; 0.4; -76.08; 3.14159</code>;</li>
+<li><strong>рядки</strong> (string, <code>str</code>) — послідовності символів: <code>"Python"; "м"; "мама мила раму"; "gtrerr456h_67&amp;^*"</code>.</li>
+</ul>
+<p>Звичайно, існує багато інших типів (логічні, комплексні числа тощо), з якими ми познайомимось пізніше; охочі можуть звернутись до офіційної документації¹.</p>
+<p>У попередньому прикладі ми зберегли ціле число (<code>int</code>) у змінній <code>x</code>, але можна зберігати <code>float</code>, рядки або інші типи змінних:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">y = <span class="hljs-number">3.14</span>
+<span class="hljs-built_in">print</span>(y)
+a = <span class="hljs-string">"привіт"</span>
+<span class="hljs-built_in">print</span>(a)
+b = <span class="hljs-string">'вітаю'</span>
+<span class="hljs-built_in">print</span>(b)
+c = <span class="hljs-string">"""жираф"""</span>
+<span class="hljs-built_in">print</span>(c)
+d = <span class="hljs-string">'''лев'''</span>
+<span class="hljs-built_in">print</span>(d)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3.14
+привіт
+вітаю
+жираф
+лев
+</code></pre>
+<blockquote>
+<p>Python автоматично розпізнає деякі типи змінних (ціле число, <code>float</code>). Однак рядок потрібно брати в лапки (подвійні, одинарні або потрійні), щоб вказати Python початок і кінець рядка. В інтерпретаторі показ вмісту рядка відбувається з одинарними лапками, незалежно від типу лапок, використаних при визначенні. У Python, як і в більшості мов програмування, саме крапка використовується як десятковий роздільник: <code>3.14</code> розпізнається як <code>float</code>, тоді як <code>3,14</code> — ні. Однорядковий рядковий літерал обмежується одинарними або подвійними лапками, а багаторядковий — потрійними (<code>'''...'''</code>).</p>
+</blockquote>
+<p>Існують також змінні логічного типу. Логічна змінна — це змінна, яка набуває лише двох значень: Істина або Хиба. У Python для цього використовують два зарезервовані слова <code>True</code> та <code>False</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">var = <span class="hljs-literal">True</span>
+var2 = <span class="hljs-literal">False</span>
+<span class="hljs-built_in">print</span>(var)
+<span class="hljs-built_in">print</span>(var2)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">False</span>
+</code></pre>
+<p>Ми побачимо користь логічних змінних у розділах 5 «Цикли» та 6 «Перевірки».</p>
+<p>Дізнатися тип даних можна за допомогою функції <code>type()</code> (докладніше — у §2.6).</p>
+<h3 id="221-практичне-застосування-типів-даних">2.2.1 Практичне застосування типів даних</h3>
+<p>Вибір відповідного типу даних впливає на швидкість виконання та ефективність коду:</p>
+<p><strong>Цілі числа</strong> корисні для підрахунку об'єктів і представлення цілочисельних значень:</p>
+<ul>
+<li>підрахунок кількості учнів або населення міста/села;</li>
+<li>відстеження кількості придбаних або проданих товарів;</li>
+<li>показ рахунку в іграх;</li>
+<li>облік товарів у магазині або на складі.</li>
+</ul>
+<p><strong>Числа з рухомою крапкою</strong> застосовують там, де потрібні точність і дробові значення:</p>
+<ul>
+<li>вимірювання температури або маси;</li>
+<li>обчислення площ, об'ємів, швидкості та інших величин;</li>
+<li>розв'язування математичних вправ з десятковими дробами;</li>
+<li>побудова графіків та анімацій.</li>
+</ul>
+<p><strong>Рядки</strong> є незамінними інструментами для роботи з текстом:</p>
+<ul>
+<li>створення та редагування текстів;</li>
+<li>пошук потрібних текстів серед багатьох інших;</li>
+<li>заміна одних рядків або символів у них на інші;</li>
+<li>впорядкування рядків.</li>
+</ul>
+<h3 id="222-чому-важливо-обирати-правильний-тип-даних">2.2.2 Чому важливо обирати правильний тип даних</h3>
+<ul>
+<li><strong>Точність обчислень</strong> — типи даних визначають діапазон значень і доступні операції, тож правильний вибір типу забезпечує точність результатів.</li>
+<li><strong>Швидкість виконання</strong> — операції з цілими числами зазвичай виконуються швидше, ніж операції з рухомою крапкою; правильний вибір типу може прискорити виконання коду.</li>
+<li><strong>Оптимальне використання пам'яті</strong> — правильний тип мінімізує обсяг пам'яті, потрібний для зберігання даних, що особливо важливо для пристроїв з обмеженою пам'яттю або великих обсягів даних.</li>
+<li><strong>Зменшення помилок</strong> — використання відповідних типів допомагає запобігти помилкам під час виконання й робить код надійнішим.</li>
+</ul>
+<p>Мови програмування зазвичай мають можливість подавати ці типи даних, а також надають можливість створювати власні або складені типи для опрацювання спеціалізованих даних — з ними ми познайомимось пізніше.</p>
+<h2 id="23-іменування-змінних-та-ідентифікатори">2.3 Іменування змінних та ідентифікатори</h2>
+<p>Імена змінних, функцій та інших програмних об'єктів у Python називаються <strong>ідентифікаторами</strong>. Кожен ідентифікатор має бути унікальним — не може існувати двох різних об'єктів з однаковим іменем.</p>
+<p>Правила створення імен змінних (ідентифікаторів):</p>
+<ul>
+<li>ім'я може складатися з малих літер (a–z), великих літер (A–Z), цифр (0–9) або символу підкреслення (<code>_</code>);</li>
+<li>пробіли в імені змінної використовувати не можна;</li>
+<li>ім'я не повинно починатися з цифри, і не рекомендується починати його з символу <code>_</code> (окрім особливих випадків);</li>
+<li>не можна використовувати «зарезервовані» ключові слова Python як імена змінних (наприклад: <code>print</code>, <code>range</code>, <code>for</code>, <code>from</code> тощо);</li>
+<li>Python розрізняє регістр літер — це означає, що змінні <code>TesT</code>, <code>test</code>, <code>TEST</code> та, наприклад, <code>apple</code> і <code>AppLE</code> — це різні змінні.</li>
+</ul>
+<blockquote>
+<p>У мові Python є 33 зарезервовані ключові слова, які використовуються самою мовою і не можуть слугувати іменами змінних чи інших програмних об'єктів. Спроба назвати змінну зарезервованим словом призводить до помилки.</p>
+</blockquote>
+<p><img src="./media/ch2/b110a750112cc5cc4c57e3f52e14c4b3.png" alt="b110a750112cc5cc4c57e3f52e14c4b3.png"></p>
+<p>Наскільки це можливо, радимо давати змінним зрозумілі імена та, за рідкісними винятками, уникати імен з однієї літери.</p>
+<h3 id="231-зміїний-регістр-snakecase">2.3.1 «Зміїний регістр» (snake_case)</h3>
+<p>Для довгого імені, яке містить декілька слів, зазвичай використовують <strong>зміїний регістр</strong> (snake_case): слова йдуть одне за одним, а замість пропусків використовується символ підкреслення <code>_</code>. Наприклад:</p>
+<ul>
+<li><code>my_very_long_name</code></li>
+<li><code>file_not_found_message</code></li>
+<li><code>boot_program</code></li>
+<li><code>server_down</code></li>
+<li><code>turtle_direction</code></li>
+</ul>
+<h3 id="232-що-робить-назву-змінної-поганою">2.3.2 Що робить назву змінної поганою</h3>
+<p>Більшість проблем з іменуванням виникає через бажання зробити ім'я коротким: індекси циклу часто називають <code>i</code>, <code>j</code>, <code>k</code>; кількість — <code>n</code>; рядкову величину — <code>s</code>; окремий символ — <code>c</code>. Так само шкодить і намагання «прямого перекладу» математичних чи фізичних формул у код — усе це робить код незрозумілим навіть для того, хто його писав.</p>
+<p>Декілька хороших правил найменування:</p>
+<ul>
+<li>Використовуйте імена, які легко прочитати, наприклад <code>user_name</code> або <code>product_price</code>.</li>
+<li>Ім'я повинне мати чіткий і зрозумілий сенс, який описує дані, що в ньому зберігаються.</li>
+<li>Описуйте призначення змінних при їх оголошенні в коментарях коду.</li>
+<li>Не використовуйте однолітерні імена з латинською малою літерою <code>l</code> (ель) та великою літерою <code>I</code> (і) через їхню схожість.</li>
+<li>Не використовуйте імена з нелатинськими літерами (кирилиця, ієрогліфи тощо).</li>
+<li>Уникайте абревіатур або коротких імен, таких як <code>a</code>, <code>b</code>, <code>c</code>, окрім випадків, коли ви точно знаєте, що це доречно.</li>
+<li>Для довгого імені з кількох слів використовуйте snake_case.</li>
+<li>Робіть імена максимально описовими й водночас лаконічними: імена <code>data</code> чи <code>value</code> погані, бо нічого не говорять про призначення.</li>
+<li>За потреби використовуйте зрозумілі скорочення в кінці імен (<code>velocity_avg</code>, <code>distance_avg</code>, <code>velocity_min</code>, <code>distance_max</code>).</li>
+<li>Використовуйте <code>item_count</code> замість <code>num</code>.</li>
+<li>Використовуйте описові індекси циклів замість <code>i</code>, <code>j</code>, <code>k</code>, де це можливо.</li>
+</ul>
+<h2 id="24-науковий-запис">2.4 Науковий запис</h2>
+<p>Дуже великі або дуже малі числа можна записувати за допомогою степенів числа 10, використовуючи символ <code>e</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">1e6</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">3.12e-3</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1000000.0
+0.00312
+</code></pre>
+<p>Це називається науковим записом (нотацією). Варто відзначити дві важливі речі:</p>
+<ul>
+<li><code>1e6</code> або <code>3.12e-3</code> не передбачає використання експоненційного числа <code>e</code>, а означає <code>1×10⁶</code> або <code>3.12×10⁻³</code> відповідно;</li>
+<li>навіть якщо ліворуч і праворуч від символу <code>e</code> стоять лише цілі числа (як у <code>1e6</code>), Python систематично генерує <code>float</code>.</li>
+</ul>
+<p>Іноді буває незручно писати числа, що складаються з багатьох цифр, наприклад, число Авогадро <code>6.02214076×10²³</code> або орієнтовна кількість людей на Землі — <code>8 094 752 749</code>. Щоб полегшити сприйняття, Python дозволяє використовувати символ підкреслення (<code>_</code>) для розділення груп цифр. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">avogadro_number = <span class="hljs-number">6.022_140_76e23</span>
+<span class="hljs-built_in">print</span>(avogadro_number)
+humans_on_earth = <span class="hljs-number">8_094_752_749</span>
+<span class="hljs-built_in">print</span>(humans_on_earth)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">6.02214076e+23
+8094752749
+</code></pre>
+<p>У цих прикладах символ <code>_</code> розділяє групи по три цифри, але групувати можна як завгодно:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">80_94_7527_49</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">8094752749
+</code></pre>
+<h2 id="25-операції-з-величинами">2.5 Операції з величинами</h2>
+<h3 id="251-операції-над-числовими-типами">2.5.1 Операції над числовими типами</h3>
+<p>Чотири основні арифметичні операції виконуються просто над числовими типами (цілі числа та <code>float</code>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">45</span>
+<span class="hljs-built_in">print</span>(x + <span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(x - <span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(x * <span class="hljs-number">3</span>)
+y = <span class="hljs-number">2.5</span>
+<span class="hljs-built_in">print</span>(x - y)
+<span class="hljs-built_in">print</span>((x * <span class="hljs-number">10</span>) + y)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">47
+43
+135
+42.5
+452.5
+</code></pre>
+<p>Якщо ви змішуєте типи <code>int</code> та <code>float</code>, результат повертається як <code>float</code> (оскільки цей тип більш загальний). Дужки дозволяють керувати пріоритетами операцій.</p>
+<p>Оператор <code>/</code> виконує ділення і, на відміну від <code>+</code>, <code>-</code> та <code>*</code>, повертаючи значення типу <code>float</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">3</span> / <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">2.5</span> / <span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">6</span> / <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">10</span> / <span class="hljs-number">2</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0.75
+1.25
+2.0
+5.0
+</code></pre>
+<p>Оператор піднесення до степеня — <code>**</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">2</span>**<span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">2</span>**<span class="hljs-number">4</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">8
+16
+</code></pre>
+<p>Щоб отримати частку та остачу від цілочисельного ділення, використовують символи <code>//</code> (частка) та <code>%</code> (остача):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">5</span> // <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">5</span> % <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">8</span> // <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">8</span> % <span class="hljs-number">4</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+1
+2
+0
+</code></pre>
+<p>Символи <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>**</code>, <code>//</code> та <code>%</code> називаються операторами, оскільки виконують операції над змінними.</p>
+<p>Існують також «комбіновані» оператори, що виконують операцію та присвоювання за один крок:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">i = <span class="hljs-number">0</span>
+i = i + <span class="hljs-number">1</span>
+<span class="hljs-built_in">print</span>(i)
+i += <span class="hljs-number">1</span>
+<span class="hljs-built_in">print</span>(i)
+i += <span class="hljs-number">2</span>
+<span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+2
+4
+</code></pre>
+<p>Оператор <code>+=</code> виконує додавання, а потім присвоює результат тій самій змінній. Ця операція називається «інкрементацією». Оператори <code>-=</code>, <code>*=</code> та <code>/=</code> поводяться аналогічно для віднімання, множення та ділення.</p>
+<h3 id="252-операції-над-рядками">2.5.2 Операції над рядками</h3>
+<p>Для рядків можливі дві операції: додавання та множення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"Привіт"</span>
+<span class="hljs-built_in">print</span>(riadok)
+<span class="hljs-built_in">print</span>(riadok + <span class="hljs-string">" Python"</span>)
+<span class="hljs-built_in">print</span>(riadok * <span class="hljs-number">3</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Привіт
+Привіт Python
+ПривітПривітПривіт
+</code></pre>
+<p>Оператор додавання <code>+</code> конкатенує (з'єднує) два рядки — це називається <strong>конкатенацією</strong>. Оператор множення <code>*</code> між цілим числом і рядком дублює (повторює) рядок кілька разів — це називається <strong>дублюванням</strong>. Рядки можна об'єднувати лише з іншими рядками, а розмножувати — лише на ціле число.</p>
+<blockquote>
+<p>Оператори <code>+</code> і <code>*</code> поводяться по-різному для цілих чисел і для рядків: операція <code>2 + 2</code> — це додавання, тоді як <code>"2" + "2"</code> — конкатенація. Це називається перевизначенням операторів. Ми повернемось до цього поняття в розділі 24 «Більше про класи та об'єкти» (онлайн).</p>
+</blockquote>
+<h3 id="253-недозволені-операції">2.5.3 Недозволені операції</h3>
+<p>Остерігайтеся виконувати недопустимі операції, інакше отримаєте повідомлення про помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"тото"</span> * <span class="hljs-number">1.3</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-php"><span class="hljs-built_in">TypeError</span>: can<span class="hljs-string">'t multiply sequence by non-int of type '</span><span class="hljs-keyword">float</span><span class="hljs-string">'
+</span></code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"тото"</span> + <span class="hljs-number">2</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-python">TypeError: can only concatenate <span class="hljs-built_in">str</span> (<span class="hljs-keyword">not</span> <span class="hljs-string">"int"</span>) to <span class="hljs-built_in">str</span>
+</code></pre>
+<p>Python надає інформацію у повідомленні про помилку: у другому прикладі вказано, що потрібно використовувати змінну типу <code>str</code>, а не <code>int</code>.</p>
+<p><strong>Підсумок правил:</strong></p>
+<ul>
+<li>при діях з цілими числами результат буде цілим числом;</li>
+<li>якщо хоча б одне значення при виконанні дій є числом з рухомою крапкою — результат буде подано як <code>float</code>;</li>
+<li>рядки можна об'єднувати тільки з іншими рядками або розмножувати їх (на ціле число).</li>
+</ul>
+<h3 id="254-приклад-обчислення-виразу-з-кількома-змінними">2.5.4 Приклад: обчислення виразу з кількома змінними</h3>
+<p>Розглянемо, як Python обчислює послідовність інструкцій, коли ім'я змінної в правій частині заміняється на її поточне значення:</p>
+<pre><code data-highlighted="yes" class="hljs language-ini"><span class="hljs-attr">a</span> = <span class="hljs-number">2</span>
+<span class="hljs-attr">b</span> = <span class="hljs-number">3</span>
+<span class="hljs-attr">c</span> = a * <span class="hljs-number">5</span>
+<span class="hljs-attr">d</span> = b * <span class="hljs-number">6</span>
+<span class="hljs-attr">e</span> = c + d
+</code></pre>
+<p>Простежимо крок за кроком:</p>
+<table>
+<thead>
+<tr>
+<th>Крок</th>
+<th>Інструкція</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>a = 2</code></td>
+<td><code>a = 2</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>b = 3</code></td>
+<td><code>b = 3</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>c = a * 5</code></td>
+<td><code>c = 2 * 5 = 10</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>d = b * 6</code></td>
+<td><code>d = 3 * 6 = 18</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>e = c + d</code></td>
+<td><code>e = 10 + 18 = 28</code></td>
+</tr>
+</tbody></table>
+<p>При виконанні програми, щойно трапляється ім'я змінної, замість нього автоматично підставляється її поточне значення. У результаті виконання цієї програми на екран буде виведено число <strong>28</strong>.</p>
+<h2 id="26-функція-type">2.6 Функція type()</h2>
+<p>Якщо ви не пам'ятаєте тип змінної, скористайтеся функцією <code>type()</code>, яка вам його нагадає:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(x))
+y = <span class="hljs-number">2.0</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(y))
+z = <span class="hljs-string">'2'</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(z))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(<span class="hljs-literal">True</span>))
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-kotlin">&lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'int'</span>&gt;
+&lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'float'</span>&gt;
+&lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'str'</span>&gt;
+&lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'bool'</span>&gt;
+</code></pre>
+<p><strong>Клас</strong> — стосовно змінних є типом даних, який об'єднує кілька пов'язаних змінних (і, зазвичай, методів) в одну сутність.</p>
+<blockquote>
+<p>Для Python значення <code>2</code> (ціле число) відрізняється від <code>2.0</code> (<code>float</code>) і також відрізняється від <code>'2'</code> (рядок).</p>
+</blockquote>
+<h2 id="27-перетворення-типів-casting">2.7 Перетворення типів (casting)</h2>
+<p>У програмуванні часто доводиться перетворювати типи, тобто переходити від числового типу до рядка або навпаки. У Python це реалізують функції <code>int()</code>, <code>float()</code> та <code>str()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">i = <span class="hljs-number">3</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>(i))
+i = <span class="hljs-string">'456'</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">int</span>(i))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">float</span>(i))
+i = <span class="hljs-string">'3.1416'</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">float</span>(i))
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+456
+456.0
+3.1416
+</code></pre>
+<p>Ми побачимо в розділі «Файли», що ці перетворення важливі: коли ми читаємо чи записуємо числа у файл, вони розглядаються як текст, тобто рядки, — тому їх потрібно перетворювати назад у числа.</p>
+<p>Функція <code>str()</code> перетворює число на рядок — це знадобиться, якщо потрібно об'єднати число з рядком (спробувати додати число до рядка напряму, наприклад <code>"тото" + 2</code>, як бачили вище, викличе помилку саме тому, що поєднувати рядок і число без перетворення не дозволяється).</p>
+<p>Функція <code>int()</code> робить зворотнє — перетворює рядок у ціле число, але тільки якщо рядок є записом числа. Для перетворення на число з рухомою крапкою використовують <code>float()</code>.</p>
+<p>Будь-яке перетворення змінної з одного типу в інший називається англійською <em>casting</em>; можливо, ви зустрінете цей термін і в інших джерелах.</p>
+<h2 id="28-примітка-щодо-термінології-та-синтаксису">2.8 Примітка щодо термінології та синтаксису</h2>
+<p>У цьому розділі ми розглянули поняття змінної, яке є спільним для всіх мов програмування.</p>
+<p>Python є мовою, яку називають «об'єктно-орієнтованою», тому надалі ми можемо використовувати слово «об'єкт» для позначення змінної. Наприклад, «змінна цілого типу» буде для нас еквівалентом «об'єкт цілого типу». </p>
+<p>Крім того, у цьому розділі ми кілька разів зустрічали функції, зокрема <code>type()</code>, <code>int()</code>, <code>float()</code> та <code>str()</code>. У розділі 1 «Вступ» ми також бачили функцію <code>print()</code>. Ми розпізнаємо функцію за тим, що після її назви слідують дужки (наприклад, <code>type()</code>). У Python загальний синтаксис — <code>функція()</code>.</p>
+<p>Те, що знаходиться в дужках функції, називається <strong>аргументом</strong> — це те, що ми «передаємо» функції. В інструкції <code>type(2)</code> саме ціле число <code>2</code> є аргументом, переданим функції <code>type()</code>. Поки що запам'ятаємо, що функція — це своєрідна коробка, якій передають один (або кілька) аргумент(ів), яка виконує дію і може повертати результат або, частіше, об'єкт. Наприклад, функція <code>type()</code> повертає тип змінної, яку їй передали як аргумент. У Python, коли функція приймає кілька аргументів, їх слід розділяти комою.</p>
+<p>Якщо ці поняття здаються незрозумілими, не хвилюйтеся — у міру просування курсом усе стане ясно.</p>
+<h2 id="29-мінімум-і-максимум">2.9 Мінімум і максимум</h2>
+<p>Python пропонує функції <code>min()</code> та <code>max()</code>, які повертають мінімум і максимум кількох цілих чисел або <code>float</code> відповідно:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">min</span>(<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, <span class="hljs-number">4</span>))
+pi = <span class="hljs-number">3.14</span>
+e = <span class="hljs-number">2.71</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">max</span>(e, pi))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">max</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2.4</span>, -<span class="hljs-number">6</span>))
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-diff"><span class="hljs-deletion">-2</span>
+3.14
+2.4
+</code></pre>
+<p><code>min()</code> та <code>max()</code> — приклади функцій, що приймають кілька аргументів, розділених комою. Вони можуть приймати як аргументи стільки цілих чисел і <code>float</code>, скільки завгодно, але їх має бути щонайменше два.</p>
+<div class="exers">
+<h2 id="210-вправи">2.10 Вправи</h2>
+<h3 id="числа-фрідмана">Числа Фрідмана</h3>
+<p>Числа Фрідмана⁴ — це числа, які можна виразити за допомогою всіх своїх цифр у математичному виразі. Наприклад, 347 є числом Фрідмана, оскільки його можна записати у вигляді <code>4 + 7**3</code>. Так само 127, який можна записати у вигляді <code>2**7 - 1</code>.</p>
+<p>Визначте, чи відповідають наступні вирази числам Фрідмана. Запишіть їх у Python і виконайте відповідний код:</p>
+<ul>
+<li><code>7 + 3**6</code></li>
+<li><code>(3 + 4)**3</code></li>
+<li><code>3**6 - 5</code></li>
+<li><code>(1 + 2**8) * 5</code></li>
+<li><code>(2 + 1**8)**7</code></li>
+</ul>
+<h3 id="передбачте-результат-операції">Передбачте результат: операції</h3>
+<p>Спробуйте передбачити результат кожної з наступних інструкцій, а потім перевірте його в інтерпретаторі Python:</p>
+<ul>
+<li><code>(1 + 2)**3</code></li>
+<li><code>"Да" * 4</code></li>
+<li><code>"Да" + 3</code></li>
+<li><code>("Па" + "Ла") * 2</code></li>
+<li><code>("Да" * 4) / 2</code></li>
+<li><code>5 / 2</code></li>
+<li><code>5 // 2</code></li>
+<li><code>5 % 2</code></li>
+</ul>
+<h3 id="передбачте-результат-операції-та-перетворення-типів">Передбачте результат: операції та перетворення типів</h3>
+<p>Спробуйте передбачити результат кожної з наступних інструкцій, а потім перевірте його в інтерпретаторі Python:</p>
+<ul>
+<li><code>str(4) * int("3")</code></li>
+<li><code>int("3") + float("3.2")</code></li>
+<li><code>str(3) * float("3.2")</code></li>
+<li><code>str(3 / 4) * 2</code></li>
+</ul>
+<h3 id="тип-результату">Тип результату</h3>
+<p>Який тип даних матиме результат наступних виконаних операцій? (наприклад, <code>2 + 3</code>, <code>2 + 3.0</code>, <code>"2" + "3"</code>, <code>"2" * 3</code>). Обґрунтуйте відповідь, використовуючи <code>type()</code>.</p>
+<h3 id="найбільше-ціле-число">Найбільше ціле число</h3>
+<p>Знайдіть спосіб дізнатися, яке найбільше ціле число, з яким може працювати Python (підказка: чи існує в Python обмеження на розмір <code>int</code>, як у деяких інших мовах?).</p>
+<h3 id="науковий-запис-чисел">Науковий запис чисел</h3>
+<p>Поясніть спосіб, за яким числа з рухомою крапкою записуються в науковому записі. Як записати в такий спосіб числа <code>234000.0</code>, <code>1234.0</code>, <code>1234.5678</code>?</p>
+<h3 id="роздільна-здатність-екрана-та-память">Роздільна здатність екрана та пам'ять</h3>
+<p>Роздільна здатність екрана — кількість пікселів, які може відобразити екран пристрою по горизонталі та вертикалі. Типові значення:</p>
+<ul>
+<li>HD (720p) — 1280 × 720;</li>
+<li>Full HD (1080p) — 1920 × 1080;</li>
+<li>UltraHD (4K) — 3840 × 2160.</li>
+</ul>
+<p><strong>Завдання 1.</strong> За допомогою Python визначте загальну кількість пікселів на екрані у режимах HD, Full HD та 4K.</p>
+<p><strong>Завдання 2.</strong> Кожен піксель зображення утворюється змішуванням трьох кольорів — червоного, зеленого та синього, кожен з яких може мати один з 256 рівнів (0–255), тобто на збереження одного пікселя потрібно 3 байти пам'яті (по одному байту на кожен колір). Визначте кількість байтів пам'яті, необхідних для збереження зображення у режимах HD, Full HD та 4K (загальну кількість пікселів помножте на кількість байтів на піксель).</p>
+<p><em>Підказка:</em> щоб не обчислювати кількість пікселів двічі, збережіть її в змінній після першого завдання й використайте цю змінну в другому.</p>
+<h3 id="зарезервовані-слова">Зарезервовані слова</h3>
+<p>Спробуйте створити змінну з іменем, що збігається з одним із зарезервованих ключових слів Python (наприклад, <code>for</code>, <code>print</code>, <code>class</code>). Яку помилку ви отримаєте? Поясніть, чому вона виникає.</p>
+</div>
+<div class="read">
+<ol>
+<li><a href="https://docs.python.org/3/library/stdtypes.html">https://docs.python.org/3/library/stdtypes.html</a></li>
+<li><a href="https://uk.wikipedia.org/wiki/%D0%91%D1%83%D0%BB%D0%B5%D0%B2%D0%B0_%D0%B7%D0%BC%D1%96%D0%BD%D0%BD%D0%B0">https://uk.wikipedia.org/wiki/Булева_змінна</a></li>
+<li><a href="https://uk.wikipedia.org/wiki/%D0%94%D1%96%D0%BB%D0%B5%D0%BD%D0%BD%D1%8F_%D0%B7_%D0%BE%D1%81%D1%82%D0%B0%D1%87%D0%B5%D1%8E">https://uk.wikipedia.org/wiki/Ділення_з_остачею</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Friedman_number">https://en.wikipedia.org/wiki/Friedman_number</a>
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

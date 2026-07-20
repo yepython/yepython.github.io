@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch8</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-8-словники-та-кортежі">РОЗДІЛ 8. Словники та кортежі</h1>
+<p>У цьому розділі ми розглянемо два нові типи об'єктів, які виявляються надзвичайно корисними: словники та кортежі. Як і списки, словники та кортежі містять колекцію інших об'єктів. Проте ми побачимо, що ці три типи керуються різними правилами доступу до вмісту й мають різні принципи роботи.</p>
+<p>Ми вже знаємо, як зберігати групи даних у списках, де кожен елемент має свій порядковий номер (індекс): 0, 1, 2... Але в реальному житті ми рідко шукаємо інформацію за номерами —  коли ви шукаєте номер телефону друга, ви шукаєте його за іменем, а не за порядковим номером у списку контактів., коли ви дивитеся на цінник у магазині, ви пов'язуєте назву товару з його вартістю, а не з номером позиції на полиці.</p>
+<p>Нехай нам потрібно зберегти столиці кількох країн. Спробуємо зробити це за допомогою двох списків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">krayiny = [<span class="hljs-string">"Україна"</span>, <span class="hljs-string">"Франція"</span>, <span class="hljs-string">"Італія"</span>]
+stolytsi = [<span class="hljs-string">"Київ"</span>, <span class="hljs-string">"Париж"</span>, <span class="hljs-string">"Рим"</span>]
+<span class="hljs-built_in">print</span>(krayiny)
+<span class="hljs-built_in">print</span>(stolytsi)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'Україна'</span>, <span class="hljs-string">'Франція'</span>, <span class="hljs-string">'Італія'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'Київ'</span>, <span class="hljs-string">'Париж'</span>, <span class="hljs-string">'Рим'</span>]</span>
+</code></pre>
+<p>Якщо ми захочемо дізнатися столицю Італії, доведеться спочатку знайти, під яким індексом «Італія» стоїть у списку <code>krayiny</code> (тут — 2, оскільки позиції позчинаються з 0), а потім узяти елемент з тим самим індексом зі списку <code>stolytsi</code>. Це незручно й ризиковано: досить один раз змінити порядок елементів в одному зі списків, і відповідність між країною та її столицею зламається. Потрібна структура, яка дозволяє напряму пов'язати пари даних — саме для цього в Python існують <strong>словники</strong>.</p>
+<h2 id="81-словники">8.1 Словники</h2>
+<h3 id="811-визначення-та-функціонування">8.1.1 Визначення та функціонування</h3>
+<blockquote>
+<p><strong>Словник</strong> - сукупність об'єктів Python, до яких звертаються за допомогою ключа, а не індексу. Тобто це не послідовний об'єкт, як список, а так званий об'єкт відповідності (англ. <em>mapping object</em>), або асоціативний масив.</p>
+</blockquote>
+<p>Як це працює на практиці? Розглянемо приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha1 = {}
+knyha1[<span class="hljs-string">"nazva"</span>] = <span class="hljs-string">"Подорож до зірок"</span>
+knyha1[<span class="hljs-string">"reityng"</span>] = <span class="hljs-number">5.0</span>
+knyha1[<span class="hljs-string">"tsina"</span>] = <span class="hljs-number">1100</span>
+<span class="hljs-built_in">print</span>(knyha1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Подорож до зірок'</span>, <span class="hljs-string">'reityng'</span>: 5.0, <span class="hljs-string">'tsina'</span>: 1100}
+</code></pre>
+<ul>
+<li><strong>Рядок 1.</strong> Ми визначаємо порожній словник за допомогою фігурних дужок <code>{}</code> (так само, як для списків використовуються квадратні дужки <code>[]</code>).</li>
+<li><strong>Рядки 2–4.</strong> Ми заповнюємо словник кількома ключами (<code>"nazva"</code>, <code>"reityng"</code>, <code>"tsina"</code>), яким призначаємо значення.</li>
+<li><strong>Останній рядок.</strong> Ми виводимо вміст словника. Фігурні дужки показують, що це саме словник, і для кожного елемента, розділеного комою, бачимо пару <code>ключ<span class="hl-char">:</span> значення</code>. Тут ключі — рядки (що трапляється найчастіше), а значеннями можуть бути будь-які об'єкти Python.</li>
+</ul>
+<p>Після створення словника значення, пов'язане з певним ключем, отримують за допомогою синтаксису <code>slovnyk["klyuch"]</code>. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha1 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Подорож до зірок"</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">5.0</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">1100</span>}
+<span class="hljs-built_in">print</span>(knyha1[<span class="hljs-string">"nazva"</span>])
+<span class="hljs-built_in">print</span>(knyha1[<span class="hljs-string">"reityng"</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Подорож до зірок
+5.0
+</code></pre>
+<p>Для доступу до елемента списку потрібен був індекс (наприклад, <code>spysok[2]</code>). Тут використання ключа (часто — рядка) робить код набагато зрозумілішим.</p>
+<p>Пар ключ/значення можна додавати скільки завгодно — так само, як у список можна додати скільки завгодно елементів.</p>
+<blockquote>
+<p>До версії Python 3.6 словник виводився без гарантованого порядку: порядок показу елементів не обов'язково збігався з порядком їх додавання, і те саме стосувалося ітерації. Починаючи з Python 3.7, ця поведінка змінилася: словник завжди показується в тому порядку, в якому його заповнили, і ітерація також відбувається в цьому порядку. Це деталь внутрішньої реалізації словників у Python, яка для нас не критична — головне пам'ятати, що ми звертаємось до елементів за ключем, а не за позицією.</p>
+</blockquote>
+<p>Можна також ініціалізувати всі ключі та значення словника одразу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Таємниця лісу"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">70</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: 70, <span class="hljs-string">'reityng'</span>: 1.75}
+</code></pre>
+<p>І ніщо не заважає додати ще один ключ і значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Таємниця лісу"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">70</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">1.75</span>}
+knyha2[<span class="hljs-string">"rik_vydannya"</span>] = <span class="hljs-number">2015</span>
+<span class="hljs-built_in">print</span>(knyha2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: 70, <span class="hljs-string">'reityng'</span>: 1.75, <span class="hljs-string">'rik_vydannya'</span>: 2015}
+</code></pre>
+<p>Уже з цього першого огляду видно перевагу словників: можливість знаходити елементи за іменами (ключами), а не за індексами.</p>
+<p>Людям загалом легше запам'ятовувати імена, ніж числа. Тому словники дуже зручні, коли потрібно працювати зі складними структурами даних, які важко описати лише позиціями елементів, — тут списки досягають своїх меж. Використання словників зазвичай робить код читабельнішим. Наприклад, якби ми хотіли зберегти координати <code>(x, y, z)</code> точки в просторі, можна було б використати <code>koord = [0, 1, 2]</code> (список) або <code>koord = {"x"<span class="hl-char">:</span> 0, "y"<span class="hl-char">:</span> 1, "z"<span class="hl-char">:</span> 2}</code> (словник). Той, хто читає код, одразу зрозуміє, що <code>koord["z"]</code> містить координату z, тоді як з <code>koord[2]</code> це не так очевидно.</p>
+<h3 id="812-зміна-та-видалення-елементів">8.1.2 Зміна та видалення елементів</h3>
+<p>Словники, як і списки, є змінюваними (mutable). Щоб змінити значення, пов'язане з наявним ключем, достатньо просто присвоїти йому нове значення — так само, як при додаванні нового ключа:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha1 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Подорож до зірок"</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">5.0</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">1100</span>}
+knyha1[<span class="hljs-string">"reityng"</span>] = <span class="hljs-number">4.5</span>
+<span class="hljs-built_in">print</span>(knyha1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Подорож до зірок'</span>, <span class="hljs-string">'reityng'</span>: 4.5, <span class="hljs-string">'tsina'</span>: 1100}
+</code></pre>
+<p>Python не створює новий ключ, а перезаписує значення наявного, оскільки ключ <code>"reityng"</code> уже існував у словнику.</p>
+<p>Щоб видалити пару ключ/значення, є два способи. Перший — інструкція <code>del</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha1 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Подорож до зірок"</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">4.5</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">1100</span>}
+<span class="hljs-keyword">del</span> knyha1[<span class="hljs-string">"tsina"</span>]
+<span class="hljs-built_in">print</span>(knyha1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Подорож до зірок'</span>, <span class="hljs-string">'reityng'</span>: 4.5}
+</code></pre>
+<p>Другий — метод <code>.pop()</code>, який не лише видаляє пару, а й повертає значення, яке було видалено:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Таємниця лісу"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">70</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">1.75</span>}
+vydalena_tsina = knyha2.pop(<span class="hljs-string">"tsina"</span>)
+<span class="hljs-built_in">print</span>(vydalena_tsina)
+<span class="hljs-built_in">print</span>(knyha2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">70
+{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'reityng'</span>: 1.75}
+</code></pre>
+<p><code>.pop()</code> зручний, коли видалене значення ще потрібне для подальших обчислень; якщо воно не потрібне — простіше використати <code>del</code>.</p>
+<h3 id="813-функція-len">8.1.3 Функція <code>len()</code></h3>
+<p>Як і для списків, <code>len()</code> повертає довжину словника — тут це кількість пар ключ/значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha3 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Оповідання"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">90</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">4.2</span>}
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(knyha3))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+</code></pre>
+<h3 id="814-ітерація-по-ключах-для-отримання-значень">8.1.4 Ітерація по ключах для отримання значень</h3>
+<p>Щоб побачити всі пари ключ/значення, можна ітерувати по словнику так:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-keyword">for</span> klyuch <span class="hljs-keyword">in</span> knyha2:
+    <span class="hljs-built_in">print</span>(klyuch, knyha2[klyuch])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">nazva Таємниця лісу
+tsina 70
+reityng 1.75
+</code></pre>
+<p>За замовчуванням ітерація по словнику відбувається по ключах. Ітераційна змінна <code>klyuch</code> послідовно набуває значення кожного ключа, а <code>knyha2[klyuch]</code> дає значення, що відповідає цьому ключу.</p>
+<h3 id="815-методи-keys-та-values">8.1.5 Методи <code>.keys()</code> та <code>.values()</code></h3>
+<p>Методи <code>.keys()</code> та <code>.values()</code> повертають, як неважко здогадатися, ключі та значення словника:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2.keys())
+<span class="hljs-built_in">print</span>(knyha2.values())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">dict_keys(<span class="hljs-selector-attr">[<span class="hljs-string">'nazva'</span>, <span class="hljs-string">'tsina'</span>, <span class="hljs-string">'reityng'</span>]</span>)
+dict_values(<span class="hljs-selector-attr">[<span class="hljs-string">'Таємниця лісу'</span>, 70, 1.75]</span>)
+</code></pre>
+<p>Позначення <code>dict_keys</code> та <code>dict_values</code> вказують, що ми маємо справу зі специфічними об'єктами: вони не індексуються (<code>slovnyk.keys()[0]</code> поверне помилку).</p>
+<p>За потреби їх можна перетворити на список функцією <code>list()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2.values())
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(knyha2.values()))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">dict_values(<span class="hljs-selector-attr">[<span class="hljs-string">'Таємниця лісу'</span>, 70, 1.75]</span>)
+<span class="hljs-selector-attr">[<span class="hljs-string">'Таємниця лісу'</span>, 70, 1.75]</span>
+</code></pre>
+<p>Проте по них можна ітеруватися в циклі (вони є ітерованими):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-keyword">for</span> klyuch <span class="hljs-keyword">in</span> knyha2.keys():
+    <span class="hljs-built_in">print</span>(klyuch)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">nazva
+tsina
+reityng
+</code></pre>
+<h3 id="816-метод-items">8.1.6 Метод <code>.items()</code></h3>
+<p>Метод <code>.items()</code> повертає новий об'єкт <code>dict_items</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk = {<span class="hljs-number">0</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">1</span>: <span class="hljs-string">"о"</span>, <span class="hljs-number">2</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">3</span>: <span class="hljs-string">"о"</span>}
+<span class="hljs-built_in">print</span>(slovnyk.items())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">dict_items(<span class="hljs-selector-attr">[(0, <span class="hljs-string">'т'</span>), (1, <span class="hljs-string">'о'</span>), (2, <span class="hljs-string">'т'</span>), (3, <span class="hljs-string">'о'</span>)]</span>)
+</code></pre>
+<p>Знайти елемент за індексом в об'єкті <code>dict_items</code> не можна, але по ньому можна ітеруватися:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk = {<span class="hljs-number">0</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">1</span>: <span class="hljs-string">"о"</span>, <span class="hljs-number">2</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">3</span>: <span class="hljs-string">"о"</span>}
+<span class="hljs-built_in">print</span>(slovnyk.items()[<span class="hljs-number">2</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">Traceback (most recent <span class="hljs-keyword">call</span> last):
+  File <span class="hljs-string">"items_ne_indeksuietsya.py"</span>, line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> &lt;<span class="hljs-keyword">module</span>&gt;
+    print(slovnyk.items()[<span class="hljs-number">2</span>])
+<span class="hljs-symbol">TypeError:</span> <span class="hljs-comment">'dict_items' object is not subscriptable</span>
+</code></pre>
+<p>Проте по ньому можна ітеруватися:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk = {<span class="hljs-number">0</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">1</span>: <span class="hljs-string">"о"</span>, <span class="hljs-number">2</span>: <span class="hljs-string">"т"</span>, <span class="hljs-number">3</span>: <span class="hljs-string">"о"</span>}
+<span class="hljs-keyword">for</span> klyuch, znachennya <span class="hljs-keyword">in</span> slovnyk.items():
+    <span class="hljs-built_in">print</span>(klyuch, znachennya)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0 т
+1 о
+2 т
+3 о
+</code></pre>
+<p>Зверніть увагу на синтаксис, що нагадує функцію <code>enumerate()</code> з Розділу 5 «Цикли та порівняння» — ми ітеруємось одночасно по <code>klyuch</code> та <code>znachennya</code>. Механізм цього явища ми пояснимо нижче, у розділі про кортежі. Серед трьох способів перебору словника (по ключах за замовчуванням, по значеннях через <code>.values()</code>, по парах через <code>.items()</code>) саме <code>.items()</code> найчастіше є найзручнішим і найчитабельнішим, коли потрібні і ключ, і значення одночасно.</p>
+<h3 id="817-існування-ключа-або-значення">8.1.7 Існування ключа або значення</h3>
+<p>Щоб перевірити, чи існує ключ у словнику, використайте оператор належності <code>in</code>, який повертає булеве значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"tsina"</span> <span class="hljs-keyword">in</span> knyha2)
+
+<span class="hljs-keyword">if</span> <span class="hljs-string">"tsina"</span> <span class="hljs-keyword">in</span> knyha2:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Ключ 'tsina' існує для knyha2"</span>)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"avtor"</span> <span class="hljs-keyword">in</span> knyha2)
+
+<span class="hljs-keyword">if</span> <span class="hljs-string">"avtor"</span> <span class="hljs-keyword">in</span> knyha2:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Ключ 'avtor' існує для knyha2"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-python"><span class="hljs-literal">True</span>
+Ключ <span class="hljs-string">'tsina'</span> існує для knyha2
+<span class="hljs-literal">False</span>
+</code></pre>
+<p>У другому тесті повідомлення не виводиться, оскільки ключа <code>avtor</code> немає у словнику <code>knyha2</code>. Якщо звернутися до неіснуючого ключа напряму, без попередньої перевірки через <code>in</code>, Python негайно зупинить виконання програми з помилкою:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2[<span class="hljs-string">"avtor"</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "keyerror_pomylka.py", line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print(knyha2["avtor"])
+KeyError: <span class="hljs-string">'avtor'</span>
+</code></pre>
+<p>Щоб перевірити, чи існує значення в словнику, використайте <code>in</code> разом з об'єктом, який повертає <code>.values()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2.values())
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Таємниця лісу"</span> <span class="hljs-keyword">in</span> knyha2.values())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">dict_values(<span class="hljs-selector-attr">[<span class="hljs-string">'Таємниця лісу'</span>, 70, 1.75]</span>)
+True
+</code></pre>
+<h3 id="818-метод-get">8.1.8 Метод <code>.get()</code></h3>
+<p>Метод <code>.get()</code> — ще один, безпечніший спосіб уникнути помилки <code>KeyError</code>: він повертає значення за ключем, але не викликає помилку, якщо ключа немає, а натомість повертає <code>None</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2.get(<span class="hljs-string">"nazva"</span>))
+<span class="hljs-built_in">print</span>(knyha2.get(<span class="hljs-string">"avtor"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">Таємниця лісу
+<span class="hljs-attribute">None</span>
+</code></pre>
+<p>Тут значення ключа <code>nazva</code> — <code>'Таємниця лісу'</code>, а ключа <code>avtor</code> не існує. Можна також вказати <code>.get()</code> значення за замовчуванням, яке буде повернене, якщо ключ відсутній:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha2 = {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: <span class="hljs-number">70</span>, <span class="hljs-string">'reityng'</span>: <span class="hljs-number">1.75</span>}
+<span class="hljs-built_in">print</span>(knyha2.get(<span class="hljs-string">"avtor"</span>, <span class="hljs-string">"Автор невідомий"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Автор невідомий
+</code></pre>
+<h3 id="819-список-словників">8.1.9 Список словників</h3>
+<p>Створюючи список словників з однаковими ключами, ми отримуємо структуру, схожу на базу даних, — кожен словник тут відповідає одному «рядку» таблиці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">knyha1 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Подорож до зірок"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">1100</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">5.0</span>}
+knyha2 = {<span class="hljs-string">"nazva"</span>: <span class="hljs-string">"Таємниця лісу"</span>, <span class="hljs-string">"tsina"</span>: <span class="hljs-number">70</span>, <span class="hljs-string">"reityng"</span>: <span class="hljs-number">1.75</span>}
+
+knyhy = [knyha1, knyha2]
+<span class="hljs-built_in">print</span>(knyhy)
+
+<span class="hljs-keyword">for</span> knyha <span class="hljs-keyword">in</span> knyhy:
+    <span class="hljs-built_in">print</span>(knyha[<span class="hljs-string">"nazva"</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[{<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Подорож до зірок'</span>, <span class="hljs-string">'tsina'</span>: 1100, <span class="hljs-string">'reityng'</span>: 5.0}, {<span class="hljs-string">'nazva'</span>: <span class="hljs-string">'Таємниця лісу'</span>, <span class="hljs-string">'tsina'</span>: 70, <span class="hljs-string">'reityng'</span>: 1.75}]</span>
+Подорож до зірок
+Таємниця лісу
+</code></pre>
+<p>Отже, словники дозволяють керувати складними структурами наочніше, ніж списки.</p>
+<h3 id="8110-словник-списків">8.1.10 Словник списків</h3>
+<p>Можлива й протилежна комбінація: словник, де значенням кожного ключа є цілий список. Це зручно, коли за одним ключем потрібно згрупувати кілька значень, наприклад — усі оцінки учня за різні контрольні роботи:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">otsinky = {
+    <span class="hljs-string">"Оля"</span>: [<span class="hljs-number">11</span>, <span class="hljs-number">10</span>, <span class="hljs-number">12</span>, <span class="hljs-number">11</span>],
+    <span class="hljs-string">"Іван"</span>: [<span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">7</span>, <span class="hljs-number">10</span>]
+}
+<span class="hljs-built_in">print</span>(otsinky[<span class="hljs-string">"Оля"</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">11, 10, 12, 11</span>]
+</code></pre>
+<p>Тут ключ <code>"Оля"</code> пов'язаний не з одним числом, а з цілим списком оцінок. Оскільки значенням є список, до нього застосовні всі методи списків з Розділу 4 «Списки» — наприклад, можна додати нову оцінку через <code>otsinky["Оля"].append(13)</code> або обчислити середній бал Олі через <code>sum(otsinky["Оля"]) / len(otsinky["Оля"])</code>.</p>
+<h3 id="8111-створення-словника-під-час-виконання-програми">8.1.11 Створення словника під час виконання програми</h3>
+<p>Часто словник наповнюють поступово, під час роботи програми, а не одразу при його оголошенні. Наприклад, можна почати з порожнього словника й додавати в нього контакти, введені користувачем через <code>input()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">telefonna_knyzhka = {}
+imya = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ім'я друга: "</span>)
+telefon = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть його номер: "</span>)
+telefonna_knyzhka[imya] = telefon
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Контакт збережено!"</span>, telefonna_knyzhka)
+</code></pre>
+<p>Цей підхід — та сама схема «ініціалізація порожньої структури → наповнення в циклі чи через <code>input()</code>», яку ми вже використовували для списків у підрозділі 5.3 «Цикли <code>while</code>».</p>
+<h3 id="8112-збереження-словника-у-файл">8.1.12 Збереження словника у файл</h3>
+<p>Коли потрібно зберегти вміст словника назавжди (Розділ «Файли»), його пари ключ/значення перетворюють на звичайні текстові рядки — наприклад, розділяючи ключ і значення двокрапкою:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tsinnyk = {<span class="hljs-string">"Хліб"</span>: <span class="hljs-number">25</span>, <span class="hljs-string">"Молоко"</span>: <span class="hljs-number">36</span>}
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"prices.txt"</span>, <span class="hljs-string">"w"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    <span class="hljs-keyword">for</span> tovar, tsina <span class="hljs-keyword">in</span> tsinnyk.items():
+        fayl_vykh.write(<span class="hljs-string">f"<span class="hljs-subst">{tovar}</span>:<span class="hljs-subst">{tsina}</span>\n"</span>)
+</code></pre>
+<p>Файл <code>prices.txt</code> міститиме:</p>
+<pre><code data-highlighted="yes" class="hljs language-makefile"><span class="hljs-section">Хліб:25</span>
+<span class="hljs-section">Молоко:36</span>
+</code></pre>
+<blockquote>
+<p>Це найпростіший, «саморобний» формат збереження словника. Він добре ілюструє принцип, на якому будуються й професійніші формати даних, такі як CSV чи JSON.</p>
+</blockquote>
+<h3 id="8113-типові-помилки-зі-словниками">8.1.13 Типові помилки зі словниками</h3>
+<ul>
+<li><strong>Дублювання ключів.</strong> Ключі словника мають бути унікальними. Якщо створити словник <code>{"a"<span class="hl-char">:</span> 1, "a"<span class="hl-char">:</span> 2}</code>, Python не поверне помилку, а просто мовчки залишить лише останнє значення для повторюваного ключа: результатом буде <code>{"a"<span class="hl-char">:</span> 2}</code>.</li>
+<li><strong>Плутанина між ключами та значеннями.</strong> Пошук у словнику завжди відбувається за ключем, а не за значенням. Якщо словник має вигляд <code>{"nazva"<span class="hl-char">:</span> "Іван"}</code>, не можна написати <code>slovnyk["Іван"]</code>, щоб отримати <code>"nazva"</code>, — це поверне помилку <code>KeyError</code>, бо <code>"Іван"</code> є значенням, а не ключем.</li>
+<li><strong>Забутий метод <code>.items()</code>.</strong> Спроба написати <code>for klyuch, znachennya in slovnyk<span class="hl-char">:</span></code> (без <code>.items()</code>) призведе до помилки, оскільки без <code>.items()</code> цикл <code>for</code> перебирає лише ключі словника — по одному значенню за раз, а не по парах.</li>
+</ul>
+<h2 id="82-кортежі">8.2 Кортежі</h2>
+<p>Списки та словники — чудові структури, але їх можна випадково (або навмисно) змінити в будь-якому місці програми. Уявіть, що ви зберігаєте координати важливого об'єкта або колір у форматі RGB (наприклад, <code>(255, 255, 255)</code> для білого кольору) — якщо якась частина коду випадково змінить одне з цих чисел, це може призвести до серйозної помилки. Для захисту даних, які ніколи не повинні змінюватися під час роботи програми, у Python є <strong>кортежі</strong>.</p>
+<h3 id="821-визначення">8.2.1 Визначення</h3>
+<blockquote>
+<p><strong>Кортежі</strong> — це складені послідовні об'єкти, подібні до списків, але незмінні (кажуть також — імутабельні). </p>
+</blockquote>
+<p>На практиці для їх створення використовують круглі дужки замість квадратних:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(kortezh1)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(kortezh1))
+<span class="hljs-built_in">print</span>(kortezh1[<span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(kortezh1[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>])
+kortezh1[<span class="hljs-number">2</span>] = <span class="hljs-number">15</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+&lt;<span class="hljs-keyword">class</span> <span class="hljs-comment">'tuple'&gt;</span>
+<span class="hljs-number">3</span>
+(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)
+Traceback (most recent <span class="hljs-keyword">call</span> last):
+  File <span class="hljs-string">"kortezh_osnovy.py"</span>, line <span class="hljs-number">7</span>, <span class="hljs-keyword">in</span> &lt;<span class="hljs-keyword">module</span>&gt;
+    kortezh1[<span class="hljs-number">2</span>] = <span class="hljs-number">15</span>
+<span class="hljs-symbol">TypeError:</span> <span class="hljs-comment">'tuple' object does not support item assignment</span>
+</code></pre>
+<p>Присвоювання та індексація працюють так само, як зі списками. Але якщо спробувати змінити один з елементів кортежу, Python поверне помилку, оскільки кортежі незмінні: не можна ні додати новий елемент, ні видалити наявний, ні поміняти елементи місцями. Щоб додати елемент (чи змінити його), треба створити новий кортеж:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(kortezh1)
+kortezh1 = kortezh1 + (<span class="hljs-number">2</span>,)
+<span class="hljs-built_in">print</span>(kortezh1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>)
+</code></pre>
+<p>Цей приклад показує, що кортежі погано підходять, коли потрібно додавати, видаляти чи змінювати елементи. Створювати новий кортеж на кожному кроці громіздко, а спеціальних методів для цього не існує (адже кортежі незмінні). Для таких завдань списки підходять значно краще.</p>
+<p>Щоб створити кортеж з одного елемента, використовуйте синтаксис з комою <code>(element,)</code>, щоб уникнути двозначності з простим виразом. Наприклад, <code>(2)</code> — це просто ціле число 2, тоді як <code>(2,)</code> — кортеж з одним елементом.</p>
+<p>Ще одна особливість кортежів — їх можна створювати без круглих дужок, якщо це не створює двозначності:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(kortezh1)
+kortezh1 = <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>
+<span class="hljs-built_in">print</span>(kortezh1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+</code></pre>
+<p>Проте, щоб уникнути плутанини, на початку радимо систематично використовувати круглі дужки.</p>
+<p>Оператори <code>+</code> та <code>*</code> працюють так само, як для списків (конкатенація й дублювання):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>((<span class="hljs-number">1</span>, <span class="hljs-number">2</span>) + (<span class="hljs-number">3</span>, <span class="hljs-number">4</span>))
+<span class="hljs-built_in">print</span>((<span class="hljs-number">1</span>, <span class="hljs-number">2</span>) * <span class="hljs-number">4</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)
+</code></pre>
+<p>Нарешті, функція <code>tuple(poslidovnist)</code> працює так само, як <code>list()</code>: приймає об'єкт і повертає відповідний кортеж (приведення типів):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">tuple</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">tuple</span>(<span class="hljs-string">"PYTHON"</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">tuple</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">(1, 2, 3)
+(<span class="hljs-string">'P'</span>, <span class="hljs-string">'Y'</span>, <span class="hljs-string">'T'</span>, <span class="hljs-string">'H'</span>, <span class="hljs-string">'O'</span>, <span class="hljs-string">'N'</span>)
+(0, 1, 2, 3, 4)
+</code></pre>
+<blockquote>
+<p>Як і <code>list()</code>, функція <code>tuple()</code> приймає об'єкт, що містить інші об'єкти. Вона не працює безпосередньо з цілими числами, <code>float</code> чи булевими значеннями: наприклад, <code>tuple(2)</code> поверне помилку. Детальніше про це — у Розділі 14 «Контейнери».</p>
+</blockquote>
+<h3 id="822-множинне-присвоювання">8.2.2 Множинне присвоювання</h3>
+<p>Кортежі часто використовують для множинного присвоювання — одночасного присвоєння значень кільком змінним:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x, y, z = <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>
+<span class="hljs-built_in">print</span>(x)
+<span class="hljs-built_in">print</span>(y)
+<span class="hljs-built_in">print</span>(z)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+2
+3
+</code></pre>
+<p>Кількість змінних і значень має збігатися ліворуч і праворуч від <code>=</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x, y = <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "pomylka_rozpakuvannya.py", line <span class="hljs-number">2</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    x, y <span class="hljs-operator">=</span> <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>
+    <span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span><span class="hljs-operator">^</span>
+ValueError: too many <span class="hljs-keyword">values</span> <span class="hljs-keyword">to</span> unpack (expected <span class="hljs-number">2</span>)
+</code></pre>
+<p>Множинне присвоювання можливе й зі списками, наприклад <code>[x, y, z] = [1, 2, 3]</code>, але цей запис обтяжений квадратними дужками. Тому надаємо перевагу синтаксису з кортежами без дужок.</p>
+<blockquote>
+<p>Операцію <code>x, y, z = 1, 2, 3</code> називають множинним присвоюванням, підкреслюючи, що ми одночасно присвоюємо значення кільком змінним. Також уживають термін <em>tuple unpacking</em> («розпакування кортежу»); є й аналогічний <em>list unpacking</em>. Термін відображає те, що вихідний кортеж з <code>n</code> елементів розкладається на стільки ж окремих змінних в одній інструкції.</p>
+</blockquote>
+<p>Наприклад, маючи кортеж із трьох елементів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(kortezh1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+</code></pre>
+<p>можна «розпакувати» його в одній інструкції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+x, y, z = kortezh1
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+</code></pre>
+<p>Те саме можна зробити й через індексацію, але довелося б написати стільки інструкцій, скільки є елементів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">kortezh1 = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+x = kortezh1[<span class="hljs-number">0</span>]
+y = kortezh1[<span class="hljs-number">1</span>]
+z = kortezh1[<span class="hljs-number">2</span>]
+<span class="hljs-built_in">print</span>(x, y, z)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1 2 3
+</code></pre>
+<p>В обох випадках <code>x</code> дорівнюватиме 1, <code>y</code> — 2, а <code>z</code> — 3.</p>
+<blockquote>
+<p>Синтаксис <code>x, y, z = kortezh1</code> для розпакування кортежу елегантніший, читабельніший і компактніший, тож йому варто віддавати перевагу.</p>
+</blockquote>
+<p>Множинне присвоювання — дуже потужний і важливий механізм у Python. Ми побачимо, що воно особливо корисне у поєднанні з функціями в Розділах «Функції» та «Більше про функції» — зокрема, саме завдяки кортежам функція, яка формально повертає лише один об'єкт, насправді може повернути одразу кілька значень.</p>
+<h3 id="823-ітерація-по-кількох-значеннях-одночасно">8.2.3 Ітерація по кількох значеннях одночасно</h3>
+<p>Ми вже стикалися з кортежами у функції <code>enumerate()</code> (Розділ «Цикли та порівняння»), яка дозволяла ітеруватися одночасно по індексах і елементах списку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> indeks, element <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>([<span class="hljs-number">75</span>, -<span class="hljs-number">75</span>, <span class="hljs-number">0</span>]):
+    <span class="hljs-built_in">print</span>(indeks, element)
+
+<span class="hljs-keyword">for</span> bidulo <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>([<span class="hljs-number">75</span>, -<span class="hljs-number">75</span>, <span class="hljs-number">0</span>]):
+    <span class="hljs-built_in">print</span>(bidulo, <span class="hljs-built_in">type</span>(bidulo))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-javascript"><span class="hljs-number">0</span> <span class="hljs-number">75</span>
+<span class="hljs-number">1</span> -<span class="hljs-number">75</span>
+<span class="hljs-number">2</span> <span class="hljs-number">0</span>
+(<span class="hljs-number">0</span>, <span class="hljs-number">75</span>) &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'tuple'</span>&gt;
+(<span class="hljs-number">1</span>, -<span class="hljs-number">75</span>) &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'tuple'</span>&gt;
+(<span class="hljs-number">2</span>, <span class="hljs-number">0</span>) &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'tuple'</span>&gt;
+</code></pre>
+<p>Функція <code>enumerate()</code> ітерується по серії кортежів. Можливість розділити <code>indeks</code> та <code>element</code> у циклі забезпечує саме множинне присвоювання, наприклад <code>indeks, element = 0, 75</code> (див. попередній підрозділ).</p>
+<p>У тому ж дусі ми вже бачили метод <code>.items()</code>, який дозволяв ітеруватися по парах ключ/значення словника:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk = {<span class="hljs-string">"ruchka"</span>: <span class="hljs-number">2</span>, <span class="hljs-string">"zoshyt"</span>: <span class="hljs-number">3</span>}
+<span class="hljs-keyword">for</span> klyuch, znachennya <span class="hljs-keyword">in</span> slovnyk.items():
+    <span class="hljs-built_in">print</span>(klyuch, znachennya)
+
+<span class="hljs-keyword">for</span> bidulo <span class="hljs-keyword">in</span> slovnyk.items():
+    <span class="hljs-built_in">print</span>(bidulo, <span class="hljs-built_in">type</span>(bidulo))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-javascript">ruchka <span class="hljs-number">2</span>
+zoshyt <span class="hljs-number">3</span>
+(<span class="hljs-string">'ruchka'</span>, <span class="hljs-number">2</span>) &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'tuple'</span>&gt;
+(<span class="hljs-string">'zoshyt'</span>, <span class="hljs-number">3</span>) &lt;<span class="hljs-keyword">class</span> <span class="hljs-string">'tuple'</span>&gt;
+</code></pre>
+<p>Метод <code>.items()</code>, як і <code>enumerate()</code>, ітерується по серії кортежів.</p>
+<p>Нарешті, можна ітеруватися одразу по трьох значеннях, маючи список кортежів з трьох елементів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok = [(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>), (<span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>), (<span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>)]
+<span class="hljs-keyword">for</span> x, y, z <span class="hljs-keyword">in</span> spysok:
+    <span class="hljs-built_in">print</span>(x, y, z)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">5 6 7
+6 7 8
+7 8 9
+</code></pre>
+<p>Так само можна працювати з чотирма, п'ятьма й більше елементами. Єдина умова — кількість ітераційних змінних (тут <code>x, y, z</code>) має відповідати довжині кожного підкортежу списку, по якому ми ітеруємось (тут кожен підкортеж має три елементи).</p>
+<h3 id="824-функція-divmod">8.2.4 Функція <code>divmod()</code></h3>
+<p>У Розділі  «Змінні» ми бачили оператори <code>//</code> та <code>%</code>, які повертають відповідно частку та остачу від цілочисельного ділення. Функція <code>divmod()</code> приймає два значення — чисельник і знаменник ділення — і повертає одразу частку та остачу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">3</span> / <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">3</span> // <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">3</span> % <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">divmod</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-number">0.75</span>
+<span class="hljs-number">0</span>
+<span class="hljs-number">3</span>
+(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>)
+</code></pre>
+<p>За допомогою множинного присвоювання можна одразу отримати частку та остачу в одному рядку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chastka, ostacha = <span class="hljs-built_in">divmod</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+<span class="hljs-built_in">print</span>(chastka)
+<span class="hljs-built_in">print</span>(ostacha)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+3
+</code></pre>
+<p>Ця функція дуже зручна, наприклад, коли потрібно перетворити секунди на хвилини та залишкові секунди. Якщо перетворити 754 секунди на хвилини:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">754</span> / <span class="hljs-number">60</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">divmod</span>(<span class="hljs-number">754</span>, <span class="hljs-number">60</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-number">12.566666666666666</span>
+(<span class="hljs-number">12</span>, <span class="hljs-number">34</span>)
+</code></pre>
+<p>Звичайне ділення дає <code>float</code> у хвилинах, що незручно — довелося б окремо перетворювати <code>0.566666666666666</code> хвилини назад у секунди й вирішувати проблеми округлення. <code>divmod()</code> одразу дає результат: 12 хв 34 с. Так само можна перетворювати хвилини на години, години на дні тощо.</p>
+<h3 id="825-кортежі-як-ключі-словника">8.2.5 Кортежі як ключі словника</h3>
+<p>Ми вже згадували, що ключами словника можуть бути кілька типів об'єктів, хоча початківцям радимо обмежуватися рядками. Річ у тім, що ключем словника може бути лише незмінний (імутабельний) об'єкт — і саме тому список ніколи не можна використати як ключ, а от кортеж — можна, оскільки він, на відміну від списку, не може випадково змінитися після створення.</p>
+<p>Це особливо зручно, коли природний «ключ» складається одразу з кількох значень — наприклад, координат клітинки на шаховій дошці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">doshka = {
+    (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>): <span class="hljs-string">"Біла тура"</span>,
+    (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>): <span class="hljs-string">"Білий кінь"</span>,
+    (<span class="hljs-number">8</span>, <span class="hljs-number">5</span>): <span class="hljs-string">"Чорний король"</span>
+}
+<span class="hljs-built_in">print</span>(doshka[(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Біла тура
+</code></pre>
+<p>Тут ключем кожного запису є кортеж із двох чисел (рядок, стовпчик), а значенням — назва фігури, що стоїть на цій клітинці. Такий підхід широко застосовують для представлення карт, матриць чи будь-яких даних, природно прив'язаних до пари (чи трійки) координат.</p>
+<h2 id="83-порівняння-колекцій-список-словник-чи-кортеж">8.3 Порівняння колекцій: список, словник чи кортеж?</h2>
+<p>Тепер, коли ми познайомилися з трьома головними колекціями Python, варто узагальнити, коли якою з них користуватися.</p>
+<table>
+<thead>
+<tr>
+<th>Потреба</th>
+<th>Обрана колекція</th>
+<th>Чому саме вона</th>
+<th>Приклад</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Проста послідовність елементів, яку потрібно доповнювати, видаляти, сортувати</td>
+<td>Список (<code>list</code>)</td>
+<td>Елементи пронумеровані, їх легко змінювати</td>
+<td>Список учнів класу, список покупок у кошику</td>
+</tr>
+<tr>
+<td>Пов'язати дані за принципом «запит → відповідь» або «назва → опис»</td>
+<td>Словник (<code>dict</code>)</td>
+<td>Миттєвий пошук за унікальним ключем замість номера позиції</td>
+<td>Прайс-лист товарів, телефонна книга, словник перекладу</td>
+</tr>
+<tr>
+<td>Готовий набір констант, налаштувань чи захищених даних, які не повинні змінюватися</td>
+<td>Кортеж (<code>tuple</code>)</td>
+<td>Захищає програму від випадкових помилок перезапису, працює швидше за список</td>
+<td>Координати точки, дні тижня, колір у форматі RGB</td>
+</tr>
+</tbody></table>
+<div class="exers">
+<h2 id="84-вправи">8.4 Вправи</h2>
+<h3 id="1-передбачити-виведення">1. Передбачити виведення</h3>
+<p>Дано два рядки коду:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk = {<span class="hljs-string">"imya"</span>: <span class="hljs-string">"Дмитро"</span>, <span class="hljs-string">"vik"</span>: <span class="hljs-number">24</span>, <span class="hljs-string">"zrist"</span>: <span class="hljs-number">181</span>}
+zminna = <span class="hljs-string">"imya"</span>
+</code></pre>
+<p>Передбачте (не запускаючи код) поведінку кожної з інструкцій нижче:</p>
+<ul>
+<li><code>print(slovnyk["vik"])</code></li>
+<li><code>print(slovnyk[zminna])</code></li>
+<li><code>print(slovnyk[24])</code></li>
+<li><code>print(slovnyk["zminna"])</code></li>
+<li><code>print(slovnyk["zrist"])</code></li>
+</ul>
+<p>Якщо інструкція викликає помилку, поясніть чому. Потім перевірте свої передбачення, виконавши код в інтерпретаторі Python.</p>
+<h3 id="2-середній-бал">2. Середній бал</h3>
+<p>Дано словник з оцінками учня:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slovnyk_ocinok = {
+    <span class="hljs-string">"matematyka"</span>: <span class="hljs-number">8</span>, <span class="hljs-string">"informatyka"</span>: <span class="hljs-number">12</span>,
+    <span class="hljs-string">"angliyska"</span>: <span class="hljs-number">11</span>, <span class="hljs-string">"istoriya"</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-string">"fizra"</span>: <span class="hljs-number">9</span>
+}
+</code></pre>
+<p>Обчисліть середнє значення оцінок двома різними способами. Потім обчисліть середнє ще раз, але без оцінки з історії.</p>
+<h3 id="3-частота-літер-у-слові">3. Частота літер у слові</h3>
+<p>Використовуючи словник, визначте кількість входжень кожної літери в слові <code>"ПРОГРАМУВАННЯ"</code>. Словник має містити лише ті літери, які справді присутні в слові. Не використовуйте стільки інструкцій <code>if</code>, скільки різних літер трапляється, — подумайте про тест на приналежність (<code>in</code>).</p>
+<h3 id="4-класифікація-літер-слова">4. Класифікація літер слова</h3>
+<p>Літери можна умовно поділити на дві категорії: голосні (<code>г</code>) та приголосні (<code>п</code>). Наступний словник реалізує таку класифікацію для літер слова <code>"ПРОГРАМУВАННЯ"</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">litera2typ = {
+    <span class="hljs-string">'П'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'Р'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'О'</span>: <span class="hljs-string">'г'</span>, <span class="hljs-string">'Г'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'А'</span>: <span class="hljs-string">'г'</span>,
+    <span class="hljs-string">'М'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'У'</span>: <span class="hljs-string">'г'</span>, <span class="hljs-string">'В'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'Н'</span>: <span class="hljs-string">'п'</span>, <span class="hljs-string">'Я'</span>: <span class="hljs-string">'г'</span>
+}
+</code></pre>
+<p>Використовуючи цей словник, перетворіть слово <code>"ПРОГРАМУВАННЯ"</code> на послідовність символів <code>г</code> та <code>п</code>, що відповідають кожній літері. Спочатку виведіть саме слово в одному рядку, а потім послідовність голосних/приголосних у другому рядку, вирівнявши символи один під одним. Знайдіть візуально найдовшу підряд послідовність приголосних літер.</p>
+<h3 id="5-цикл-по-кількох-елементах-одночасно">5. Цикл по кількох елементах одночасно</h3>
+<p>З наступного списку кортежів: <code>[("яблуко", 3), ("банан", 4), ("апельсин", 16)]</code> виведіть кожен фрукт і його кількість, використовуючи лише один цикл <code>for</code>. Для цієї вправи заборонено використовувати індексацію списків.
+</p></div>
+<div class="project">
+<h2 id="85-творча-майстерня-електронний-телефонний-довідник">8.5. Творча майстерня: Електронний телефонний довідник</h2>
+<p><strong>Умова задачі</strong>
+Напишіть програму мовою <strong>Python</strong>, яка створює порожній словник контактів. Реалізуйте меню, яке працює в циклі до вибору користувачем команди завершення.
+Меню повинно містити такі пункти:</p>
+<ol>
+<li><strong>Додати контакт</strong> — користувач вводить ім'я та номер телефону, після чого контакт додається до словника (ключ — ім'я, значення — номер телефону).</li>
+<li><strong>Шукати контакт</strong> — користувач вводить ім'я, а програма за допомогою методу <code>.get()</code> виводить номер телефону або повідомлення <strong>«Контакт не знайдено»</strong>.</li>
+<li><strong>Показати всі контакти</strong> — програма виводить усі контакти зі словника. Якщо словник порожній, вивести відповідне повідомлення.</li>
+<li><strong>Закінчити</strong> — завершити роботу програми.</li>
+</ol>
+<div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes">contacts = {}
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"\n1 - Додати контакт"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"2 - Шукати контакт"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"3 - Показати всі контакти"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"4 - Закінчити"</span>)
+
+    choice = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Оберіть номер дії: "</span>)
+
+    <span class="hljs-keyword">if</span> choice == <span class="hljs-string">"1"</span>:
+        name = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ім'я: "</span>)
+        phone = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть номер телефону: "</span>)
+        contacts[name] = phone
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Контакт додано."</span>)
+
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"2"</span>:
+        name = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ім'я для пошуку: "</span>)
+        <span class="hljs-built_in">print</span>(contacts.get(name, <span class="hljs-string">"Контакт не знайдено"</span>))
+
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"3"</span>:
+        <span class="hljs-keyword">if</span> contacts:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"Список контактів:"</span>)
+            <span class="hljs-keyword">for</span> name, phone <span class="hljs-keyword">in</span> contacts.items():
+                <span class="hljs-built_in">print</span>(name, <span class="hljs-string">"-"</span>, phone)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"Список контактів порожній."</span>)
+
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"4"</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Програму завершено."</span>)
+        <span class="hljs-keyword">break</span>
+
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Невірний вибір. Спробуйте ще раз."</span>)
+</code></pre>
+</div></div>
+<h2 id="алгоритм-роботи-програми">Алгоритм роботи програми</h2>
+<ol>
+<li>Створити порожній словник контактів.</li>
+<li>Запустити нескінченний цикл.</li>
+<li>Вивести меню.</li>
+<li>Зчитати вибір користувача.</li>
+<li>За допомогою <code>if</code>, <code>elif</code>, <code>else</code> виконати одну з дій:<ul>
+<li>додати контакт;</li>
+<li>знайти контакт за допомогою <code>.get()</code>;</li>
+<li>показати всі контакти;</li>
+<li>завершити програму.</li>
+</ul>
+</li>
+<li>Якщо вибір неправильний — повідомити про це та повернутися до меню.</li>
+<li>Повторювати роботу, доки користувач не вибере пункт <strong>«Закінчити»</strong>.
+</li></ol></div><ol><li></li>
+</ol>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><strong>Офіційна документація Python — Built-in Types</strong>
+Описує всі вбудовані типи даних Python, зокрема словники (<code>dict</code>) та кортежі (<code>tuple</code>).
+<a href="https://docs.python.org/3/library/stdtypes.html">Python Documentation – Built-in Types</a></li>
+<li><strong>Офіційний навчальний посібник Python (The Python Tutorial)</strong>
+Розділ <strong>Data Structures</strong> містить детальний опис списків, кортежів, множин і словників.
+<a href="https://docs.python.org/3/tutorial/datastructures.html">Python Tutorial – Data Structures</a></li>
+<li><strong>Офіційний навчальний посібник Python — Dictionaries</strong>
+Опис створення словників, роботи з ключами, методів <code>.get()</code>, <code>.items()</code>, <code>.keys()</code>, <code>.values()</code> тощо.
+<a href="https://docs.python.org/3/tutorial/datastructures.html#dictionaries">Python Tutorial – Dictionaries</a></li>
+<li><strong>Офіційний навчальний посібник Python — Tuples and Sequences</strong>
+Розглядає створення кортежів, індексацію, незмінність кортежів та операції над ними.
+<a href="https://docs.python.org/3/tutorial/datastructures.html#tuples-and-sequences">Python Tutorial – Tuples and Sequences</a></li>
+<li><strong>Python Reference (словник <code>dict</code>)</strong>
+Довідник із методів словника та прикладів їх використання.
+<a href="https://python-reference.readthedocs.io/en/latest/docs/dict/">Python Reference – dict</a></li>
+<li><strong>Python Reference (кортеж <code>tuple</code>)</strong>
+Довідник з основних операцій та методів кортежів.
+<a href="https://python-reference.readthedocs.io/en/latest/docs/tuple/">Python Reference – tuple</a></li>
+<li><strong>W3Schools Python Dictionaries</strong>
+Практичний посібник зі створення та використання словників із прикладами.
+<a href="https://www.w3schools.com/python/python_dictionaries.asp">W3Schools – Python Dictionaries</a></li>
+<li><strong>W3Schools Python Tuples</strong>
+Практичний посібник із роботи з кортежами.
+<a href="https://www.w3schools.com/python/python_tuples.asp">W3Schools – Python Tuples</a></li>
+<li><strong>Real Python — Dictionaries</strong>
+Поглиблений матеріал щодо використання словників у Python із великою кількістю прикладів.
+<a href="https://realpython.com/python-dicts/">Real Python – Dictionaries in Python</a></li>
+<li><strong>Real Python — Tuples</strong>
+Детальний практичний огляд кортежів, їх властивостей і способів використання.
+<a href="https://realpython.com/python-tuple/">Real Python – Python Tuples</a>
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

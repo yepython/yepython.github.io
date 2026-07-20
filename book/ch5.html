@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch5</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-5-цикли-та-порівняння">РОЗДІЛ 5. Цикли та порівняння</h1>
+<h2 id="51-цикли-for">5.1 Цикли <code>for</code></h2>
+<h3 id="511-повторення-дій-в-програмах">5.1.1 Повторення дій в програмах</h3>
+<p>У програмуванні ми часто змушені повторювати інструкцію кілька разів. Цикли, невід'ємні від будь-якої мови програмування, допомагають виконати повторюване завдання компактно та ефективно.</p>
+<p>Уявіть, наприклад, що ви хочете вивести елементи списку один за одним. З вашим поточним рівнем знань довелося б набрати щось на кшталт:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-built_in">print</span>(frukty[<span class="hljs-number">0</span>])
+<span class="hljs-built_in">print</span>(frukty[<span class="hljs-number">1</span>])
+<span class="hljs-built_in">print</span>(frukty[<span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(frukty[<span class="hljs-number">3</span>])
+</code></pre>
+<p>Якщо ваш список містить лише 4 елементи, це ще здійсненно, але уявіть, що їх 100 або навіть 1000! Щоб вирішити цю проблему, використовують цикли. Подивіться на наступний приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> frukt <span class="hljs-keyword">in</span> frukty:
+    <span class="hljs-built_in">print</span>(frukt)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>Прокоментуємо детально, що відбулося в цьому прикладі. Змінна <code>frukt</code> називається ітераційною змінною: вона послідовно набуває різних значень списку <code>frukty</code> на кожній ітерації (проході) циклу. Можна вибрати будь-яке ім'я для цієї змінної. Вона створюється Python вперше, коли виконується рядок із <code>for</code> (якщо вона вже існувала, її вміст буде перезаписано). Після завершення циклу ітераційна змінна <code>frukt</code> не знищується і зберігає останнє значення зі списку <code>frukty</code> (тут — <code>"груша"</code>).</p>
+<blockquote>
+<p><strong>Ітерація</strong> — один окремий крок циклу, тобто одне «проходження» через один елемент послідовності. Коли цикл <code>for</code> обробляє список з 4 елементів, він виконує 4 ітерацій — по одній на кожен елемент.</p>
+</blockquote>
+<p>Зверніть увагу на типи змінних, що використовуються тут:</p>
+<ul>
+<li><code>frukty</code> — це список, по якому ми ітеруємо;</li>
+<li><code>frukt</code> — це рядок, оскільки кожен елемент списку <code>frukty</code> є рядком.</li>
+</ul>
+<p>Ітераційна змінна може бути будь-якого типу залежно від списку, який перебирається. У Python цикл найчастіше ітерується по так званому послідовному об'єкту (тобто об'єкту, що складається з інших об'єктів), такому як список. Такі об'єкти називають ітерованими, оскільки по них можна виконувати цикл. Далі ми побачимо й інші послідовні об'єкти, придатні для ітерації.</p>
+<blockquote>
+<p><strong>Ітераційна змінна</strong> (або <strong>змінна циклу</strong>, англ. <em>loop variable</em>) — змінна, яка на кожній ітерації циклу приймає значення чергового елемента з ітерованого об'єкта.</p>
+</blockquote>
+<p>Зверніть увагу на символ двокрапки <code><span class="hl-char">:</span></code> в кінці рядка, що починається з <code>for</code>. Це означає, що цикл <code>for</code> очікує блок інструкцій — усі інструкції, які Python повторюватиме на кожній ітерації циклу. Цей блок називається тілом циклу. Як вказати Python, де починається й закінчується цей блок? Це визначається виключно відступом, тобто зміщенням вправо рядка (або рядків) блоку інструкцій.</p>
+<blockquote>
+<p>Поняття блоку інструкцій та відступів розглядалися в Розділі 1 «Вступ».</p>
+</blockquote>
+<p>У наступному прикладі тіло циклу містить дві інструкції (рядки 2 і 3), оскільки вони мають відступ відносно рядка з <code>for</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> frukt <span class="hljs-keyword">in</span> frukty:
+    <span class="hljs-built_in">print</span>(frukt)
+    <span class="hljs-built_in">print</span>(frukt * <span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Кінець"</span>)
+</code></pre>
+<p>Останній рядок (<code>print("Кінець")</code>) не є частиною тіла циклу, оскільки він знаходиться на тому самому рівні, що й <code>for</code> (тобто без відступу відносно <code>for</code>). Зверніть також увагу, що кожна інструкція тіла циклу повинна мати однаковий відступ (тут — 4 пробіли).</p>
+<blockquote>
+<p>Окрім кращої читабельності, двокрапка та відступ формально обов'язкові в Python. Хоча можна робити відступи як завгодно (кілька пробілів або кілька табуляцій, але не їхню комбінацію), рекомендується використовувати чотири пробіли. Докладніше про це — у Розділі «Найкращі практики програмування на Python». Налаштуйте свій текстовий редактор так, щоб він вставляв чотири пробіли при натисканні клавіші Tab.</p>
+</blockquote>
+<p>Якщо забути відступ, Python поверне повідомлення про помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> frukt <span class="hljs-keyword">in</span> frukty:
+<span class="hljs-built_in">print</span>(frukt)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">    <span class="hljs-built_in">print</span>(frukt)
+    ^
+IndentationError: expected an indented block after <span class="hljs-string">'for'</span> statement on line <span class="hljs-number">2</span>
+</code></pre>
+<p>У наведених вище прикладах ми ітерувалися безпосередньо по списку. Оскільки зріз списку сам є списком, ми можемо ітеруватися і по ньому:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> frukt <span class="hljs-keyword">in</span> frukty[<span class="hljs-number">1</span>:<span class="hljs-number">3</span>]:
+    <span class="hljs-built_in">print</span>(frukt)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">банан
+апельсин
+</code></pre>
+<p>Цикли <code>for</code> можуть використовувати список рядків, але також і список цілих чисел (або будь-якого іншого типу):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]:
+    <span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+2
+3
+</code></pre>
+<h3 id="512-функція-range">5.1.2 Функція <code>range()</code></h3>
+<p>Python має функцію <code>range()</code>, з якою ми вже зустрічалися в Розділі 4 «Списки». Вона зручна для автоматичної ітерації по послідовності цілих чисел:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):
+    <span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+1
+2
+3
+</code></pre>
+<p>У цьому прикладі варто зробити кілька важливих зауважень:</p>
+<ul>
+<li>На відміну від створення списку за допомогою <code>list(range(4))</code>, функцію <code>range()</code> можна використовувати безпосередньо в циклі. Не потрібно писати <code>for i in list(range(4))<span class="hl-char">:</span></code>, хоча це також спрацювало б.</li>
+<li>Як це можливо? <code>range()</code> — це функція, спеціально розроблена для ітерації[^1]; для Python це окремий тип: наприклад, в інструкції <code>x = range(3)</code> змінна <code>x</code> має тип <code>range</code> (так само як типи <code>int</code>, <code>float</code>, <code>str</code> чи <code>list</code>).</li>
+<li>Інструкція <code>list(range(4))</code> перетворює об'єкт типу <code>range</code> на об'єкт типу <code>list</code>. Це функція приведення типів (casting), яка конвертує один тип в інший (див. Розділ 2 «Змінні»).
+<img src="./media/ch5/354abfa802877785271b1598f1997139.png" alt="354abfa802877785271b1598f1997139.png"></li>
+</ul>
+<p><strong>Один, два або три аргументи.</strong> Насправді <code>range()</code> може приймати від одного до трьох аргументів:</p>
+<ul>
+<li><code>range(stop)</code> — цілі числа від <code>0</code> до <code>stop - 1</code>;
+<img src="./media/ch5/950d8244f6fbeffac96c347dc2e37d3e.png" alt="950d8244f6fbeffac96c347dc2e37d3e.png"></li>
+<li><code>range(start, stop)</code> — цілі числа від <code>start</code> до <code>stop - 1</code>;
+<img src="./media/ch5/37c9b74bd5e76de1c24569975f291969.png" alt="37c9b74bd5e76de1c24569975f291969.png"></li>
+<li><code>range(start, stop, step)</code> — цілі числа від <code>start</code> до <code>stop - 1</code> із кроком <code>step</code>.
+<img src="./media/ch5/00a7879d195f370d8bacebff68d6251d.png" alt="00a7879d195f370d8bacebff68d6251d.png"></li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>)))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>, <span class="hljs-number">8</span>)))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, <span class="hljs-number">11</span>, <span class="hljs-number">2</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">0, 1, 2, 3, 4</span>]
+[<span class="hljs-meta">3, 4, 5, 6, 7</span>]
+[<span class="hljs-meta">2, 4, 6, 8, 10</span>]
+</code></pre>
+<p>Крок <code>step</code> може бути й від'ємним — тоді послідовність буде спадною:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, -<span class="hljs-number">1</span>)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">10, 9, 8, 7, 6, 5, 4, 3, 2, 1</span>]
+</code></pre>
+<blockquote>
+<p>Зверніть увагу, що верхня межа (<code>stop</code>) ніколи не входить у послідовність — саме тому <code>range(0, 10, -1)</code> (без зміни напрямку меж) поверне порожню послідовність. Коли крок від'ємний, <code>start</code> має бути більшим за <code>stop</code>.</p>
+</blockquote>
+<p>Немає сенсу використовувати в циклі конструкцію <code>for i in list(range(4))<span class="hl-char">:</span></code> — це навіть контрпродуктивно. Об'єкт <code>range()</code> зберігає лише поточне число, крок і кінцеве значення — тобто фактично 3 числа, незалежно від довжини послідовності, навіть для <code>range(1000000)</code>. Якби ми використали <code>list(range(1000000))</code>, Python спочатку побудував би в пам'яті список з мільйона елементів, а вже потім ітерувався б по ньому — це велика втрата часу й пам'яті.</p>
+<h3 id="513-іменування-ітераційної-змінної">5.1.3 Іменування ітераційної змінної</h3>
+<p>У попередньому прикладі ми обрали ім'я <code>i</code> для ітераційної змінної. Це усталена практика в програмуванні: вона зазвичай вказує на ціле число (ім'я <code>i</code>, ймовірно, походить від слова <em>індекс</em>, англ. <em>index</em>). Радимо дотримуватися цієї угоди, щоб уникнути плутанини. Якщо ви ітеруєтеся по індексах, називайте змінну <code>i</code> (наприклад, <code>for i in range(4)<span class="hl-char">:</span></code>).</p>
+<p>Якщо ж ви ітеруєтеся по списку рядків (чи іншого типу даних), використовуйте більш промовисте ім'я. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> imya <span class="hljs-keyword">in</span> [<span class="hljs-string">"Оксана"</span>, <span class="hljs-string">"Богдан"</span>, <span class="hljs-string">"Іван"</span>]:
+    ...
+</code></pre>
+<p>або</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> chastka <span class="hljs-keyword">in</span> [<span class="hljs-number">0.12</span>, <span class="hljs-number">0.53</span>, <span class="hljs-number">0.07</span>, <span class="hljs-number">0.28</span>]:
+    ...
+</code></pre>
+<h3 id="514-ітерація-по-індексах-або-елементах">5.1.4 Ітерація по індексах або елементах</h3>
+<p>Повернемося до списку <code>frukty</code>. Переберемо його, цього разу ітеруючись по індексах:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):
+    <span class="hljs-built_in">print</span>(frukty[i])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>Змінна <code>i</code> набуває послідовних значень 0, 1, 2 і 3, і ми звертаємося до кожного елемента списку <code>frukty</code> за його індексом (<code>frukty[i]</code>). Знову зверніть увагу на ім'я <code>i</code>, оскільки ми ітеруємося по індексах.</p>
+<p>Коли обирати той чи інший підхід? Найефективнішим є той, що виконує ітерацію безпосередньо по елементах:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> frukt <span class="hljs-keyword">in</span> frukty:
+    <span class="hljs-built_in">print</span>(frukt)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>Проте іноді під час циклу вам знадобляться саме індекси, тож доведеться ітеруватися по них:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(frukty)):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Фрукт <span class="hljs-subst">{i}</span> — це <span class="hljs-subst">{frukty[i]}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Фрукт 0 — це яблуко
+Фрукт 1 — це банан
+Фрукт 2 — це апельсин
+Фрукт 3 — це груша
+</code></pre>
+<p>Нарешті, Python має функцію <code>enumerate()</code>, яка дозволяє ітеруватися одразу і по індексах, і по самих елементах:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukty = [<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"груша"</span>]
+<span class="hljs-keyword">for</span> i, frukt <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(frukty):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Фрукт <span class="hljs-subst">{i}</span> — це <span class="hljs-subst">{frukt}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Фрукт 0 — це яблуко
+Фрукт 1 — це банан
+Фрукт 2 — це апельсин
+Фрукт 3 — це груша
+</code></pre>
+<p><strong>Зміна елементів списку за індексом.</strong> Ітерація по індексах потрібна ще й тоді, коли елементи списку треба не просто прочитати, а <em>змінити</em>. Прохід <code>for frukt in frukty<span class="hl-char">:</span></code> дає лише копію значення в кожен момент — зміна <code>frukt</code> ніяк не вплине на сам список. Щоб змінити елементи «на місці», потрібен саме індекс:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(chysla)):
+    chysla[i] *= <span class="hljs-number">2</span>
+
+<span class="hljs-built_in">print</span>(chysla)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">2, 4, 6, 8</span>]
+</code></pre>
+<p>Тут <code>chysla[i] *= 2</code> — це скорочений запис <code>chysla[i] = chysla[i] * 2</code>, тобто елемент з індексом <code>i</code> перезаписується подвоєним значенням.</p>
+<h3 id="515-вкладені-цикли-for">5.1.5 Вкладені цикли <code>for</code></h3>
+<p>Тіло циклу <code>for</code> може містити будь-які інструкції Python, зокрема й інший цикл <code>for</code>. У такому разі говорять про вкладені цикли: для кожної ітерації зовнішнього циклу повністю виконується внутрішній цикл.</p>
+<p>Класичний приклад — виведення прямокутника із символів <code>*</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):
+    <span class="hljs-keyword">for</span> stovpets <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"*"</span>, end=<span class="hljs-string">""</span>)
+    <span class="hljs-built_in">print</span>()
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span>**
+</code></pre>
+<p>Змінна <code>riadok</code> (зовнішній цикл) відповідає за рядки прямокутника, а <code>stovpets</code> (внутрішній цикл) — за символи в межах одного рядка. Для кожного значення <code>riadok</code> внутрішній цикл повністю виконується від початку до кінця (тут — 6 разів), після чого викликається <code>print()</code> без аргументів, щоб перейти на новий рядок. Загалом внутрішній цикл виконується <code>4 × 6 = 24</code> рази.</p>
+<blockquote>
+<p>Вкладати можна не лише два цикли — принцип поширюється на будь-яку кількість рівнів, хоча на практиці рідко використовують більше двох-трьох вкладених циклів через складність читання коду.</p>
+</blockquote>
+<h2 id="52-порівняння">5.2 Порівняння</h2>
+<p>Перш ніж перейти до циклів <code>while</code>, розглянемо порівняння. Ми повернемося до них у Розділі «Умовні конструкції».</p>
+<p>Python здатний виконувати серію порівнянь між вмістом двох змінних:</p>
+<table>
+<thead>
+<tr>
+<th>Оператор порівняння</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>==</code></td>
+<td>дорівнює</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>не дорівнює</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>строго більше</td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>більше або дорівнює</td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>строго менше</td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>менше або дорівнює</td>
+</tr>
+</tbody></table>
+<p>Розглянемо приклади з цілими числами:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">5</span>
+<span class="hljs-built_in">print</span>(x == <span class="hljs-number">5</span>)
+<span class="hljs-built_in">print</span>(x &gt; <span class="hljs-number">10</span>)
+<span class="hljs-built_in">print</span>(x &lt; <span class="hljs-number">10</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">False</span>
+<span class="hljs-literal">True</span>
+</code></pre>
+<p>Python повертає <code>True</code>, якщо порівняння істинне, і <code>False</code>, якщо хибне. <code>True</code> і <code>False</code> — це булеві значення, які ми розглядали в Розділі 2 «Змінні».</p>
+<p>Будьте дуже уважні, щоб не плутати оператор присвоювання <code>=</code>, який призначає значення змінній, з оператором порівняння <code>==</code>, який порівнює значення двох змінних.</p>
+<p>Порівнювати можна й рядки:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">frukt = <span class="hljs-string">"банан"</span>
+<span class="hljs-built_in">print</span>(frukt == <span class="hljs-string">"бана"</span>)
+<span class="hljs-built_in">print</span>(frukt != <span class="hljs-string">"бана"</span>)
+<span class="hljs-built_in">print</span>(frukt == <span class="hljs-string">"банан"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">False</span>
+<span class="hljs-literal">True</span>
+<span class="hljs-literal">True</span>
+</code></pre>
+<p>Для рядків, на перший погляд, мають сенс лише <code>==</code> і <code>!=</code>. Проте можна також використовувати <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> і <code>&gt;=</code>. У цьому разі враховується алфавітний порядок, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"а"</span> &lt; <span class="hljs-string">"б"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+</code></pre>
+<p><code>"а"</code> менше за <code>"б"</code>, оскільки символ <code>а</code> стоїть перед <code>б</code> в алфавіті. Точніше, враховується порядок кодів символів у таблиці Unicode/ASCII[^2] (кожному символу відповідає числовий код), тому можна порівнювати й спеціальні символи (як-от <code><span class="hl-char">#</span></code> або <code>~</code>). Можна порівнювати й рядки з кількох символів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"бааб"</span> &lt; <span class="hljs-string">"ббаб"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"абба"</span> &lt; <span class="hljs-string">"адда"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">True</span>
+</code></pre>
+<p>Python порівнює два рядки символ за символом, зліва направо (перший з першим, другий з другим тощо). Щойно символи в одному з рядків розрізняються, меншим вважається той рядок, чий символ має менший код (наступні символи вже ігноруються), як у прикладі <code>"абба" &lt; "адда"</code>.</p>
+<h2 id="53-цикли-while">5.3 Цикли <code>while</code></h2>
+<p>Альтернативою інструкції <code>for</code> є цикл <code>while</code>. У цьому типі циклу серія інструкцій виконується, доки умова залишається істинною. Головна відмінність від <code>for</code>: цикл <code>while</code> доречний саме тоді, коли заздалегідь <strong>не відомо</strong>, скільки разів доведеться повторити дію — наприклад, поки користувач не введе правильний пароль, поки не буде обрано вихід з меню програми або поки триває гра.</p>
+<p>Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">i = <span class="hljs-number">1</span>
+<span class="hljs-keyword">while</span> i &lt;= <span class="hljs-number">4</span>:
+    <span class="hljs-built_in">print</span>(i)
+    i = i + <span class="hljs-number">1</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+2
+3
+4
+</code></pre>
+<p>Зверніть увагу, що тут також потрібен відступ для блоку інструкцій, що є тілом циклу (рядки з <code>print(i)</code> та <code>i = i + 1</code>).
+<img src="./media/ch5/60fab8cd4582b80ae1340d098a009a43.png" alt="60fab8cd4582b80ae1340d098a009a43.png"></p>
+<p>Цикл <code>while</code> зазвичай потребує трьох елементів для належної роботи:</p>
+<ol>
+<li>Ініціалізація ітераційної змінної перед циклом.</li>
+<li>Перевірка умови в інструкції <code>while</code>.</li>
+<li>Оновлення ітераційної змінної в тілі циклу.</li>
+</ol>
+<p><img src="./media/ch5/37d0c7aaffe95353526e39fbb8d2fa73.png" alt="37d0c7aaffe95353526e39fbb8d2fa73.png"></p>
+<p>Будьте дуже уважні до перевірок та оновлення змінної, оскільки помилка часто призводить до «нескінченних циклів», які ніколи не зупиняються. Втім, виконання скрипта Python завжди можна перервати комбінацією клавіш <code>Ctrl-C</code>. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">i = <span class="hljs-number">0</span>
+<span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">10</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Python — це круто!"</span>)
+</code></pre>
+<p>Тут ми забули оновити змінну <code>i</code> в тілі циклу, тож цикл ніколи не зупиниться (хіба що натиснути <code>Ctrl-C</code>), бо умова <code>i &lt; 10</code> завжди залишається істинною.</p>
+<p>Цикл <code>while</code> у поєднанні з функцією <code>input()</code> зручний, коли потрібно попросити користувача ввести числове значення. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">i = <span class="hljs-number">0</span>
+<span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">10</span>:
+    vidpovid = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ціле число, більше за 10: "</span>)
+    i = <span class="hljs-built_in">int</span>(vidpovid)
+
+<span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>Результат виконання (користувач послідовно вводить <code>4</code>, <code>-3</code>, <code>15</code>):</p>
+<pre><code data-highlighted="yes" class="hljs language-yaml"><span class="hljs-string">Введіть</span> <span class="hljs-string">ціле</span> <span class="hljs-string">число,</span> <span class="hljs-string">більше</span> <span class="hljs-string">за</span> <span class="hljs-attr">10:</span> <span class="hljs-number">4</span>
+<span class="hljs-string">Введіть</span> <span class="hljs-string">ціле</span> <span class="hljs-string">число,</span> <span class="hljs-string">більше</span> <span class="hljs-string">за</span> <span class="hljs-attr">10:</span> <span class="hljs-number">-3</span>
+<span class="hljs-string">Введіть</span> <span class="hljs-string">ціле</span> <span class="hljs-string">число,</span> <span class="hljs-string">більше</span> <span class="hljs-string">за</span> <span class="hljs-attr">10:</span> <span class="hljs-number">15</span>
+<span class="hljs-number">15</span>
+</code></pre>
+<p>Функція <code>input()</code> приймає як аргумент повідомлення (рядок), просить користувача ввести значення й повертає його у вигляді рядка, який потім потрібно перетворити на ціле число (за допомогою <code>int()</code>). Повертаючись до трьох елементів циклу <code>while</code>: ініціалізація змінної, перевірка її значення та оновлення в тілі циклу.</p>
+<p><strong>Побудова списку в циклі <code>while</code>.</strong> Той самий принцип (ініціалізація → перевірка → оновлення) використовують, коли треба послідовно наповнювати список даними, доки користувач сам не вирішить зупинитися:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = []
+vidpovid = <span class="hljs-string">"так"</span>
+<span class="hljs-keyword">while</span> vidpovid == <span class="hljs-string">"так"</span>:
+    chyslo = <span class="hljs-built_in">int</span>(<span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть число: "</span>))
+    chysla.append(chyslo)
+    vidpovid = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Ввести ще одне число? (так/ні): "</span>)
+
+<span class="hljs-built_in">print</span>(chysla)
+</code></pre>
+<p>Результат виконання (користувач вводить <code>4</code>, <code>так</code>, <code>15</code>, <code>так</code>, <code>7</code>, <code>ні</code>):</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">Введіть число: <span class="hljs-number">4</span>
+Ввести ще одне число? (так/ні): так
+Введіть число: <span class="hljs-number">15</span>
+Ввести ще одне число? (так/ні): так
+Введіть число: <span class="hljs-number">7</span>
+Ввести ще одне число? (так/ні): ні
+[<span class="hljs-meta">4, 15, 7</span>]
+</code></pre>
+<p>Тут ітераційною «змінною», яку ми перевіряємо, є не число, а рядок <code>vidpovid</code>: цикл продовжується, доки він дорівнює <code>"так"</code>.</p>
+<p><strong>Меню програми.</strong> Ще один типовий випадок застосування <code>while</code> — меню, яке показується знову й знову, доки користувач не обере вихід:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vybir = <span class="hljs-string">""</span>
+<span class="hljs-keyword">while</span> vybir != <span class="hljs-string">"0"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"1 - Додати товар"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"2 - Видалити товар"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"0 - Вихід"</span>)
+    vybir = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Ваш вибір: "</span>)
+</code></pre>
+<p>Змінна <code>vybir</code> ініціалізується порожнім рядком (щоб умова <code>vybir != "0"</code> була істинною на першій ітерації), після чого на кожному проході циклу вона оновлюється введенням користувача, аж доки той не введе <code>"0"</code>.</p>
+<blockquote>
+<p>Як обрати між <code>while</code> та <code>for</code>? Цикл <code>while</code> зазвичай використовують, коли заздалегідь не відома кількість ітерацій (як у прикладах вище). Якщо кількість ітерацій відома наперед — наприклад, потрібно вивести фразу «Python — це круто» рівно 10 разів — краще використати цикл <code>for</code>.</p>
+</blockquote>
+<h2 id="54-керування-виконанням-циклів">5.4 Керування виконанням циклів</h2>
+<p>Іноді потрібно перервати цикл достроково або пропустити окрему ітерацію, не завершуючи весь цикл. Для цього в Python існують інструкції <code>break</code> та <code>continue</code>, які працюють однаково як у циклах <code>for</code>, так і в циклах <code>while</code>.</p>
+<blockquote>
+<p>У наведених нижче прикладах використовується інструкція <code>if</code>, яку докладно розглянемо в Розділі 6 «Умовні конструкції». Наразі достатньо знати, що <code>if умова<span class="hl-char">:</span></code> виконує підпорядкований їй блок інструкцій лише тоді, коли <code>умова</code> істинна.</p>
+</blockquote>
+<h3 id="541-оператор-break">5.4.1 Оператор <code>break</code></h3>
+<p>Інструкція <code>break</code> негайно й повністю завершує цикл, у якому вона знаходиться, — Python одразу переходить до першої інструкції після циклу, навіть якщо умова циклу (для <code>while</code>) чи послідовність (для <code>for</code>) ще не вичерпані:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):
+    <span class="hljs-keyword">if</span> i == <span class="hljs-number">5</span>:
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+1
+2
+3
+4
+</code></pre>
+<p>Щойно <code>i</code> дорівнює 5, спрацьовує <code>break</code>, і цикл зупиняється — числа 5, 6, 7, 8, 9 так і не будуть виведені.</p>
+<p><code>break</code> особливо корисний із циклом <code>while True</code> (див. підрозділ 5.4.3) — коли природну умову зупинки зручніше перевірити всередині тіла циклу, а не в його заголовку.</p>
+<h3 id="542-оператор-continue">5.4.2 Оператор <code>continue</code></h3>
+<p>Інструкція <code>continue</code>, на відміну від <code>break</code>, не завершує цикл — вона лише перериває поточну ітерацію й одразу переходить до наступної:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):
+    <span class="hljs-keyword">if</span> i == <span class="hljs-number">5</span>:
+        <span class="hljs-keyword">continue</span>
+    <span class="hljs-built_in">print</span>(i)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+1
+2
+3
+4
+6
+7
+8
+9
+</code></pre>
+<p>Тут число 5 пропущено (<code>print(i)</code> для нього не виконався), проте цикл продовжив роботу і вивів усі інші числа від 0 до 9.</p>
+<h3 id="543-цикл-while-true">5.4.3 Цикл <code>while True</code></h3>
+<p>Конструкція <code>while True<span class="hl-char">:</span></code> створює цикл, умова якого завжди істинна, тобто цикл, який сам по собі ніколи не зупиниться. Це має сенс лише в поєднанні з <code>break</code> десь у тілі циклу — умову завершення перевіряють не в заголовку <code>while</code>, а безпосередньо там, де це зручно за логікою програми:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    vidpovid = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть 'stop', щоб завершити: "</span>)
+    <span class="hljs-keyword">if</span> vidpovid == <span class="hljs-string">"stop"</span>:
+        <span class="hljs-keyword">break</span>
+</code></pre>
+<p>Такий підхід часто зручніший за «звичайний» <code>while</code> із умовою в заголовку, коли перевірку природно робити лише після виконання частини дій у тілі циклу (наприклад, спершу зчитати відповідь користувача, а вже потім вирішити, чи зупинятися).</p>
+<h2 id="55-типові-алгоритми">5.5 Типові алгоритми</h2>
+<p>Цикли рідко використовують самі по собі — зазвичай вони є будівельним блоком для типових алгоритмів обробки даних. Розглянемо кілька найпоширеніших схем, які варто впізнавати й уміти відтворювати.</p>
+<h3 id="551-підрахунок-елементів">5.5.1 Підрахунок елементів</h3>
+<p>Щоб порахувати, скільки елементів списку задовольняють певну умову, заводять лічильник, який ініціалізують нулем перед циклом і збільшують на 1 усередині циклу щоразу, коли умова виконується:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [-<span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">8</span>, -<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">12</span>, -<span class="hljs-number">7</span>]
+lichylnyk = <span class="hljs-number">0</span>
+<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> chysla:
+    <span class="hljs-keyword">if</span> x &gt; <span class="hljs-number">0</span>:
+        lichylnyk += <span class="hljs-number">1</span>
+
+<span class="hljs-built_in">print</span>(lichylnyk)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+</code></pre>
+<h3 id="552-накопичення-суми">5.5.2 Накопичення суми</h3>
+<p>Аналогічно підрахунку елементів, суму значень списку накопичують у змінній, ініціалізованій нулем, додаючи до неї кожен елемент у тілі циклу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [<span class="hljs-number">4</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">9</span>, <span class="hljs-number">5</span>]
+suma = <span class="hljs-number">0</span>
+<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> chysla:
+    suma += x
+
+<span class="hljs-built_in">print</span>(suma)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">27
+</code></pre>
+<p>Саме ця схема лежить в основі обчислення середнього значення: достатньо поділити накопичену суму на кількість елементів списку (<code>suma / len(chysla)</code>).</p>
+<h3 id="553-пошук-мінімуму-та-максимуму">5.5.3 Пошук мінімуму та максимуму</h3>
+<p>Щоб знайти найбільший (або найменший) елемент списку, ітераційну змінну-«переможець» спершу ініціалізують першим елементом списку, а потім порівнюють з кожним наступним, оновлюючи її щоразу, коли знаходиться більше (менше) значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">otsinky = [<span class="hljs-number">14</span>, <span class="hljs-number">9</span>, <span class="hljs-number">6</span>, <span class="hljs-number">8</span>, <span class="hljs-number">12</span>]
+maksymum = otsinky[<span class="hljs-number">0</span>]
+<span class="hljs-keyword">for</span> otsinka <span class="hljs-keyword">in</span> otsinky:
+    <span class="hljs-keyword">if</span> otsinka &gt; maksymum:
+        maksymum = otsinka
+
+<span class="hljs-built_in">print</span>(maksymum)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">14
+</code></pre>
+<blockquote>
+<p>Python має вбудовані функції <code>max()</code> та <code>min()</code>, які виконують саме цю роботу (<code>max(otsinky)</code> поверне те саме значення). Проте важливо вміти самостійно відтворити цей алгоритм, оскільки та сама логіка «порівняти й оновити переможця» знадобиться в задачах, які вбудованими функціями не розв'язати напряму (наприклад, пошук індексу максимального елемента).</p>
+</blockquote>
+<h3 id="554-опрацювання-списків">5.5.4 Опрацювання списків</h3>
+<p>Часто на основі одного списку потрібно побудувати інший — не змінюючи оригінал. Наприклад, щоб відфільтрувати лише додатні числа:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, -<span class="hljs-number">6</span>]
+dodatni = []
+<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> chysla:
+    <span class="hljs-keyword">if</span> x &gt; <span class="hljs-number">0</span>:
+        dodatni.append(x)
+
+<span class="hljs-built_in">print</span>(dodatni)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, 3, 5</span>]
+</code></pre>
+<p>Тут <code>dodatni</code> — це новий, порожній на початку список, який поступово наповнюється лише тими елементами <code>chysla</code>, що задовольняють умову <code>x &gt; 0</code>. Оригінальний список <code>chysla</code> при цьому не змінюється.</p>
+<blockquote>
+<p>У наступних розділах ми побачимо компактніший спосіб запису такого фільтра — генератори (comprehensions) списків.</p>
+</blockquote>
+<p>Цей підхід відрізняється від зміни елементів «на місці» (підрозділ 5.1.4), де ми змінювали вже наявні елементи списку через індекс, не створюючи нового списку.</p>
+<h2 id="56-типові-помилки">5.6 Типові помилки</h2>
+<p>Працюючи з циклами, початківці регулярно натрапляють на той самий невеликий набір помилок. Ось найпоширеніші з них.</p>
+<ul>
+<li><strong>Забута двокрапка</strong> в кінці рядка з <code>for</code> або <code>while</code> — Python одразу поверне <code>SyntaxError</code>.</li>
+<li><strong>Неправильні відступи</strong> тіла циклу (відсутні, непослідовні або змішані пробіли й табуляції) — призводять до <code>IndentationError</code> (див. приклад у підрозділі 5.1.1).</li>
+<li><strong>Неправильні межі <code>range()</code></strong> — типова помилка «на одиницю» (off-by-one), наприклад <code>range(1, n)</code> замість <code>range(n)</code>, через що пропускається перший або останній елемент послідовності.</li>
+<li><strong>Нескінченний цикл</strong> <code>while</code> — умова ніколи не стає хибною через забуту або неправильну зміну ітераційної змінної (див. приклад у підрозділі 5.3).</li>
+<li><strong>Оновлення лічильника не в тому місці</strong> — наприклад, оновлення відбувається до перевірки умови там, де логіка вимагає протилежного порядку, через що цикл виконується на одну ітерацію більше або менше, ніж очікувалося.</li>
+<li><strong>Вихід за межі списку</strong> (<code>IndexError<span class="hl-char">:</span> list index out of range</code>) — коли межі <code>range()</code> при ітерації по індексах не відповідають довжині списку (наприклад, <code>range(len(spysok) + 1)</code>).</li>
+<li><strong>Випадкове повторне використання ітераційної змінної</strong> — якщо ім'я вже використовувалося раніше в скрипті для іншої мети (наприклад, <code>i</code> як лічильник в іншому місці коду), цикл непомітно перезапише його значення; це особливо небезпечно у вкладених циклах, якщо для обох рівнів помилково обрати те саме ім'я змінної.</li>
+</ul>
+<h2 id="57-вправи">5.7 Вправи</h2>
+<h3 id="1-основи">1. Основи</h3>
+<p>Дано список <code>["зошит", "ручка", "олівець", "лінійка"]</code>. Виведіть усі елементи цього списку (по одному елементу на рядок) трьома різними способами (два — з <code>for</code>, один — з <code>while</code>).</p>
+<h3 id="2-цикли-та-дні-тижня">2. Цикли та дні тижня</h3>
+<p>Складіть список <code>tyzhden</code>, що містить 7 днів тижня. Напишіть інструкції, що виводять усі дні тижня (за допомогою <code>for</code>), а також окремі інструкції, що виводять лише вихідні дні (за допомогою <code>while</code>).</p>
+<h3 id="3-числа-від-1-до-10-в-одному-рядку">3. Числа від 1 до 10 в одному рядку</h3>
+<p>За допомогою циклу виведіть числа від 1 до 10 в одному рядку.</p>
+<h3 id="4-парні-та-непарні-числа">4. Парні та непарні числа</h3>
+<p>Дано <code>neparni</code> — список чисел <code>[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21]</code>. Напишіть програму, яка на основі списку <code>neparni</code> будує список <code>parni</code>, де кожен елемент <code>neparni</code> збільшено на 1.</p>
+<h3 id="5-обчислення-середнього-балу">5. Обчислення середнього балу</h3>
+<p>Ось оцінки учня: <code>[10, 9, 6, 8, 12]</code>. Обчисліть середнє значення цих оцінок. Використайте форматоване виведення, щоб показати середній бал із двома десятковими знаками.</p>
+<h3 id="6-добуток-послідовних-чисел">6. Добуток послідовних чисел</h3>
+<p>За допомогою <code>list()</code> та <code>range()</code> створіть список <code>parni_tsyla</code>, що містить парні цілі числа від 2 до 20 включно. Потім за допомогою циклу обчисліть добуток послідовних пар чисел зі списку <code>parni_tsyla</code>. Приклад для перших ітерацій: <code>8 24 48 [...]</code>.</p>
+<h3 id="7-трикутник">7. Трикутник</h3>
+<p>Створіть скрипт, який малює трикутник:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-bullet">*</span>
+**
+<span class="hljs-strong">***
+**</span>**
+<span class="hljs-strong">****</span>*
+<span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span><span class="hljs-strong">***
+**</span><span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span><span class="hljs-strong">****</span>*
+<span class="hljs-strong">****</span><span class="hljs-strong">****</span>**
+</code></pre>
+<h3 id="8-перевернутий-трикутник">8. Перевернутий трикутник</h3>
+<p>Створіть скрипт, який малює трикутник:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-strong">****</span><span class="hljs-strong">****</span>**
+<span class="hljs-strong">****</span><span class="hljs-strong">****</span>*
+<span class="hljs-strong">****</span><span class="hljs-strong">****</span>
+<span class="hljs-strong">****</span><span class="hljs-strong">***
+**</span><span class="hljs-strong">****</span>
+<span class="hljs-strong">****</span>*
+<span class="hljs-strong">****</span>
+<span class="hljs-strong">***
+**</span>
+<span class="hljs-bullet">*</span>
+</code></pre>
+<h3 id="9-піраміда">9. Піраміда</h3>
+<p>Створіть скрипт, який малює піраміду:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-bullet">          *</span>
+         <span class="hljs-strong">***
+        **</span><span class="hljs-strong">***
+       **</span><span class="hljs-strong">****</span>*
+<span class="hljs-code">      *********
+     ***********
+    *************
+   ***************
+  *****************
+ *******************
+</span></code></pre>
+<p>Спробуйте модифікувати скрипт, щоб малювати піраміду з довільної кількості рядків <code>N</code>. Запитайте користувача про кількість рядків за допомогою:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vidpovid = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть кількість рядків (додатне ціле число): "</span>)
+N = <span class="hljs-built_in">int</span>(vidpovid)
+</code></pre>
+<p>[!/exers]</p>
+<div class="project">
+<h2 id="58-творча-майстерня">5.8. Творча майстерня</h2>
+<h3 id="1-вгадай-число">1. Вгадай число</h3>
+<p>Напишіть гру: програма «загадує» число (наприклад, обране за допомогою <code>random.randint()</code>), а користувач намагається вгадати його, отримуючи після кожної спроби підказку «більше» або «менше». Використайте <code>while True</code> з <code>break</code> після вгадування та лічильник спроб.</p>
+<h3 id="2-банкомат">2. Банкомат</h3>
+<p>Змоделюйте роботу банкомата: цикл-меню (поповнити рахунок, зняти кошти, перевірити баланс, вихід), що працює, доки користувач не обере вихід. Перевірте некоректні випадки (наприклад, спробу зняти більше, ніж є на рахунку) за допомогою відповідних перевірок.</p>
+<h3 id="3-менеджер-списку-покупок">3. Менеджер списку покупок</h3>
+<p>Створіть програму зі списком покупок (<code>spysok_pokupok</code>), яка в циклі <code>while True</code> пропонує меню: додати товар, видалити товар, показати весь список, вихід. Скористайтеся методами списків із Розділу 4 «Списки» разом із конструкціями <code>break</code>/<code>continue</code> .</p>
+</div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><p><strong>Python Docs — More Control Flow Tools (<code>for</code>, <code>while</code>, <code>break</code>, <code>continue</code>, <code>else</code>)</strong><br><a href="https://docs.python.org/3/tutorial/controlflow.html">https://docs.python.org/3/tutorial/controlflow.html</a></p>
+</li>
+<li><p><strong>Python Docs — The <code>range()</code> Function</strong><br><a href="https://docs.python.org/3/tutorial/controlflow.html#the-range-function">https://docs.python.org/3/tutorial/controlflow.html#the-range-function</a></p>
+</li>
+<li><p><strong>Python Docs — <code>break</code>, <code>continue</code>, <code>pass</code></strong><br><a href="https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements">https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements</a></p>
+</li>
+<li><p><strong>Real Python — Python <code>for</code> Loops</strong><br><a href="https://realpython.com/python-for-loop/">https://realpython.com/python-for-loop/</a></p>
+</li>
+<li><p><strong>Real Python — Python <code>while</code> Loops</strong><br><a href="https://realpython.com/python-while-loop/">https://realpython.com/python-while-loop/</a></p>
+</li>
+<li><p><strong>Programiz — Python <code>for</code> Loop</strong><br><a href="https://www.programiz.com/python-programming/for-loop">https://www.programiz.com/python-programming/for-loop</a></p>
+</li>
+<li><p><strong>Programiz — Python <code>while</code> Loop</strong><br><a href="https://www.programiz.com/python-programming/while-loop">https://www.programiz.com/python-programming/while-loop</a></p>
+</li>
+<li><p><strong>GeeksforGeeks — Python Loops</strong><br><a href="https://www.geeksforgeeks.org/loops-in-python/">https://www.geeksforgeeks.org/loops-in-python/</a></p>
+</li>
+<li><p><strong>W3Schools — Python <code>for</code> Loops</strong><br><a href="https://www.w3schools.com/python/python_for_loops.asp">https://www.w3schools.com/python/python_for_loops.asp</a></p>
+</li>
+<li><p><strong>W3Schools — Python <code>while</code> Loops</strong><br><a href="https://www.w3schools.com/python/python_while_loops.asp">https://www.w3schools.com/python/python_while_loops.asp</a>
+</p></li></ol></div><ol><li>
+</li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

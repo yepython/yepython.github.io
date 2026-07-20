@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch11</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-11-більше-про-рядки">РОЗДІЛ 11. Більше про рядки</h1>
+<h2 id="111-навіщо-заглиблюватися-в-рядки">11.1 Навіщо заглиблюватися в рядки?</h2>
+<p>Рядки є одним із найпоширеніших типів даних у Python. Під час роботи з програмами текст рідко має готовий для використання вигляд: дані, зчитані з файлів або отримані від користувача, можуть містити зайві пробіли, символи нового рядка чи інші небажані елементи. Часто виникає потреба розділити текст на окремі слова або значення, перетворити їх на числа, перевірити вміст рядка чи, навпаки, об'єднати кілька фрагментів тексту в один.</p>
+<p>Для розв'язання таких завдань Python надає широкий набір методів роботи з рядками. У цьому розділі розглянемо найуживаніші з них, а також кілька пов'язаних інструментів, зокрема <code>map()</code>, <code>.join()</code> і оператор перевірки належності <code>in</code>.</p>
+<h2 id="112-рядки-та-списки">11.2 Рядки та списки</h2>
+<p>Рядки можна розглядати як дещо особливі списки (списки символів):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(tvaryny))
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">3</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">жираф тигр
+12
+а
+</code></pre>
+<p>Отже, ми можемо використовувати деякі властивості списків, такі як зрізи:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">0</span>:<span class="hljs-number">4</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">9</span>:])
+<span class="hljs-built_in">print</span>(tvaryny[:-<span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">1</span>:-<span class="hljs-number">2</span>:<span class="hljs-number">2</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">жира
+гр
+жираф ти
+иа тг
+</code></pre>
+<p>Але, на відміну від списків, рядки мають одну помітну відмінність: вони є <strong>незмінними</strong>. Після визначення рядка ви більше не можете змінити жоден з його елементів. У такому разі Python повертає повідомлення про помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny[<span class="hljs-number">4</span>])
+tvaryny[<span class="hljs-number">4</span>] = <span class="hljs-string">"А"</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">а
+Traceback (most recent <span class="hljs-keyword">call</span> last):
+  File <span class="hljs-string">"script.py"</span>, line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> &lt;<span class="hljs-keyword">module</span>&gt;
+    tvaryny[<span class="hljs-number">4</span>] = <span class="hljs-string">"А"</span>
+<span class="hljs-symbol">TypeError:</span> <span class="hljs-comment">'str' object does not support item assignment</span>
+</code></pre>
+<p>Отже, якщо ви хочете змінити рядок, ви повинні побудувати новий. Для цього не забувайте, що оператори конкатенації (<code>+</code>) та дублювання (<code>*</code>) (розглянуті в Розділі 2 «Змінні») можуть вам допомогти. Ви також можете згенерувати список (який є змінним), а потім повернутися до рядка (див. нижче, розділ про <code>.join()</code>).</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Маючи рядок <code>slovo = "програмування"</code>, виведіть за допомогою зрізів: перші 5 символів, останні 4 символи та кожен другий символ.
+</p></div>
+<h2 id="113-спеціальні-символи">11.3 Спеціальні символи</h2>
+<p>Існують певні спеціальні символи, такі як <code>\n</code>, який ми вже бачили (для повернення на новий рядок). Символ <code>\t</code> створює табуляцію. Якщо ви хочете написати одинарні або подвійні лапки так, щоб вони не плуталися з лапками оголошення рядка, ви можете використовувати <code>\'</code> або <code>\"</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Один backslash n\nпотім backslash t\t потім лапка\""</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">'Я\'відображаю одинарну лапку'</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Один backslash n
+потім backslash t	 потім лапка"
+Я'відображаю одинарну лапку
+</code></pre>
+<p>Ви також можете вміло використовувати подвійні або одинарні лапки для оголошення вашого рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Рядок тексту"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">'Python — це "супер" мова програмування'</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">Рядок тексту
+Python — це <span class="hljs-string">"супер"</span> мова програмування
+</code></pre>
+<p>Коли потрібно написати текст на кількох рядках, дуже зручно використовувати потрійні лапки, які зберігають форматування (зокрема, повернення на новий рядок):</p>
+<blockquote>
+<p>У прикладах нижче ми іноді використовуємо <code>print(repr(...))</code>. Функція <code>repr()</code> показує рядок так, як він насправді зберігається в пам'яті — у лапках і з escape-послідовностями (<code>\n</code>, <code>\t</code> тощо) незміненими, замість того щоб їх інтерпретувати. Це зручно, щоб побачити «сирий» вміст рядка, на відміну від звичайного <code>print()</code>, який одразу інтерпретує спеціальні символи.</p>
+</blockquote>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"""миша
+кіт
+бджола"""</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(x))
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust"><span class="hljs-string">'миша<span class="hljs-char escape_">\n</span>кіт<span class="hljs-char escape_">\n</span>бджола'</span>
+миша
+кіт
+бджола
+</code></pre>
+<p>Зверніть увагу, що спеціальні символи інтерпретуються лише тоді, коли вони використовуються з функцією <code>print()</code>. Наприклад, <code>\n</code> відображається як повернення на новий рядок лише тоді, коли він знаходиться в рядку, переданому функції <code>print()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(<span class="hljs-string">"бла\nбла"</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"бла\nбла"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust"><span class="hljs-string">'бла<span class="hljs-char escape_">\n</span>бла'</span>
+бла
+бла
+</code></pre>
+<h2 id="114-префікси-рядків">11.4 Префікси рядків</h2>
+<p>Ми бачили в Розділі «Виведення даних» поняття f-рядка. Це механізм для форматування тексту всередині рядка. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">zminna = <span class="hljs-string">"f-рядок"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"ось гарний <span class="hljs-subst">{zminna}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">ось гарний f-рядок
+</code></pre>
+<p>Що означає <code>f</code>, яке ми додаємо перед лапками рядка? Це називається «префікс рядка» або <em>string prefix</em>.</p>
+<blockquote>
+<p>Префікс рядка змінює спосіб, у який Python інтерпретує цей рядок. Він повинен бути систематично «приклеєний» до рядка, тобто без пробілу між ними.</p>
+</blockquote>
+<p>Існують різні префікси рядків у Python, тут ми покажемо вам два найважливіші.</p>
+<h3 id="префікс-r-raw-string">Префікс <code>r</code> (raw string)</h3>
+<p>Префікс <code>r</code> (від <em>raw string</em>) змушує не інтерпретувати спеціальні символи:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">s = <span class="hljs-string">"Ось повернення на новий рядок\nА тут ще один рядок"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(s))
+<span class="hljs-built_in">print</span>(s)
+
+s = <span class="hljs-string">r"Ось повернення на новий рядок\nА тут ще один рядок"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(s))
+<span class="hljs-built_in">print</span>(s)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust"><span class="hljs-string">'Ось повернення на новий рядок<span class="hljs-char escape_">\n</span>А тут ще один рядок'</span>
+Ось повернення на новий рядок
+А тут ще один рядок
+<span class="hljs-string">'Ось повернення на новий рядок\<span class="hljs-char escape_">\n</span>А тут ще один рядок'</span>
+Ось повернення на новий рядок\nА тут ще один рядок
+</code></pre>
+<p>Додавання <code>r</code> змусить Python не інтерпретувати <code>\n</code> як повернення на новий рядок, а як літеральний backslash, за яким слідує <code>n</code>. Якщо вивести цей рядок за допомогою <code>print(repr(s))</code>, ми побачимо два backslash-и, щоб позначити, що це літеральний backslash (перший екранує другий). Зрештою, використання синтаксису <code>r"..."</code> повертає нормальний рядок — ми бачимо, що <code>r</code> зникає, коли ми виводимо вміст змінної <code>s</code> через <code>repr()</code>. Як і у <code>zminna = 2 + 2</code>, спочатку Python обчислює вираз, а потім результат присвоюється змінній. І нарешті, лише використання звичайного <code>print()</code> (без <code>repr()</code>) призводить до інтерпретації спеціальних символів, як пояснювалося вище. Спеціальні символи, які не інтерпретуються в <em>raw strings</em>, — це загалом усе, де backslash змінює значення, наприклад <code>\n</code>, <code>\t</code> тощо.</p>
+<h3 id="префікс-f-formatted-string">Префікс <code>f</code> (formatted string)</h3>
+<p>Префікс <code>f</code> (від <em>formatted string</em>) реалізує форматоване виведення, як ми бачили в Розділі 3:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna = <span class="hljs-string">"лисиця"</span>
+tvaryna2 = <span class="hljs-string">"лоша"</span>
+s = <span class="hljs-string">f"Лисиця — це добра тварина\nЛоша також"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(s))
+<span class="hljs-built_in">print</span>(s)
+
+s = <span class="hljs-string">"Лисиця — це добра тварина\nЛоша також"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(s))
+<span class="hljs-built_in">print</span>(s)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust"><span class="hljs-string">'Лисиця — це добра тварина<span class="hljs-char escape_">\n</span>Лоша також'</span>
+Лисиця — це добра тварина
+Лоша також
+<span class="hljs-string">'Лисиця — це добра тварина<span class="hljs-char escape_">\n</span>Лоша також'</span>
+Лисиця — це добра тварина
+Лоша також
+</code></pre>
+<p>f-рядок замінює вміст змінних, розташованих у фігурних дужках, і інтерпретує <code>\n</code> як повернення на новий рядок. Нагадуємо, що ви можете звернутися до Розділу 3, якщо хочете дізнатися більше про роботу f-рядків.</p>
+<blockquote>
+<p> Існує багато інших деталей щодо префіксів, які виходять за межі цього курсу. Щоб дізнатися більше, ви можете звернутися до офіційної документації.</p>
+</blockquote>
+<h2 id="115-методи-повязані-з-рядками">11.5 Методи, пов'язані з рядками</h2>
+<p>Ось деякі методи, специфічні для об'єктів типу <code>str</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"жираф"</span>
+<span class="hljs-built_in">print</span>(x.upper())
+<span class="hljs-built_in">print</span>(x)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"ТИГР"</span>.lower())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">ЖИРАФ
+жираф
+тигр
+</code></pre>
+<p>Методи <code>.lower()</code> та <code>.upper()</code> повертають текст у нижньому та верхньому регістрах відповідно. Зауважте, що використання цих методів не змінює початковий рядок, а повертає трансформований рядок — рядки, як ми щойно бачили, незмінні. Якщо результат потрібен надалі, не забудьте зберегти його у змінній (за потреби перезаписавши ту саму).</p>
+<p>Щоб зробити великою лише першу літеру, ви можете зробити так:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"жираф"</span>
+<span class="hljs-built_in">print</span>(x[<span class="hljs-number">0</span>].upper() + x[<span class="hljs-number">1</span>:])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Жираф
+</code></pre>
+<p>або простіше використати відповідний метод:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"жираф"</span>
+<span class="hljs-built_in">print</span>(x.capitalize())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Жираф
+</code></pre>
+<h3 id="метод-split">Метод <code>.split()</code></h3>
+<p>Існує метод, пов'язаний з рядками, який є особливо зручним — метод <code>.split()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр мавпа миша"</span>
+<span class="hljs-built_in">print</span>(tvaryny.split())
+
+<span class="hljs-keyword">for</span> tvaryna <span class="hljs-keyword">in</span> tvaryny.split():
+    <span class="hljs-built_in">print</span>(tvaryna)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">'миша'</span>]</span>
+жираф
+тигр
+мавпа
+миша
+</code></pre>
+<p>Метод <code>.split()</code> розрізає рядок на кілька елементів, які називаються полями, використовуючи як роздільник будь-яку комбінацію «пробільних символів».</p>
+<p><strong>Визначення.</strong> Пробільний символ (<em>whitespace</em> англійською) відповідає символам, які невидимі для ока, але займають місце в тексті. Найбільш класичними пробільними символами є пробіл, табуляція та повернення на новий рядок.</p>
+<p>Можна змінити роздільник полів, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф:тигр:мавпа::миша"</span>
+<span class="hljs-built_in">print</span>(tvaryny.split(<span class="hljs-string">":"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа'</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'миша'</span>]</span>
+</code></pre>
+<blockquote>
+<p><strong>Увага</strong>, у цьому прикладі роздільником є один символ <code><span class="hl-char">:</span></code> (а не комбінація з одного або кількох <code><span class="hl-char">:</span></code>), що призводить до появи порожнього рядка між <code>мавпа</code> та <code>миша</code>.</p>
+</blockquote>
+<p>Також цікаво вказати <code>.split()</code> кількість разів, яку ми хочемо розрізати рядок, за допомогою аргументу <code>maxsplit</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр мавпа миша"</span>
+<span class="hljs-built_in">print</span>(tvaryny.split(maxsplit=<span class="hljs-number">1</span>))
+<span class="hljs-built_in">print</span>(tvaryny.split(maxsplit=<span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр мавпа миша'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'жираф'</span>, <span class="hljs-string">'тигр'</span>, <span class="hljs-string">'мавпа миша'</span>]</span>
+</code></pre>
+<h3 id="пошук-та-заміна-find-replace-count">Пошук та заміна: <code>.find()</code>, <code>.replace()</code>, <code>.count()</code></h3>
+<p>Метод <code>.find()</code>, зі свого боку, шукає рядок, переданий як аргумент:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryna = <span class="hljs-string">"жираф"</span>
+<span class="hljs-built_in">print</span>(tvaryna.find(<span class="hljs-string">"и"</span>))
+<span class="hljs-built_in">print</span>(tvaryna.find(<span class="hljs-string">"раф"</span>))
+<span class="hljs-built_in">print</span>(tvaryna.find(<span class="hljs-string">"з"</span>))
+<span class="hljs-built_in">print</span>(tvaryna.find(<span class="hljs-string">"тиг"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-diff">1
+3
+<span class="hljs-deletion">-1</span>
+<span class="hljs-deletion">-1</span>
+</code></pre>
+<p>Якщо шуканий елемент знайдено, повертається індекс початку елемента в рядку. Якщо елемент не знайдено, повертається значення <code>-1</code>.</p>
+<p>Якщо шуканий елемент знайдено кілька разів, повертається лише індекс першого входження:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny.find(<span class="hljs-string">"и"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+</code></pre>
+<p>Також є метод <code>.replace()</code>, який замінює один рядок на інший:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny.replace(<span class="hljs-string">"тигр"</span>, <span class="hljs-string">"мавпа"</span>))
+<span class="hljs-built_in">print</span>(tvaryny.replace(<span class="hljs-string">"и"</span>, <span class="hljs-string">"о"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">жираф мавпа
+жораф тогр
+</code></pre>
+<p>Метод <code>.count()</code> підраховує кількість входжень рядка, переданого як аргумент:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(tvaryny.count(<span class="hljs-string">"и"</span>))
+<span class="hljs-built_in">print</span>(tvaryny.count(<span class="hljs-string">"з"</span>))
+<span class="hljs-built_in">print</span>(tvaryny.count(<span class="hljs-string">"тигр"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2
+0
+1
+</code></pre>
+<h3 id="перевірка-початку-рядка-startswith">Перевірка початку рядка: <code>.startswith()</code></h3>
+<p>Метод <code>.startswith()</code> перевіряє, чи починається рядок з іншого рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"Добрий день, пане капітане!"</span>
+<span class="hljs-built_in">print</span>(riadok.startswith(<span class="hljs-string">"Добрий"</span>))
+<span class="hljs-built_in">print</span>(riadok.startswith(<span class="hljs-string">"До побачення"</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">False</span>
+</code></pre>
+<p>Цей метод особливо корисний під час читання файлу, коли ми хочемо відібрати лише певні рядки, що починаються з ключового слова — наприклад, рядки логів, що починаються з дати, або рядки конфігураційного файлу, що починаються з певної позначки.</p>
+<h3 id="очищення-країв-рядка-strip">Очищення країв рядка: <code>.strip()</code></h3>
+<p>І нарешті, метод <code>.strip()</code> дозволяє «очистити краї» рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">" Як видалити пробіли на початку і в кінці? "</span>
+<span class="hljs-built_in">print</span>(riadok.strip())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Як видалити пробіли на початку і в кінці?
+</code></pre>
+<p>Метод <code>.strip()</code> видаляє пробіли, розташовані на краях рядка, але не ті, що знаходяться між видимими символами. Насправді цей метод видаляє будь-яку комбінацію «пробільних символів» на краях, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"\tпрацює з табуляціями та поверненнями на новий рядок\n"</span>
+<span class="hljs-built_in">print</span>(riadok.strip())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">працює з табуляціями та поверненнями на новий рядок
+</code></pre>
+<p>Цей метод корисний для позбавлення від символів повернення на новий рядок при читанні файлу.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Маючи рядок <code>poviedomlennya = "  Привіт, Світ!  "</code>, виведіть його без зайвих пробілів на краях, а потім у нижньому регістрі.</li>
+<li>Маючи рядок <code>riadok = "2024-01-15 ПОМИЛКА<span class="hl-char">:</span> файл не знайдено"</code>, перевірте за допомогою <code>.startswith()</code>, чи починається він з <code>"2024"</code>.</li>
+<li>Порахуйте, скільки разів літера <code>"о"</code> зустрічається у рядку <code>"Молоко на столі"</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="116-вилучення-числових-значень-з-рядка">11.6 Вилучення числових значень з рядка</h2>
+<p>Завдання, яке часто трапляється в Python, — це прочитати рядок (наприклад, з файлу), витягти з нього значення, а потім маніпулювати ними. Розглянемо, наприклад, рядок <code>riadok1</code>, який ми хочемо розрізати на окремі значення, а потім додати два з них:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok1 = <span class="hljs-string">"3.4 17.2 мітка"</span>
+
+spysok1 = riadok1.split()
+<span class="hljs-built_in">print</span>(spysok1)
+
+nb1, nb2, nazva = spysok1
+<span class="hljs-built_in">print</span>(nb1)
+<span class="hljs-built_in">print</span>(nb2)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">float</span>(nb1) + <span class="hljs-built_in">float</span>(nb2))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'3.4'</span>, <span class="hljs-string">'17.2'</span>, <span class="hljs-string">'мітка'</span>]</span>
+<span class="hljs-number">3.4</span>
+<span class="hljs-number">17.2</span>
+<span class="hljs-number">20.599999999999998</span>
+</code></pre>
+<p>Ми отримуємо список рядків <code>spysok1</code>. За допомогою множинного присвоювання ми отримуємо бажані числа в <code>nb1</code> та <code>nb2</code>, але вони все ще у вигляді рядків. Далі їх потрібно перетворити на <code>float</code>, щоб мати змогу додати.</p>
+<blockquote>
+<p>Добре запам'ятайте використання попередніх інструкцій для вилучення числових значень з рядка. Вони регулярно застосовуються для аналізу даних, видобутих з файлу.</p>
+</blockquote>
+<h2 id="117-функція-map">11.7 Функція <code>map()</code></h2>
+<p>Функція <code>map()</code> дозволяє застосувати функцію до кількох елементів ітерованого об'єкта. Наприклад, якщо ми маємо рядок з трьома цілими числами, розділеними пробілами, ми можемо витягти та перетворити три числа на цілі в один рядок. Функція <code>map()</code> створює об'єкт типу <code>map</code>, який є ітерованим і може бути перетворений на список:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"67 946 -45"</span>
+<span class="hljs-built_in">print</span>(riadok.split())
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">int</span>, riadok.split()))
+
+<span class="hljs-keyword">for</span> chyslo <span class="hljs-keyword">in</span> <span class="hljs-built_in">map</span>(<span class="hljs-built_in">int</span>, riadok.split()):
+    <span class="hljs-built_in">print</span>(chyslo)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">int</span>, riadok.split())))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'67'</span>, <span class="hljs-string">'946'</span>, <span class="hljs-string">'-45'</span>]</span>
+&lt;map <span class="hljs-selector-tag">object</span> at <span class="hljs-number">0</span>x7fa34e573b20&gt;
+<span class="hljs-number">67</span>
+<span class="hljs-number">946</span>
+-<span class="hljs-number">45</span>
+<span class="hljs-selector-attr">[67, 946, -45]</span>
+</code></pre>
+<blockquote>
+<p>Функція <code>map()</code> приймає два аргументи. Другий — це ітерований об'єкт, часто список, як у нашому прикладі. Перший аргумент — це ім'я функції, яку ми хочемо застосувати до кожного елемента списку, але без дужок (тут <code>int</code>, а не <code>int()</code>). Функція, передана як аргумент іншої функції, називається функцією зворотного виклику або <em>callback</em> англійською. Ми повернемося до цього поняття в розділі про Tkinter.</p>
+</blockquote>
+<p>Функція <code>map()</code> особливо корисна при читанні файлу числових значень. Наприклад, якщо ми маємо файл <code>data.dat</code>, що містить три стовпці чисел, <code>map()</code> у поєднанні з <code>.split()</code> дозволяє розділити три числа, а потім перетворити їх на <code>float</code> в один рядок коду:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"data.dat"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl_vh:
+        x, y, z = <span class="hljs-built_in">map</span>(<span class="hljs-built_in">float</span>, riadok.split())
+        <span class="hljs-built_in">print</span>(x + y + z)
+</code></pre>
+<p>Без <code>map()</code> довелося б використовувати один рядок для розділення даних <code>x, y, z = riadok.split()</code> і ще один для їх перетворення на <code>float</code>: <code>x, y, z = float(x), float(y), float(z)</code>.</p>
+<p>І нарешті, можна використовувати <code>map()</code> з власними функціями:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">obchyslyty_kub</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x**<span class="hljs-number">3</span>
+
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">map</span>(obchyslyty_kub, [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, 8, 27, 64</span>]
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Маючи рядок <code>riadok = "1 2 3 4 5"</code>, за допомогою <code>map()</code> перетворіть усі числа на цілі й виведіть їхню суму (використайте вбудовану функцію <code>sum()</code>).
+</p></div>
+<h2 id="118-тест-на-належність">11.8 Тест на належність</h2>
+<p>Оператор <code>in</code> перевіряє, чи є один рядок частиною іншого рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"Нефертіті"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"тото"</span> <span class="hljs-keyword">in</span> riadok)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"тіті"</span> <span class="hljs-keyword">in</span> riadok)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"ті"</span> <span class="hljs-keyword">in</span> riadok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">False</span>
+<span class="hljs-literal">True</span>
+<span class="hljs-literal">True</span>
+</code></pre>
+<p>Зауважте, що рядок, який перевіряється, може перебувати в будь-якій позиції в іншому рядку. Крім того, тест істинний, якщо він присутній один або кілька разів.</p>
+<p>Варіація з булевим оператором <code>not</code> дозволяє перевірити, що рядка немає в іншому рядку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"Нефертіті"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-keyword">not</span> <span class="hljs-string">"тото"</span> <span class="hljs-keyword">in</span> riadok)
+<span class="hljs-built_in">print</span>(<span class="hljs-keyword">not</span> <span class="hljs-string">"фер"</span> <span class="hljs-keyword">in</span> riadok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">False</span>
+</code></pre>
+<h2 id="119-перетворення-списку-рядків-на-рядок">11.9 Перетворення списку рядків на рядок</h2>
+<p>Ми бачили в Розділі  «Змінні» перетворення простого типу (ціле число, <code>float</code> та рядок) на інший за допомогою функцій <code>int()</code>, <code>float()</code> та <code>str()</code>. Перетворення списку рядків на рядок є менш інтуїтивним. Воно викликає метод <code>.join()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">slova = [<span class="hljs-string">"Привіт"</span>, <span class="hljs-string">"світ"</span>, <span class="hljs-string">"Python"</span>]
+<span class="hljs-built_in">print</span>(slova)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"-"</span>.join(slova))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">" "</span>.join(slova))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">""</span>.join(slova))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'Привіт'</span>, <span class="hljs-string">'світ'</span>, <span class="hljs-string">'Python'</span>]</span>
+Привіт-світ-Python
+Привіт світ Python
+ПривітсвітPython
+</code></pre>
+<p>Елементи початкового списку конкатенуються один за одним і розділяються роздільником, який може бути будь-яким рядком. Тут ми використали тире, пробіл і порожній рядок.</p>
+<p>Метод <code>.join()</code> застосовується лише до списку рядків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">mi_spysok = [<span class="hljs-string">"Привіт"</span>, <span class="hljs-number">5</span>, <span class="hljs-string">"світ"</span>]
+<span class="hljs-built_in">print</span>(<span class="hljs-string">""</span>.join(mi_spysok))
+</code></pre>
+<p>Виведе:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+ File "script.py", line <span class="hljs-number">2</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+   print("".<span class="hljs-keyword">join</span>(mi_spysok))
+TypeError: sequence item <span class="hljs-number">1</span>: expected str instance, <span class="hljs-type">int</span> found
+</code></pre>
+<p>Ми сподіваємося, що після цього короткого огляду ви переконаєтеся в багатстві методів, пов'язаних з рядками. Щоб отримати вичерпний список усіх методів, пов'язаних з певною змінною, ви можете використати функцію <code>dir()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">dir</span>(tvaryny))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">[<span class="hljs-string">'__add__'</span>, <span class="hljs-string">'__class__'</span>, <span class="hljs-string">'__contains__'</span>, <span class="hljs-string">'__delattr__'</span>, <span class="hljs-string">'__dir__'</span>,
+...,
+<span class="hljs-string">'partition'</span>, <span class="hljs-string">'replace'</span>, <span class="hljs-string">'rfind'</span>, <span class="hljs-string">'rindex'</span>, <span class="hljs-string">'rjust'</span>, <span class="hljs-string">'rpartition'</span>,
+<span class="hljs-string">'rsplit'</span>, <span class="hljs-string">'rstrip'</span>, <span class="hljs-string">'split'</span>, <span class="hljs-string">'splitlines'</span>, <span class="hljs-string">'startswith'</span>, <span class="hljs-string">'strip'</span>,
+<span class="hljs-string">'swapcase'</span>, <span class="hljs-string">'title'</span>, <span class="hljs-string">'translate'</span>, <span class="hljs-string">'upper'</span>, <span class="hljs-string">'zfill'</span>]
+</code></pre>
+<p>Поки що ви можете ігнорувати методи, які починаються і закінчуються двома нижніми підкресленнями <code>__</code>. Ми не навели весь вивід цієї команди <code>dir()</code>, щоб не захаращувати текст, але не соромтеся протестувати її самостійно.</p>
+<p>Ви також можете отримати довідку та документацію для певного методу за допомогою <code>help()</code>, наприклад для методу <code>.split()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">tvaryny = <span class="hljs-string">"жираф тигр"</span>
+<span class="hljs-built_in">help</span>(tvaryny.split)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">Help <span class="hljs-keyword">on</span> built-<span class="hljs-keyword">in</span> <span class="hljs-keyword">function</span> split:
+
+split(...)
+    S.split([sep[,maxsplit]]) -&gt; list <span class="hljs-keyword">of</span> strings
+
+    <span class="hljs-keyword">Return</span> a list <span class="hljs-keyword">of</span> the words <span class="hljs-keyword">in</span> the <span class="hljs-type">string</span> S, <span class="hljs-keyword">using</span> sep <span class="hljs-keyword">as</span> the
+    delimiter <span class="hljs-type">string</span>.  <span class="hljs-keyword">If</span> maxsplit <span class="hljs-built_in">is</span> given, at most maxsplit
+    splits are done. <span class="hljs-keyword">If</span> sep <span class="hljs-built_in">is</span> <span class="hljs-built_in">not</span> specified <span class="hljs-built_in">or</span> <span class="hljs-built_in">is</span> None, any
+    whitespace <span class="hljs-type">string</span> <span class="hljs-built_in">is</span> a separator.
+(<span class="hljs-keyword">END</span>)
+</code></pre>
+<blockquote>
+<p>Не ставте дужки після назви методу. Правильна інструкція — <code>help(tvaryny.split)</code>, а не <code>help(tvaryny.split())</code>.</p>
+</blockquote>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Маючи список <code>slova = ["сонце", "тепло", "літо"]</code>, зберіть його в один рядок через кому з пробілом (<code>"сонце, тепло, літо"</code>).
+</p></div>
+<h2 id="1110-ланцюжки-методів-method-chaining">11.10 Ланцюжки методів (Method chaining)</h2>
+<p>Існує багато методів для обробки рядків. Ці методи здебільшого повертають модифікований рядок. Наприклад, якщо ми хочемо зробити великими перші літери всіх слів у рядку, потім замінити одне слово на інше, а потім перетворити цей рядок на список рядків, ми можемо написати:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">povidomlennya = <span class="hljs-string">"привіт максим привіт оксана"</span>
+povidomlennya1 = povidomlennya.title()
+<span class="hljs-built_in">print</span>(povidomlennya1)
+
+povidomlennya2 = povidomlennya1.replace(<span class="hljs-string">"Привіт"</span>, <span class="hljs-string">"Добрий день"</span>)
+<span class="hljs-built_in">print</span>(povidomlennya2)
+
+<span class="hljs-built_in">print</span>(povidomlennya2.split())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">Привіт Максим Привіт Оксана
+Добрий день Максим Добрий день Оксана
+<span class="hljs-selector-attr">[<span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Максим'</span>, <span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Оксана'</span>]</span>
+</code></pre>
+<p>Ми створили дві проміжні змінні <code>povidomlennya1</code> та <code>povidomlennya2</code> для зберігання рядків, модифікованих методами <code>.title()</code> та <code>.replace()</code>.</p>
+<p>Можна зробити те саме в один рядок, використовуючи ланцюжок методів або <em>method chaining</em>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">povidomlennya = <span class="hljs-string">"привіт максим привіт оксана"</span>
+<span class="hljs-built_in">print</span>(povidomlennya.title().replace(<span class="hljs-string">"Привіт"</span>, <span class="hljs-string">"Добрий день"</span>).split())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Максим'</span>, <span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Оксана'</span>]</span>
+</code></pre>
+<p>Таким чином, ми уникаємо створення проміжних змінних.</p>
+<p>Ланцюжки методів можуть створювати дуже довгі рядки коду. Можна розрізати рядок коду на кілька рядків, використовуючи символ <code>\</code> у кінці рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">povidomlennya = <span class="hljs-string">"привіт максим привіт оксана"</span>
+<span class="hljs-built_in">print</span>(povidomlennya.title()\
+    .replace(<span class="hljs-string">"Привіт"</span>, <span class="hljs-string">"Добрий день"</span>)\
+    .title())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Добрий День Максим Добрий День Оксана
+</code></pre>
+<p>Можна також використовувати дужки для розрізання рядка коду на кілька рядків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">povidomlennya = <span class="hljs-string">"привіт максим привіт оксана"</span>
+<span class="hljs-built_in">print</span>(
+    povidomlennya
+    .title()
+    .replace(<span class="hljs-string">"Привіт"</span>, <span class="hljs-string">"Добрий день"</span>)
+    .split()
+)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Максим'</span>, <span class="hljs-string">'Добрий'</span>, <span class="hljs-string">'день'</span>, <span class="hljs-string">'Оксана'</span>]</span>
+</code></pre>
+<p>Використання дужок також дозволяє розрізати рядок на кілька рядків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">miy_riadok = (
+    <span class="hljs-string">"ось рядок"</span>
+    <span class="hljs-string">"дуже довгий"</span>
+    <span class="hljs-string">"на кілька рядків"</span>)
+<span class="hljs-built_in">print</span>(miy_riadok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">ось рядокдуже довгийна кілька рядків
+</code></pre>
+<h2 id="1111-типові-помилки">11.11 Типові помилки</h2>
+<p><strong>1. Забути, що рядки незмінні.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"жираф"</span>
+x[<span class="hljs-number">0</span>] = <span class="hljs-string">"Ж"</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">Traceback (most recent <span class="hljs-keyword">call</span> last):
+  File <span class="hljs-string">"script.py"</span>, line <span class="hljs-number">2</span>, <span class="hljs-keyword">in</span> &lt;<span class="hljs-keyword">module</span>&gt;
+    x[<span class="hljs-number">0</span>] = <span class="hljs-string">"Ж"</span>
+<span class="hljs-symbol">TypeError:</span> <span class="hljs-comment">'str' object does not support item assignment</span>
+</code></pre>
+<p>Як виправити: побудуйте новий рядок замість зміни наявного, наприклад <code>x = "Ж" + x[1<span class="hl-char">:</span>]</code>.</p>
+<p><strong>2. Забути зберегти результат методу.</strong></p>
+<p>Методи рядків не змінюють оригінал — вони повертають новий рядок. Якщо забути присвоїти результат, зміни «загубляться»:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"жираф"</span>
+<span class="hljs-built_in">print</span>(x.upper())
+<span class="hljs-built_in">print</span>(x)  <span class="hljs-comment"># x залишився незмінним!</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">ЖИРАФ
+жираф
+</code></pre>
+<p>Як виправити: <code>x = x.upper()</code>, якщо потрібно зберегти результат.</p>
+<p><strong>3. Поставити дужки там, де їх не потрібно (у <code>help()</code>).</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">help</span>(x.split())  <span class="hljs-comment"># Помилка стилю: викликає метод, а не передає його</span>
+</code></pre>
+<p>Правильно: <code>help(x.split)</code> — без дужок, ми передаємо сам метод, а не результат його виклику.</p>
+<p><strong>4. Спробувати об'єднати <code>.join()</code> зі списком, що містить не лише рядки.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">""</span>.join([<span class="hljs-string">"Привіт"</span>, <span class="hljs-number">5</span>, <span class="hljs-string">"світ"</span>]))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "script.py", line <span class="hljs-number">1</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print("".<span class="hljs-keyword">join</span>(["Привіт", <span class="hljs-number">5</span>, "світ"]))
+TypeError: sequence item <span class="hljs-number">1</span>: expected str instance, <span class="hljs-type">int</span> found
+</code></pre>
+<p>Як виправити: спершу перетворіть усі елементи списку на рядки, наприклад за допомогою <code>map(str, mii_spysok)</code>.</p>
+<div class="exers">
+<h2 id="1112-вправи">11.12 Вправи</h2>
+<h3 id="1-перебір-списку-рядків">1. Перебір списку рядків</h3>
+<p>Дано список <code>['жираф', 'тигр', 'мавпа', 'миша']</code>. Використовуючи цикл, відобразіть кожен елемент, а також його розмір (кількість символів).</p>
+<h3 id="2-читання-тексту-із-заголовком-у-файлі">2. Читання тексту із заголовком у файлі</h3>
+<p>Файл <code>povidomlennya.txt</code> містить текст у форматі із заголовком: перший рядок починається із символу <code>&gt;</code>, за яким іде назва повідомлення, а решта рядків містять власне текст, розбитий на короткі фрагменти по кілька символів у рядку, наприклад:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">&gt;Таємне_повідомлення
+ABCDEFGHIJ KLMNOPQRST
+UVWXYZABCD EFGHIJKLMN
+<span class="hljs-selector-attr">[...]</span>
+</code></pre>
+<p>Створіть функцію <code>chytaty_tekst()</code>, яка приймає як аргумент ім'я файлу у вигляді рядка, читає текст (пропускаючи рядок заголовка) і повертає його у вигляді одного суцільного рядка (без пробілів та символів нового рядка). Потім використовуйте цю функцію, щоб отримати текст у змінну <code>tekst</code>, а потім виведіть таку інформацію:</p>
+<ul>
+<li>ім'я файлу,</li>
+<li>довжину тексту (кількість символів),</li>
+<li>повідомлення, що перевіряє, чи є довжина тексту кратною 3,</li>
+<li>кількість блоків по 3 символи,</li>
+<li>перші 10 символів,</li>
+<li>останні 10 символів.</li>
+</ul>
+<p>Виведення має виглядати приблизно так:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">povidomlennya.txt
+Текст містить WWW символів
+Довжина тексту є кратною 3 символам
+Текст має XXX блоків по 3 символи
+10 перших символів: YYYYYYYYYY
+10 останніх символів: ZZZZZZZZZZ
+</code></pre>
+<p>де <code>WWW</code> та <code>XXX</code> — цілі числа, а <code>YYYYYYYYYY</code> та <code>ZZZZZZZZZZ</code> — символи.</p>
+<h3 id="3-частота-літер-у-рядку">3. Частота літер у рядку</h3>
+<p>Дано рядок <code>riadok = "mississippi"</code>. Ми хочемо обчислити частоту кожної літери <code>m</code>, <code>i</code>, <code>s</code> і <code>p</code> у цьому рядку та відобразити результат на екрані. Створіть для цього функцію <code>obchyslyty_chastotu()</code>, якій ви передаєте як аргумент ваш рядок, і яка повертає список із чотирьох <code>float</code>, що вказують відповідно на частоту літер <code>m</code>, <code>i</code>, <code>s</code> і <code>p</code>.</p>
+<h3 id="4-відстань-хеммінга">4. Відстань Хеммінга</h3>
+<p>Відстань Хеммінга вимірює різницю між двома рядками однакового розміру, підраховуючи кількість позицій, у яких відповідні символи цих рядків не збігаються. Створіть функцію <code>vidstan_hemminga()</code>, яка приймає як аргумент два рядки і повертає відстань Хеммінга (у вигляді цілого числа) між цими двома рядками. Обчисліть відстань Хеммінга між рядками <code>"programming"</code> та <code>"progrxmmirg"</code>, а потім між рядками <code>"kotolyshko"</code> та <code>"kotolishko"</code>.</p>
+<h3 id="5-середній-бал">5. Середній бал</h3>
+<p>Файл <code>notatky.csv</code> містить імена учнів, а також їхні оцінки з різних предметів. Кожні дані розділені комою. Знаходимо в порядку: ім'я учня, оцінка з географії, оцінка зі фізкультури, оцінка з англійської.</p>
+<pre><code data-highlighted="yes" class="hljs language-css">Ткаченко,<span class="hljs-number">7</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>
+Скляр,<span class="hljs-number">9</span>,<span class="hljs-number">8</span>,<span class="hljs-number">10</span>
+Іванюк,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">10</span>
+<span class="hljs-selector-attr">[...]</span>
+</code></pre>
+<p>Створіть програму, яка читає кожен рядок файлу і будує список словників типу <code>[{"imya"<span class="hl-char">:</span> "Ткаченко", "геогр"<span class="hl-char">:</span> 7, "фізкульт"<span class="hl-char">:</span> 9, "англ"<span class="hl-char">:</span> 10}, ...]</code>. Використовуйте, якщо можливо, функцію <code>map()</code> для перетворення чисел, прочитаних у файлі, на цілі числа. Потім виконайте цикл по цьому списку словників і відобразіть ім'я учня, його оцінку з фізкультури та оцінку з англійської. Потім відобразіть середні оцінки зі спорту та географії для всіх студентів.</p>
+<h3 id="6-перетворення-скорочених-назв-місяців-у-повні">6. Перетворення скорочених назв місяців у повні</h3>
+<p>Створіть функцію <code>konvertuvaty_misyatsi()</code>, яка приймає як аргумент рядок зі скороченими (тризначними) назвами місяців, розділеними пробілом, і повертає рядок із повними назвами місяців, розділеними пробілом. Спробуйте використати ланцюжки методів у цій функції. Використайте цю функцію для перетворення рядка <code>"Jan Mar Jul Oct Dec"</code>. Нагадування відповідності скорочених та повних назв місяців:</p>
+<table>
+<thead>
+<tr>
+<th>Скорочення</th>
+<th>Повна назва</th>
+<th>Скорочення</th>
+<th>Повна назва</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Jan</td>
+<td>January</td>
+<td>Jul</td>
+<td>July</td>
+</tr>
+<tr>
+<td>Feb</td>
+<td>February</td>
+<td>Aug</td>
+<td>August</td>
+</tr>
+<tr>
+<td>Mar</td>
+<td>March</td>
+<td>Sep</td>
+<td>September</td>
+</tr>
+<tr>
+<td>Apr</td>
+<td>April</td>
+<td>Oct</td>
+<td>October</td>
+</tr>
+<tr>
+<td>May</td>
+<td>May</td>
+<td>Nov</td>
+<td>November</td>
+</tr>
+<tr>
+<td>Jun</td>
+<td>June</td>
+<td>Dec</td>
+<td>December</td>
+</tr>
+</tbody></table>
+<h3 id="7-паліндром">7. Паліндром</h3>
+<p>Паліндром — це слово або фраза, порядок літер у яких залишається тим самим, якщо читати їх зліва направо або справа наліво. Створіть функцію <code>ye_palindromom()</code>, яка приймає як аргумент рядок і повертає булеве значення (<code>True</code>, якщо аргумент є паліндромом, <code>False</code>, якщо ні). У головній програмі відобразіть <code>xxx є паліндромом</code>, якщо функція <code>ye_palindromom()</code> повертає <code>True</code>, інакше <code>xxx не є паліндромом</code>. Не забудьте попередньо позбутися великих літер, розділових знаків та пробілів. Потім перевірте, чи є такі вирази паліндромами:</p>
+<ul>
+<li>Корок</li>
+<li>Дорога на город</li>
+<li>Хата на канатах</li>
+<li>І розморозь зором зорі </li>
+<li>І що сало? Ласощі</li>
+<li>Козак з казок «Бувалу булаву б…»</li>
+<li>Я несу гусеня</li>
+<li>А довкола балок вода</li>
+</ul>
+<blockquote>
+<p>Для очищення рядка (видалення великих літер, розділових знаків та пробілів) спробуйте використати ланцюжки методів.</p>
+</blockquote>
+</div>
+<div class="project">
+<h2 id="1113-творча-майстерня-розшифрування-таємного-повідомлення">11.13 Творча майстерня: розшифрування таємного повідомлення</h2>
+<p>Об'єднаємо кілька щойно вивчених інструментів (<code>.strip()</code>, <code>in</code>, зчитування файлу по рядках, побудову рядка) в одному проєкті — розшифрування прихованого повідомлення.</p>
+<p><strong>Задача.</strong> Ми хочемо отримати закодоване текстове повідомлення, яке міститься у файлі <code>povidomlennya_kod.txt</code>. У цьому файлі повідомлення починається одразу після рядка, що містить слово <code>MESSAGE_START</code>, і закінчується перед рядком, що містить <code>MESSAGE_END</code>:</p>
+<pre><code data-highlighted="yes" class="hljs language-makefile"><span class="hljs-section">TITLE: Тестовий файл</span>
+MESSAGE_START
+     1 thequickbrownfoxjumpsoverthelazydogthequickbrownfoxjumpsoverthela
+    68 zydogthequickbrownfoxjumpsoverthelazydog
+MESSAGE_END
+</code></pre>
+<p>Щоб витягти повідомлення, ми пропонуємо використати алгоритм «прапорця» — змінну, яка буде <code>True</code>, коли ми читаємо рядки з текстом повідомлення, і <code>False</code> для інших рядків. Створіть функцію <code>chytaty_povidomlennya()</code>, яка приймає як аргумент ім'я файлу у вигляді рядка, читає повідомлення у файлі та повертає його у вигляді рядка (без пробілів, цифр та символів нового рядка). Потім використайте цю функцію, щоб отримати повідомлення у змінну <code>povidomlennya</code> у головній програмі. Скрипт 🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">povidomlennya_kod.txt
+Повідомлення містить XXX символів
+Перші 10 символів: YYYYYYYYYY
+Останні 10 символів: ZZZZZZZZZZ
+</code></pre>
+<p>де <code>XXX</code> — ціле число, а <code>YYYYYYYYYY</code> та <code>ZZZZZZZZZZ</code> — символи. У вас є вся інформація для виконання цієї вправи. Якщо ви все ж застрягли з реалізацією прапорця, ось алгоритм у псевдокоді, який допоможе вам:</p>
+<pre><code data-highlighted="yes" class="hljs language-yaml"><span class="hljs-string">prapor</span> <span class="hljs-string">&lt;-</span> <span class="hljs-literal">False</span>
+<span class="hljs-string">tekst</span> <span class="hljs-string">&lt;-</span> <span class="hljs-string">порожній</span> <span class="hljs-string">рядок</span>
+
+<span class="hljs-string">Читати</span> <span class="hljs-string">всі</span> <span class="hljs-string">рядки</span> <span class="hljs-string">файлу:</span>
+    <span class="hljs-string">якщо</span> <span class="hljs-string">рядок</span> <span class="hljs-string">містить</span> <span class="hljs-attr">MESSAGE_END:</span>
+        <span class="hljs-string">prapor</span> <span class="hljs-string">&lt;-</span> <span class="hljs-literal">False</span>
+    <span class="hljs-string">якщо</span> <span class="hljs-string">prapor</span> <span class="hljs-string">є</span> <span class="hljs-attr">True:</span>
+        <span class="hljs-string">додати</span> <span class="hljs-string">до</span> <span class="hljs-string">tekst</span> <span class="hljs-string">рядок</span> <span class="hljs-string">(без</span> <span class="hljs-string">пробілів,</span> <span class="hljs-string">цифр</span> <span class="hljs-string">та</span> <span class="hljs-string">повернення</span> <span class="hljs-string">на</span> <span class="hljs-string">новий</span> <span class="hljs-string">рядок)</span>
+    <span class="hljs-string">якщо</span> <span class="hljs-string">рядок</span> <span class="hljs-string">містить</span> <span class="hljs-attr">MESSAGE_START:</span>
+        <span class="hljs-string">prapor</span> <span class="hljs-string">&lt;-</span> <span class="hljs-literal">True</span>
+</code></pre>
+<p><strong>Чому цей підхід гарний?</strong></p>
+<ul>
+<li><strong>Один прохід по файлу.</strong> Прапорець дозволяє «увімкнути» й «вимкнути» збір тексту без потреби зберігати весь файл у пам'яті наперед.</li>
+<li><strong>Перевикористання.</strong> Функцію <code>chytaty_povidomlennya()</code> можна застосувати до будь-якого файлу з такою ж структурою маркерів — достатньо передати інше ім'я файлу.
+</li></ul></div><ul><li></li>
+</ul>
+<hr>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><a href="https://docs.python.org/3/library/stdtypes.html#string-methods">Python Docs — String Methods</a>.</li>
+<li><a href="https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals">Python Docs — String and Bytes literals</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Whitespace_character">Wikipedia — Whitespace character</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Callback_(computer_programming)">Wikipedia — Callback (computer programming)</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Hamming_distance">Wikipedia — Hamming distance</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Pangram">Wikipedia — Pangram</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

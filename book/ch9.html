@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch9</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-9-модулі">РОЗДІЛ 9. Модулі</h1>
+<h2 id="91-навіщо-потрібні-модулі">9.1 Навіщо потрібні модулі?</h2>
+<p>Python вміє робити чимало корисного: додавати числа, працювати зі списками, виводити текст на екран чи зчитувати файли. Але якби розробники спробували помістити абсолютно всі можливі команди в один набір, Python став би занадто громіздким, важким і повільним.</p>
+<p>Замість цього розробники використали модульний підхід. Справжній програміст схожий на майстра, який не носить усі інструменти в кишенях, а бере із собою компактний ящик: якщо йому потрібен молоток, гайковий ключ чи викрутка, він просто відкриває ящик і дістає потрібний прилад. У Python такі готові набори інструментів називаються <strong>модулями</strong>.</p>
+<p>Модуль — це файл з кодом програми Python, яка містить функції, що їх часто доводиться повторно використовувати (їх також називають бібліотеками, англ. <em>libraries</em>). Це розширення для нашої програми, яке додає їй нові, спеціальні можливості. Нам не потрібно писати складний код «з нуля» — можна просто взяти вже готову команду, написану іншими програмістами, і використати її у власних цілях. Це схоже на користування сучасним автомобілем чи смартфоном: вам не обов'язково знати, як влаштований двигун чи мікросхема зсередини, щоб успішно їхати або телефонувати. Достатньо знати, яку кнопку натиснути.</p>
+<p>Ось лише кілька прикладів того, що дають готові модулі:</p>
+<ul>
+<li><strong>генерація випадкових чисел</strong> — створення ігор, розіграшів та лотерей.</li>
+<li><strong>складна математика</strong> — обчислення тригонометричних функцій, коренів та точне округлення чисел.</li>
+<li><strong>керування часом</strong> — визначення поточної дати, створення годинників та таймерів.</li>
+<li><strong>взаємодія з комп'ютером</strong> — перегляд списку файлів у папках, дізнання інформації про операційну систему.</li>
+</ul>
+<p>Розробники Python створили численні модулі для найрізноманітніших завдань. Тому завжди варто перевіряти, чи вже не існує готового модуля для того, що ви збираєтеся написати самі. Більшість цих модулів вже входять до стандартного комплекту Python. Ознайомитися з вичерпною документацією можна на офіційному сайті Python — кількість доступних модулів вражає (понад 300).</p>
+<h2 id="92-що-таке-модуль">9.2 Що таке модуль?</h2>
+<p>Модуль — це окремий файл із готовим кодом та спеціальними командами, який ми можемо імпортувати до своєї програми. Усі модулі у Python діляться на два основні типи:</p>
+<ul>
+<li><strong>стандартна бібліотека (вбудовані модулі)</strong> — вони вже встановлені на вашому комп'ютері разом із Python. Їх не потрібно завантажувати з інтернету, достатньо просто «покликати» у своєму коді.</li>
+<li><strong>сторонні модулі</strong> — створені іншими розробниками по всьому світу для специфічних задач (наприклад, створення складних 3D-ігор чи обробки зображень). Їх встановлюють окремо.</li>
+</ul>
+<p>Нарешті, зауважте, що існує чимало зовнішніх модулів, не встановлених за замовчуванням у Python, але дуже широко використовуваних для аналізу даних і наукових обчислень. Наприклад: NumPy (робота з векторами й матрицями), matplotlib (побудова графіків), pandas (аналіз табличних даних) тощо.</p>
+<h2 id="93-імпорт-модулів">9.3 Імпорт модулів</h2>
+<p>Щоб імпортувати модуль до своєї програми, використовують ключове слово <code>import</code> (з англійської — імпортувати, завозити). Цей рядок зазвичай пишуть на самому початку програми.</p>
+<p>У попередніх розділах ми вже кілька разів стикалися з поняттям модуля — наприклад, коли хотіли отримати випадкове число:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+</code></pre>
+<p>Розглянемо приклад детальніше:</p>
+<ul>
+<li><strong>Рядок 1.</strong> Інструкція <code>import</code> надає доступ до всіх функцій модуля <code>random</code>.</li>
+<li><strong>Рядок 2.</strong> Ми використовуємо функцію <code>randint(0, 10)</code> з модуля <code>random</code>. Вона повертає ціле число, випадково обране в діапазоні від 0 до 10 включно.</li>
+</ul>
+<p>Ми також зустрічали модуль <code>math</code> під час вправи про спіраль (Розділ «Файли»). Він дав нам доступ до тригонометричних функцій синуса й косинуса, а також до константи π:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+<span class="hljs-built_in">print</span>(math.cos(math.pi / <span class="hljs-number">2</span>))
+<span class="hljs-built_in">print</span>(math.sin(math.pi / <span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">6.123233995736766e-17
+1.0
+</code></pre>
+<p>Отже, синтаксис <code>import modul</code> дозволяє імпортувати цілу серію функцій, згрупованих за темами: наприклад, функції для роботи з випадковими числами — у <code>random</code>, математичні функції — у <code>math</code>. У Python є багато інших вбудованих модулів (тобто присутніх за замовчуванням при встановленні Python).</p>
+<h3 id="931-імпорт-окремих-обєктів-from-import-">9.3.1 Імпорт окремих об'єктів (<code>from ... import ...</code>)</h3>
+<p>Є й інший спосіб імпортувати одну або кілька функцій з модуля. Якщо з усього великого «ящика інструментів» нам потрібна лише одна конкретна команда, ми можемо взяти тільки її:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> random <span class="hljs-keyword">import</span> randint
+<span class="hljs-built_in">print</span>(randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">7
+</code></pre>
+<p>За допомогою <code>from</code> можна імпортувати конкретну функцію з модуля. У цьому разі ім'я модуля повторювати не потрібно — досить самого імені функції. Це зручно, коли ми плануємо використовувати цю команду дуже часто в тексті програми, і довгі префікси заважали б читати код.</p>
+<p>Можна також імпортувати всі функції модуля одразу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: import_use_zirochkoyu.py</span>
+<span class="hljs-keyword">from</span> random <span class="hljs-keyword">import</span> *
+<span class="hljs-built_in">print</span>(randint(<span class="hljs-number">0</span>, <span class="hljs-number">50</span>))
+<span class="hljs-built_in">print</span>(uniform(<span class="hljs-number">0</span>, <span class="hljs-number">2.5</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">46
+0.6494317476072795
+</code></pre>
+<p>Інструкція <code>from random import *</code> імпортує всі функції модуля <code>random</code>, і ними можна користуватися напряму — <code>randint()</code>, <code>uniform()</code> тощо.</p>
+<p>Часто на практиці, замість того, щоб імпортувати одразу всі функції модуля:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> random <span class="hljs-keyword">import</span> *
+</code></pre>
+<p>імпортують сам модуль:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+</code></pre>
+<p>а потім явно викликають потрібні функції через виклик <code>модуль.функція</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: import_modulya.py</span>
+<span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.uniform(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+1.8645753676306085
+</code></pre>
+<h3 id="932-псевдоніми-import-as-">9.3.2 Псевдоніми (<code>import ... as ...</code>)</h3>
+<p>Іноді назви модулів бувають занадто довгими, або ми хочемо скоротити їх для швидкості набору. Тоді модулю можна дати коротке «прізвисько» (псевдонім) за допомогою слова <code>as</code> (як):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: psevdonim.py</span>
+<span class="hljs-keyword">import</span> random <span class="hljs-keyword">as</span> rand
+<span class="hljs-built_in">print</span>(rand.randint(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(rand.uniform(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">6
+2.643472616544236
+</code></pre>
+<p>Тут функції модуля <code>random</code> доступні через псевдонім <code>rand</code>.</p>
+<p>Нарешті, щоб вивантажити з пам'яті вже завантажений модуль, можна скористатися інструкцією <code>del</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: vyvantazhennya_modulya.py</span>
+<span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.uniform(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>))
+<span class="hljs-keyword">del</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet"><span class="hljs-number">2</span>
+<span class="hljs-number">2.825594756352219</span>
+Traceback (most recent <span class="hljs-keyword">call</span> last):
+  File <span class="hljs-string">"vyvantazhennya_modulya.py"</span>, line <span class="hljs-number">6</span>, <span class="hljs-keyword">in</span> &lt;<span class="hljs-keyword">module</span>&gt;
+    print(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-symbol">NameError:</span> name <span class="hljs-comment">'random' is not defined. Did you forget to import 'random'?</span>
+</code></pre>
+<p>Виклик функції модуля <code>random</code> після його вивантаження (рядок з <code>del</code>) повертає помилку — і саме повідомлення підказує користувачеві, що модуль, можливо, забули імпортувати.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Завантажте модуль <code>random</code> звичайним імпортом та виведіть випадкове число від 10 до 20.</li>
+<li>Імпортуйте команду <code>randint</code> напряму за допомогою <code>from</code>. Змініть діапазон випадковості від 100 до 999.</li>
+<li>Спробуйте імпортувати модуль <code>random</code> як <code>r</code>. Перевірте, чи працює команда <code>r.randint(1, 2)</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="94-отримання-довідки-про-імпортовані-модулі">9.4 Отримання довідки про імпортовані модулі</h2>
+<p>Щоб отримати довідку про модуль, достатньо викликати <code>help()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">help</span>(random)
+</code></pre>
+<p>Результат виконання (фрагмент):</p>
+<pre><code data-highlighted="yes" class="hljs language-lua">Help on <span class="hljs-built_in">module</span> <span class="hljs-built_in">random</span>:
+
+NAME
+    <span class="hljs-built_in">random</span> - Random variable generators.
+
+MODULE REFERENCE
+    https://docs.python.org/<span class="hljs-number">3</span>/library/<span class="hljs-built_in">random</span>
+...
+</code></pre>
+<blockquote>
+<ul>
+<li>Для навігації в довідці використовуйте стрілки вгору/вниз (посторінково) або Page-up/Page-down (сторінками).</li>
+<li>Щоб вийти з довідки, натисніть <code>Q</code>.</li>
+<li>Щоб знайти текст, введіть <code>/</code>, потім потрібний текст і натисніть Enter. Наприклад, щоб знайти довідку про <code>randint()</code>, введіть <code>/randint</code>.</li>
+<li>Довідку про конкретну функцію можна отримати так: <code>help(random.randint)</code>.</li>
+</ul>
+</blockquote>
+<p>Команда <code>help()</code> насправді більш загальна — вона дає довідку про будь-який об'єкт у пам'яті:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">t = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+<span class="hljs-built_in">help</span>(t)
+</code></pre>
+<p>Результат виконання (фрагмент):</p>
+<pre><code data-highlighted="yes" class="hljs language-vbnet">Help <span class="hljs-keyword">on</span> list <span class="hljs-type">object</span>:
+
+<span class="hljs-keyword">class</span> list(<span class="hljs-type">object</span>)
+ |  list() -&gt; <span class="hljs-built_in">new</span> list
+ |  list(sequence) -&gt; <span class="hljs-built_in">new</span> list initialized <span class="hljs-keyword">from</span> sequence<span class="hljs-comment">'s items</span>
+ |
+ |  Methods defined here:
+ |  __add__(...)
+ |      x.__add__(y) &lt;=&gt; x+y
+ |
+[...]
+</code></pre>
+<p>Нарешті, щоб миттєво дізнатися всі методи або змінні, пов'язані з об'єктом, скористайтеся функцією <code>dir()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">dir</span>(random))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">[<span class="hljs-string">'BPF'</span>, <span class="hljs-string">'LOG4'</span>, <span class="hljs-string">'NV_MAGICCONST'</span>, <span class="hljs-string">'RECIP_BPF'</span>, <span class="hljs-string">'Random'</span>, <span class="hljs-string">'SG_MAGICCONST'</span>,
+ <span class="hljs-string">'SystemRandom'</span>, <span class="hljs-string">'TWOPI'</span>, <span class="hljs-string">'WichmannHill'</span>, <span class="hljs-string">'_BuiltinMethodType'</span>, <span class="hljs-string">'_MethodT
+ ype'</span>, <span class="hljs-string">'__all__'</span>, <span class="hljs-string">'__builtins__'</span>, <span class="hljs-string">'__doc__'</span>, <span class="hljs-string">'__file__'</span>, <span class="hljs-string">'__name__'</span>, <span class="hljs-string">'_ac
+ os'</span>, <span class="hljs-string">'_ceil'</span>, <span class="hljs-string">'_cos'</span>, <span class="hljs-string">'_e'</span>, <span class="hljs-string">'_exp'</span>, <span class="hljs-string">'_hexlify'</span>, <span class="hljs-string">'_inst'</span>, <span class="hljs-string">'_log'</span>, <span class="hljs-string">'_pi'</span>,
+ <span class="hljs-string">'_random'</span>, <span class="hljs-string">'_sin'</span>, <span class="hljs-string">'_sqrt'</span>, <span class="hljs-string">'_test'</span>, <span class="hljs-string">'_test_generator'</span>, <span class="hljs-string">'_urandom'</span>, <span class="hljs-string">'_wa
+ rn'</span>, <span class="hljs-string">'betavariate'</span>, <span class="hljs-string">'choice'</span>, <span class="hljs-string">'expovariate'</span>, <span class="hljs-string">'gammavariate'</span>, <span class="hljs-string">'gauss'</span>, <span class="hljs-string">'g
+ etrandbits'</span>, <span class="hljs-string">'getstate'</span>, <span class="hljs-string">'jumpahead'</span>, <span class="hljs-string">'lognormvariate'</span>, <span class="hljs-string">'normalvariate'</span>,
+ <span class="hljs-string">'paretovariate'</span>, <span class="hljs-string">'randint'</span>, <span class="hljs-string">'random'</span>, <span class="hljs-string">'randrange'</span>, <span class="hljs-string">'sample'</span>, <span class="hljs-string">'seed'</span>, <span class="hljs-string">'se
+ tstate'</span>, <span class="hljs-string">'shuffle'</span>, <span class="hljs-string">'uniform'</span>, <span class="hljs-string">'vonmisesvariate'</span>, <span class="hljs-string">'weibullvariate'</span>]
+</code></pre>
+<h2 id="95-деякі-поширені-модулі">9.5 Деякі поширені модулі</h2>
+<p>Ось неповний список модулів, якими ви, ймовірно, користуватиметеся (повний перелік — на сторінці модулів офіційного сайту Python):</p>
+<ul>
+<li><strong>math</strong>: базові математичні функції та константи (<code>sin</code>, <code>cos</code>, <code>exp</code>, <code>pi</code>...).</li>
+<li><strong>random</strong>: генерація випадкових чисел.</li>
+<li><strong>datetime</strong>: робота з датою й часом.</li>
+<li><strong>os</strong>: взаємодія з операційною системою (файли, теки).</li>
+<li><strong>time</strong>: доступ до часу комп'ютера та функції керування часом.</li>
+<li><strong>urllib</strong>: отримання даних з інтернету.</li>
+<li><strong>tkinter</strong>: інтерфейс Python до Tk, створення графічних вікон.</li>
+</ul>
+<p>Радимо дослідити сторінки цих модулів, щоб відкрити для себе всі їхні можливості. У Розділі 15 «Створення модулів» ви побачите більше про створення власного модуля, коли захочете часто перевикористовувати власні функції.</p>
+<h2 id="96-модуль-random-генерація-випадкових-чисел">9.6 Модуль <code>random</code>: генерація випадкових чисел</h2>
+<p>Цей модуль незамінний, коли потрібно додати елемент несподіванки: у комп'ютерних іграх, тестах чи генераторах паролів. Як уже згадувалося, модуль <code>random</code>[^10] містить функції для генерації випадкових чисел:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+10
+6.574743184892878
+1.1655547702189106
+</code></pre>
+<p>Команда <code>randint(a, b)</code> повертає ціле випадкове число у проміжку між <code>a</code> та <code>b</code> (включаючи обидва кінці):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>))  <span class="hljs-comment"># Щоразу при запуску число буде іншим!</span>
+</code></pre>
+<p>Модуль <code>random</code> дозволяє також випадково перемішувати елементи списку (метод <code>.shuffle()</code>, наче тасування колоди карт):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+
+x = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
+random.shuffle(x)
+<span class="hljs-built_in">print</span>(x)
+
+random.shuffle(x)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">2, 3, 1, 4</span>]
+[<span class="hljs-meta">4, 2, 1, 3</span>]
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes">cards = [<span class="hljs-string">"Туз"</span>, <span class="hljs-string">"Король"</span>, <span class="hljs-string">"Дама"</span>, <span class="hljs-string">"Валет"</span>]
+random.shuffle(cards)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Перемішана колода:"</span>, cards)
+</code></pre>
+<p>А ще — випадково обирати елемент із заданого списку (<code>.choice()</code>, наче наосліп дістати з мішка один випадковий елемент):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: vypadkovyi_vybir.py</span>
+<span class="hljs-keyword">import</span> random
+
+masti = [<span class="hljs-string">"чирва"</span>, <span class="hljs-string">"бубна"</span>, <span class="hljs-string">"трефа"</span>, <span class="hljs-string">"піка"</span>]
+<span class="hljs-built_in">print</span>(random.choice(masti))
+<span class="hljs-built_in">print</span>(random.choice(masti))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">чирва
+піка
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes">students = [<span class="hljs-string">"Марко"</span>, <span class="hljs-string">"Олена"</span>, <span class="hljs-string">"Андрій"</span>, <span class="hljs-string">"Катерина"</span>]
+chosen = random.choice(students)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Сьогодні до дошки йде:"</span>, chosen)
+</code></pre>
+<p>Функція <code>choices()</code> (з <code>s</code> наприкінці) виконує кілька випадкових вибірок (із поверненням, тобто той самий елемент може повторюватися) із заданого списку. Кількість вибірок задає параметр <code>k</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: kilka_vyboriv.py</span>
+<span class="hljs-keyword">import</span> random
+
+masti = [<span class="hljs-string">"чирва"</span>, <span class="hljs-string">"бубна"</span>, <span class="hljs-string">"трефа"</span>, <span class="hljs-string">"піка"</span>]
+<span class="hljs-built_in">print</span>(random.choices(masti, k=<span class="hljs-number">5</span>))
+<span class="hljs-built_in">print</span>(random.choices(masti, k=<span class="hljs-number">5</span>))
+<span class="hljs-built_in">print</span>(random.choices(masti, k=<span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[<span class="hljs-string">'піка'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'бубна'</span>, <span class="hljs-string">'піка'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'чирва'</span>, <span class="hljs-string">'бубна'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'трефа'</span>]</span>
+<span class="hljs-selector-attr">[<span class="hljs-string">'трефа'</span>, <span class="hljs-string">'бубна'</span>, <span class="hljs-string">'бубна'</span>, <span class="hljs-string">'бубна'</span>, <span class="hljs-string">'піка'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'трефа'</span>, <span class="hljs-string">'чирва'</span>, <span class="hljs-string">'піка'</span>, <span class="hljs-string">'піка'</span>]</span>
+</code></pre>
+<p>Якщо ви виконаєте ці приклади самостійно, результати, ймовірно, будуть іншими.</p>
+<p>Для відтворюваності результатів (наприклад, у наукових розрахунках) часто потрібно отримувати ту саму послідовність, навіть якщо використовуються випадкові числа. Для цього визначають так зване «випадкове зерно» (<em>random seed</em>).</p>
+<p><strong>Визначення.</strong> У програмуванні справжня генерація випадкових чисел — складна задача, тож насправді використовують «генератори псевдовипадкових чисел». Для цього потрібне випадкове «зерно»(random seed) — здебільшого ціле число, яке передають генератору: він створює конкретну серію псевдовипадкових чисел, що залежить від цього зерна. Змінивши «зерно», ми отримаємо іншу серію чисел.</p>
+<p>У Python випадкове «зерно» задають функцією <code>seed()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+
+random.seed(<span class="hljs-number">42</span>)
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+0
+4
+</code></pre>
+<p>Тут «зерно» встановлено на 42. Якщо «зерно» не вказати, Python за замовчуванням використовує поточний момент часу (точніше — кількість секунд від фіксованої дати в минулому). Тож щоразу під час перезапуску Python «зерно» буде іншим.</p>
+<p>Якщо ви виконаєте ті самі рядки коду (починаючи з <code>random.seed(42)</code>), результати можуть відрізнятися залежно від версії Python. Однак результати мають систематично збігатися, якщо перезапускати ці інструкції кілька разів поспіль на одній машині.</p>
+<blockquote>
+<p>Використовуючи випадкові числа, важливо знати, який розподіл ймовірностей застосовує функція. Наприклад, базова функція <code>random.random()</code> повертає випадковий <code>float</code> між 0 і 1 із рівномірного розподілу: якщо витягнути багато чисел, усі значення в цьому діапазоні будуть рівноймовірними. Функція <code>random.randint()</code> теж витягує ціле число з рівномірного розподілу. А <code>random.gauss()</code> видобуває випадковий <code>float</code> із гаусового (нормального) розподілу.</p>
+</blockquote>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li><strong>Монета.</strong> Створіть список <code>coin = ["Орел", "Решка"]</code>. Напишіть програму, яка випадково обирає один із варіантів (імітація підкидання монети).</li>
+<li><strong>Випадковий колір.</strong> Маємо список <code>colors = ["червоний", "зелений", "синій", "жовтий"]</code>. Напишіть програму, яка випадково обирає колір для фарбування ігрового персонажа.
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="97-модуль-math">9.7 Модуль <code>math</code></h2>
+<p>Коли звичайних знаків плюс, мінус чи ділення стає замало, на допомогу приходить модуль <code>math</code>. Він містить точні інженерні команди для математичних розрахунків:</p>
+<ul>
+<li><code>math.sqrt(x)</code> — обчислює квадратний корінь із числа <code>x</code>.</li>
+<li><code>math.pow(x, y)</code> — підносить число <code>x</code> до степеня <code>y</code>.</li>
+<li><code>math.ceil(x)</code> — округлює число в більшу сторону до найближчого цілого (округлення «до стелі»).</li>
+<li><code>math.floor(x)</code> — округлює число в меншу сторону до найближчого цілого (округлення «до підлоги»).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+
+<span class="hljs-built_in">print</span>(math.sqrt(<span class="hljs-number">16</span>))   <span class="hljs-comment"># Виведе: 4.0</span>
+<span class="hljs-built_in">print</span>(math.ceil(<span class="hljs-number">4.1</span>))  <span class="hljs-comment"># Виведе: 5 (навіть 4.1 перетвориться на 5)</span>
+<span class="hljs-built_in">print</span>(math.floor(<span class="hljs-number">4.9</span>)) <span class="hljs-comment"># Виведе: 4 (навіть 4.9 перетвориться на 4)</span>
+</code></pre>
+<p>Вам більше не потрібно вводити число Пі як 3.14 вручну. У модулі <code>math</code> уже зберігаються суперточні значення світових констант:</p>
+<ul>
+<li><code>math.pi</code> — число Пі (π ≈ 3.1415926...).</li>
+<li><code>math.e</code> — число Ейлера (e ≈ 2.71828...).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Обчислення довжини кола за формулою L = 2 * pi * r</span>
+radius = <span class="hljs-number">5</span>
+length = <span class="hljs-number">2</span> * math.pi * radius
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Довжина кола:"</span>, length)
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Користувач вводить число. Обчисліть та виведіть його квадратний корінь.</li>
+<li>Обчисліть площу круга за формулою <code>S = π · r²</code>. Радіус вводиться з клавіатури. Для піднесення до степеня використайте <code>math.pow()</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="98-модуль-datetime">9.8 Модуль <code>datetime</code></h2>
+<p>Цей модуль допомагає програмі орієнтуватися в реальному часі: дізнаватися сьогоднішню дату, поточну секунду чи фіксувати час виконання якихось дій.</p>
+<p><code>datetime.date.today()</code> дозволяє дізнатися сьогоднішній рік, місяць та день:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> datetime
+
+today = datetime.date.today()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Сьогоднішня дата:"</span>, today)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Поточний рік:"</span>, today.year)
+</code></pre>
+<p><code>datetime.datetime.now()</code> повертає повну інформацію: поточну дату разом із годинами, хвилинами, секундами та мікросекундами:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> datetime
+
+current_time = datetime.datetime.now()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Точний час системи:"</span>, current_time)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Поточна година:"</span>, current_time.hour)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Поточна хвилина:"</span>, current_time.minute)
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Напишіть програму, яка виводить повідомлення <code>"Сьогодні<span class="hl-char">:</span> [день], місяць<span class="hl-char">:</span> [номер місяця]"</code>, використовуючи <code>datetime.date.today()</code>.</li>
+<li>Створіть електронне табло, яке виводить поточний час у форматі: <code>Години <span class="hl-char">:</span> Хвилини</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="99-модуль-os">9.9 Модуль <code>os</code></h2>
+<p>Назва модуля <code>os</code> походить від слова <em>Operating System</em> (Операційна система). Він дозволяє керувати файлами та теками на вашому справжньому комп'ютері безпосередньо з коду Python.</p>
+<p><code>os.getcwd()</code> показує повний шлях до теки на диску, де зараз працює ваша програма:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> os
+
+where_am_i = os.getcwd()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Наша програма запущена в папці:"</span>, where_am_i)
+</code></pre>
+<p><code>os.listdir()</code> дивиться всередину теки та повертає список текстових рядків — імен усіх файлів та підтек, які там лежать:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> os
+
+files = os.listdir()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"У цій папці містяться такі файли:"</span>)
+<span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"- "</span>, file)
+</code></pre>
+<blockquote>
+<p>У ЄPython модуль <code>os</code> працює з віртуальною файловою системою, створеною у локальному сховищі браузера. Переглянути вміст цієї файлової системи можна скориставшись Розпорядником файлів (розділ Файли панелі керування)</p>
+</blockquote>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Запустіть команду <code>os.listdir()</code> та перевірте, чи бачить Python ваш файл програми та файли нотаток, які ми створювали у попередніх розділах.
+</p></div>
+<h2 id="910-створення-власних-модулів">9.10 Створення власних модулів</h2>
+<p>Створити свій власний модуль дуже просто, адже будь-який файл із кодом на Python (який закінчується на <code>.py</code>) вже є готовим модулем для іншого файлу!</p>
+<p><strong>Крок 1.</strong> Створіть у робочій теці свого проєкту новий порожній файл з ім'ям <code>mymodule.py</code>. Напишіть всередині нього кілька змінних-налаштувань для вашої майбутньої гри:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Файл: mymodule.py</span>
+author = <span class="hljs-string">"Олена"</span>
+version = <span class="hljs-string">"1.0.3"</span>
+game_title = <span class="hljs-string">"Космічний патруль"</span>
+max_levels = <span class="hljs-number">5</span>
+</code></pre>
+<p><img src="./media/ch9/970767eeaf24543936ff97a38a1da925.png" alt="970767eeaf24543936ff97a38a1da925.png">
+Збережіть та закрийте цей файл.</p>
+<blockquote>
+<p>У ЄPython файл для модуля створюється у вкладці редактора коду середовища програмування.
+<img src="./media/ch9/5a4f343f923426aeca45d071aadd51cb.png" alt="5a4f343f923426aeca45d071aadd51cb.png"> </p>
+</blockquote>
+<p><strong>Крок 2.</strong> Тепер створіть поруч (в тій самій теці!) свій основний файл програми, наприклад <code>main.py</code>. Ми можемо імпортувати наш файл <code>mymodule</code> точнісінько так само, як ми підключали <code>random</code> чи <code>math</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Файл: main.py</span>
+<span class="hljs-keyword">import</span> mymodule
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Вітаємо у грі:"</span>, mymodule.game_title)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Автор програми:"</span>, mymodule.author)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Версія гри:"</span>, mymodule.version)
+</code></pre>
+<p><img src="./media/ch9/009a547d8b619b9d5769ae6b720580b5.png" alt="009a547d8b619b9d5769ae6b720580b5.png">
+Чому це круто: ви можете винести великі налаштування, тексти діалогів чат-бота або списки товарів в окремі файли-модулі, щоб код вашої основної програми залишався чистим, коротким та зручним для читання. </p>
+<h2 id="911-типові-помилки-під-час-роботи-з-модулями">9.11 Типові помилки під час роботи з модулями</h2>
+<p><strong>1. Помилка <code>ModuleNotFoundError</code>.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random  <span class="hljs-comment"># Помилка! Надруковано "random" замість "random"</span>
+<span class="hljs-comment"># ModuleNotFoundError: No module named 'random'</span>
+</code></pre>
+<p>Як виправити: перевірте правильність написання назви модуля. Якщо це ваш власний модуль — переконайтеся, що він лежить у тій самій папці, що й головна програма.</p>
+<p><strong>2. Забули написати назву модуля при виклику.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+<span class="hljs-built_in">print</span>(sqrt(<span class="hljs-number">25</span>))  <span class="hljs-comment"># Помилка! Назва команди з'явилася нізвідки</span>
+</code></pre>
+<p>Як виправити: якщо імпортували через <code>import math</code>, обов'язково пишіть <code>math.sqrt(25)</code>. Якщо хочете писати просто <code>sqrt(25)</code>, імпортуйте через <code>from math import sqrt</code>.</p>
+<p><strong>3. Конфлікт імен (найнебезпечніша помилка).</strong>
+Ніколи не називайте свої власні файли програми іменами стандартних модулів (наприклад, не створюйте файл <code>random.py</code>). Якщо ви назвете свій файл <code>random.py</code> і напишете всередині <code>import random</code>, Python заплутається, імпортує ваш же порожній файл сам у себе, і команда <code>random.randint()</code> перестане працювати!</p>
+<div class="exers">
+<h2 id="912-вправи">9.12 Вправи</h2>
+<h3 id="1-квадратний-корінь">1. Квадратний корінь</h3>
+<p>Виведіть в одному рядку числа від 10 до 20 (включно) та їхні квадратні корені з трьома десятковими знаками. Скористайтеся модулем <code>math</code> і функцією <code>sqrt()</code>. Приклад:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-number">10</span> <span class="hljs-number">3.162</span>
+<span class="hljs-number">11</span> <span class="hljs-number">3.317</span>
+<span class="hljs-number">12</span> <span class="hljs-number">3.464</span>
+<span class="hljs-number">13</span> <span class="hljs-number">3.606</span>
+<span class="hljs-selector-attr">[...]</span>
+</code></pre>
+<p>Зверніться до документації функції <code>math.sqrt()</code>.</p>
+<h3 id="2-косинус">2. Косинус</h3>
+<p>Обчисліть косинус π/2, використовуючи модуль <code>math</code>, функцію <code>cos()</code> та константу <code>pi</code>. Зверніться до документації функції <code>math.cos()</code> та документації константи <code>math.pi</code>.</p>
+<h3 id="3-порівняння-float">3. Порівняння <code>float</code></h3>
+<p>Покажіть, що √5 + √4 + √3 дорівнює <em>e</em> з точністю до 0.001. Потім покажіть, що √7 + √6 + √5 дорівнює π з точністю до 0.0001.</p>
+<blockquote>
+<p>Константи π та <em>e</em> доступні через <code>math.pi</code> та <code>math.e</code>.</p>
+</blockquote>
+<h3 id="4-виведення-з-паузою">4. Виведення з паузою</h3>
+<p>Виведіть числа від 1 до 10 з інтервалом в 1 секунду. Скористайтеся модулем <code>time</code> і функцією <code>sleep()</code>. Зверніться до документації функції <code>time.sleep()</code>.</p>
+<h3 id="5-випадкові-послідовності-цифр">5. Випадкові послідовності цифр</h3>
+<p>Згенеруйте випадкову послідовність із шести цілих чисел від 1 до 4. Скористайтеся модулем <code>random</code> і функцією <code>randint()</code>. Зверніться до документації функції <code>random.randint()</code>.</p>
+<h3 id="6-генерація-випадкового-коду-підтвердження">6. Генерація випадкового коду підтвердження</h3>
+<p>Згенеруйте випадкову послідовність із 20 цифр (0–9) двома різними способами — за допомогою <code>random.choice()</code> та <code>random.choices()</code>.</p>
+<h3 id="7-генератор-паролів">7. Генератор паролів</h3>
+<p>Напишіть програму, яка створює випадковий пароль із 4 цифр (кожна цифра генерується окремо за допомогою <code>randint()</code> та додається до текстового рядка).
+</p></div>
+<div class="project">
+<h2 id="913-творча-майстерня">9.13 Творча майстерня</h2>
+<h3 id="1-визначення-числа-π-методом-монте-карло">1. Визначення числа π методом Монте-Карло</h3>
+<p>Метод Монте-Карло — це підхід до розв'язання задач за допомогою <strong>багаторазового випадкового моделювання</strong>. У Python він зазвичай реалізується за допомогою модулів <code>random</code> або <code>numpy.random</code>. Чим більше випадкових експериментів виконується, тим ближчим до істинного значення стає отриманий результат, хоча він завжди залишається статистичною оцінкою, а не точним розв'язком.</p>
+<p>Один із найвідоміших прикладів — оцінка числа π.</p>
+<ol>
+<li>Розглянемо квадрат зі стороною 2.</li>
+<li>Усередині нього розташоване коло радіуса 1.</li>
+<li>Генеруємо випадкові точки в квадраті.</li>
+<li>Підраховуємо, скільки точок потрапило в коло.</li>
+</ol>
+<p>Оскільки
+<img src="./media/ch9/343a88cbaf5233d0507c6fa11d2f0f56.png" alt="343a88cbaf5233d0507c6fa11d2f0f56.png"></p>
+<p>Тоді:</p>
+<p><img src="./media/ch9/b94a9c1c72f62eb64296ee1386bab510.png" alt="b94a9c1c72f62eb64296ee1386bab510.png"></p>
+<p>Нехай є коло радіусом 1 (суцільна лінія на Рис. 9.1), вписане в квадрат зі стороною 2 (пунктирна лінія). При <code>R = 1</code> площа квадрата дорівнює <code>(2R)²</code>, тобто 4, а площа круга, обмеженого колом, дорівнює <code>πR²</code>, тобто π. Якщо вибрати <code>N</code> випадкових точок (з рівномірного розподілу) всередині квадрата, ймовірність того, що точка також потрапить у коло, становить ( $n$ — кількість точок, які фактично опинилися в колі):</p>
+<p><img src="./media/ch9/9563c761bc40ba917721bbc7e17d03d7.png" alt="9563c761bc40ba917721bbc7e17d03d7.png"></p>
+<p>звідки:</p>
+<p><img src="./media/ch9/0789ae4fdec0eeb1458bceb6c1b5826c.png" alt="0789ae4fdec0eeb1458bceb6c1b5826c.png"></p>
+<p>Визначте наближення числа π цим методом. Для <code>N</code> ітерацій:</p>
+<ol>
+<li>Випадково оберіть координати <code>x</code> та <code>y</code> точки в діапазоні від -1 до 1. Скористайтеся функцією <code>uniform()</code> з модуля <code>random</code>.</li>
+<li>Обчисліть відстань між центром кола та цією точкою.</li>
+<li>Визначте, чи ця відстань менша за радіус кола (тобто чи точка всередині кола).</li>
+<li>Якщо точка всередині кола, збільште лічильник <code>n</code>.</li>
+</ol>
+<p><img src="./media/ch9/3065f446e92e2b092df6a980dca61a30.png" alt="3065f446e92e2b092df6a980dca61a30.png"></p>
+<p>Обчисліть відношення <code>n</code> до <code>N</code> і оцініть π. Яке значення π ви отримуєте для 100 ітерацій? 1000? 10 000? Порівняйте отримані значення зі значенням π із модуля <code>math</code>.</p>
+<p>Для допомоги зверніться до документації функції <code>random.uniform()</code>.</p>
+<div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+
+N = <span class="hljs-number">1000</span>
+
+inside = <span class="hljs-number">0</span>
+
+<span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(N):
+    x = random.uniform(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+    y = random.uniform(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+
+    <span class="hljs-keyword">if</span> x*x + y*y &lt;= <span class="hljs-number">1</span>:
+        inside += <span class="hljs-number">1</span>
+
+pi = <span class="hljs-number">4</span> * inside / N
+<span class="hljs-built_in">print</span>(pi)
+</code></pre>
+</div></div>
+<blockquote>
+<p>У ЄPython при великій кількості спроб може гальмувати браузер.</p>
+</blockquote>
+<h3 id="2-електронний-жереб">2. Електронний жереб</h3>
+<p><strong>Задача.</strong> Створити програму для автоматичного розіграшу призів серед учасників. Програма має обрати випадкового переможця, зафіксувати точний час розіграшу і назавжди записати цей результат в офіційний файл-протокол <code>log.txt</code>.
+</p><div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-keyword">import</span> datetime
+
+<span class="hljs-comment"># 1. Готуємо список учасників розіграшу</span>
+participants = [<span class="hljs-string">"Дмитро"</span>, <span class="hljs-string">"Ганна"</span>, <span class="hljs-string">"Сергій"</span>, <span class="hljs-string">"Марія"</span>, <span class="hljs-string">"Тетяна"</span>, <span class="hljs-string">"Олексій"</span>]
+
+<span class="hljs-comment"># 2. Використовуємо модуль random для визначення переможця</span>
+winner = random.choice(participants)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Розіграш завершено! Переможець: <span class="hljs-subst">{winner}</span> 🎉"</span>)
+
+<span class="hljs-comment"># 3. Використовуємо модуль datetime для фіксації точного часу</span>
+time_now = datetime.datetime.now()
+
+<span class="hljs-comment"># 4. Використовуємо знання про файли для збереження результату на диск</span>
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"log.txt"</span>, <span class="hljs-string">"a"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> file:
+    file.write(<span class="hljs-string">"--- Новий розіграш ---\n"</span>)
+    file.write(<span class="hljs-string">f"Дата та час: <span class="hljs-subst">{time_now}</span>\n"</span>)
+    file.write(<span class="hljs-string">f"Переможець: <span class="hljs-subst">{winner}</span>\n\n"</span>)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Результати успішно зафіксовані у файлі log.txt!"</span>)
+</code></pre>
+</div></div>
+<p><img src="./media/ch9/1a4ee164d84cf7e5ddd8bd7652a0e671.png" alt="1a4ee164d84cf7e5ddd8bd7652a0e671.png">
+</p></div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ul>
+<li><a href="https://docs.python.org/3/library/">Python Docs — The Python Standard Library</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html">Python Docs — random</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html">Python Docs — math</a>.</li>
+<li><a href="https://docs.python.org/3/py-modindex.html">Python Docs — Module Index</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html">Python Docs — math</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html">Python Docs — random</a>.</li>
+<li><a href="https://docs.python.org/3/library/time.html">Python Docs — time</a>.</li>
+<li><a href="https://docs.python.org/3/library/urllib.html">Python Docs — urllib</a>.</li>
+<li><a href="https://docs.python.org/3/library/tkinter.html">Python Docs — tkinter</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html">Python Docs — random</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Wikipedia — Pseudorandom number generator</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Random_seed">Wikipedia — Random seed</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html#math.sqrt">Python Docs — math.sqrt</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html#math.cos">Python Docs — math.cos</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html#math.pi">Python Docs — math.pi</a>.</li>
+<li><a href="https://docs.python.org/3/library/time.html#time.sleep">Python Docs — time.sleep</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html#random.randint">Python Docs — random.randint</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html#random.sample">Python Docs — random.sample</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html#random.uniform">Python Docs — random.uniform</a>.
+</li></ul></div><ul><li></li>
+</ul>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

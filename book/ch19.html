@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch19</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-19-анімації">РОЗДІЛ 19. Анімації</h1>
+<p> До цього ми навчилися малювати статичні зображення. Але комп'ютери вміють не просто малювати, а й "оживляти" наші малюнки. У цьому розділі ми дізнаємося, як створювати анімацію за допомогою бібліотеки SimpleGraphics.</p>
+<h2 id="191-що-таке-анімація">19.1 Що таке анімація</h2>
+<p><strong>Анімація</strong> (від лат. <em>anima</em> — душа, життєва сила) — це процес створення ілюзії руху або зміни стану нерухомих об'єктів. Коли ми дивимося мультфільми, нам здається, що персонажі рухаються самі по собі. Насправді ж комп'ютер або художник просто дуже швидко показують нам багато окремих картинок.</p>
+<p>Ілюзія руху виникає завдяки особливості людського ока — <strong>інерції зору</strong>. Якщо показувати послідовність картинок (кадрів) з достатньою швидкістю (зазвичай від 15 до 60 картинок за секунду), наш мозок об'єднує їх у суцільний плавний рух. </p>
+<p>Види комп'ютерної анімації</p>
+<ul>
+<li><strong>2D-анімація (двовимірна):</strong> відбувається на площині, має лише ширину та висоту (наприклад, класичні мультфільми або ігри типу <em>Mario</em>).</li>
+<li><strong>3D-анімація (тривимірна):</strong> об'єкти мають об'єм, глибину, працюють зі світлом та тінями (сучасна анімація Pixar, ігри).</li>
+<li><strong>Покадрова (традиційна):</strong> художник малює кожен кадр вручну.</li>
+<li><strong>Процедурна (комп'ютерна):</strong> рух задається математичними формулами та алгоритмами, а комп'ютер сам обчислює положення об'єктів у кожен момент часу. Саме цим ми і будемо займатися!</li>
+</ul>
+<p>У 2D-анімації всі об'єкти "плоскі". Вони існують на екрані, який є прямокутником. Щоб керувати об'єктами, ми використовуємо систему координат.</p>
+<blockquote>
+<p><strong>Анімація</strong> — це ілюзія руху, яку людський мозок «домальовує» сам, коли бачить серію злегка різних картинок, що змінюють одна одну досить швидко (зазвичай 20–60 разів на секунду). Кожна окрема картинка називається <strong>кадром</strong> (англ. <em>frame</em>).</p>
+</blockquote>
+<p>Секрет будь-якої комп'ютерної анімації простий:</p>
+<ol>
+<li>Намалювати (або пересунути) об'єкт у трохи новому положенні.</li>
+<li>Дати оку мить, щоб побачити цей кадр.</li>
+<li>Повторити крок 1, злегка змінивши позицію, розмір чи вигляд об'єкта.</li>
+</ol>
+<p>Що частіше ми повторюємо ці кроки — то плавнішим здається рух. Саме так працює будь-яке відео, мультфільм чи комп'ютерна гра.</p>
+<h2 id="192-основні-способи-створення-руху">19.2 Основні способи створення руху</h2>
+<p>Щоб об'єкт "ожив", ми можемо змінювати його параметри від кадру до кадру:</p>
+<ul>
+<li><strong>Зміна координат:</strong> об'єкт переміщується по екрану (біжить, летить).</li>
+<li><strong>Зміна розміру:</strong> об'єкт наближається або віддаляється (пульсація).</li>
+<li><strong>Зміна кольору або форми:</strong> об'єкт змінює забарвлення або перетворюється на іншу фігуру (світлофор, метаморфози).</li>
+<li><strong>Поява та зникнення:</strong> об'єкт мерехтить, вилітає з-за краю екрана або розчиняється.</li>
+</ul>
+<blockquote>
+<p>У <code>SimpleGraphics</code> <strong>уже є</strong> готовий інструмент саме для цього — функція <code>doAnimate()</code>. Їй достатньо передати функцію, яка малює/пересуває один кадр, і бібліотека сама викликатиме її знову й знову через рівні проміжки часу — доки ви не скажете зупинитися. Саме цю функцію (разом із  <code>noAnimate()</code>, <code>isAnimate()</code> та <code>animationTime()</code>) ми й розглянемо в цьому розділі.</p>
+</blockquote>
+<h2 id="193-цикл-анімації">19.3 Цикл анімації</h2>
+<blockquote>
+<p><strong>Кадр</strong> — це одна окрема картинка в послідовності анімації. Щоб створити рух, програма повинна постійно оновлювати ці кадри.</p>
+</blockquote>
+<p>Щоб анімація працювала, комп'ютер виконує один і той самий алгоритм (цикл) знову і знову:</p>
+<ol>
+<li><strong>Оновлення стану:</strong> програма обчислює нові координати, розміри чи кольори для об'єктів.</li>
+<li><strong>Підготовка кадру:</strong> очищення екрана від попереднього малюнка (або підготовка фону).</li>
+<li><strong>Малювання нового кадру:</strong> відтворення зображення об'єктів у їхніх нових позиціях.</li>
+<li><strong>Відтворення кадру:</strong> показ готового зображення на екрані.</li>
+<li><strong>Перехід до наступного кадру:</strong> невеличка пауза і повернення до пункту 1.</li>
+</ol>
+<p>Частота кадрів вимірюється в <strong>FPS</strong> (Frames Per Second — кадри за секунду). </p>
+<ul>
+<li>10-15 FPS — рух виглядає уривчастим.</li>
+<li>24-30 FPS — стандартна плавність (як у кіно).</li>
+<li>60 FPS — ідеально плавний рух (як у сучасних іграх).
+У SimpleGraphics за замовчуванням затримка між кадрами становить 50 мілісекунд, що дає приблизно 20 кадрів за секунду.</li>
+</ul>
+<h2 id="194-організація-анімації-в-simplegraphics">19.4 Організація анімації в SimpleGraphics</h2>
+<p>Бібліотека SimpleGraphics бере на себе всю роботу з організації циклу анімації. Нам не потрібно писати нескінченні цикли <code>while True</code>, які можуть "заморозити" вікно програми.</p>
+<h3 id="автоматичне-виконання-циклу-за-допомогою-doanimate">Автоматичне виконання циклу за допомогою <code>doAnimate()</code></h3>
+<p>Функція <code>doAnimate(ім'я_функції)</code> запускає анімацію. Вона викликатиме вашу функцію автоматично через рівні проміжки часу, поки ви не зупините її:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-comment"># тут ми оновлюємо стан об'єктів і перемальовуємо кадр</span>
+    <span class="hljs-keyword">pass</span>
+
+doAnimate(kadr)
+</code></pre>
+<p>Розглянемо приклад детальніше:</p>
+<ul>
+<li><strong>Рядок 3.</strong> Ми оголошуємо функцію <code>kadr()</code> — вона не приймає жодних аргументів і містить лише код одного кадру (пересунути об'єкт, змінити його розмір тощо).</li>
+<li><strong>Рядок 6.</strong> <code>doAnimate(kadr)</code> <strong>не</strong> запускає нескінченний цикл прямо тут і не блокує програму — він лише реєструє функцію <code>kadr</code> як «функцію анімації» й одразу повертає керування далі. Сама ж бібліотека потім самостійно викликає <code>kadr()</code> кожні <code>animationTime()</code> мілісекунд (за замовчуванням — кожні 50 мс, тобто <strong>20 кадрів на секунду</strong>).</li>
+</ul>
+<blockquote>
+<p><strong>Важливо.</strong> Саме тому виклик <code>doAnimate(kadr)</code> зазвичай можна зробити <strong>останнім рядком</strong> скрипту. Коли програма Python доходить до кінця, <code>SimpleGraphics</code> автоматично бере на себе підтримку вікна — і саме в цей момент починають реально «цокати» заплановані виклики <code>kadr()</code>, а вікно продовжує реагувати на рух миші та на закриття. Вам не потрібно писати <code>while not closed()<span class="hl-char">:</span> ...</code> — бібліотека сама подбає про це, поки ви не закриєте вікно або не викличете <code>noAnimate()</code>.</p>
+</blockquote>
+<p>Є один нюанс, про який <strong>обов'язково</strong> потрібно пам'ятати  —  властивості об'єкта, що анімується(позиції <code>x</code>, <code>y</code>, тощо), оголошуємо глобально, а їх зміну, як правило, здійснюємо у функції, якою керує  <code>doAnimate()</code> . 
+Погляньмо, що станеться, якщо про це забути:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+x = <span class="hljs-number">0</span>
+setFill(<span class="hljs-string">"cornflowerblue"</span>)
+kvadrat = rect(x, <span class="hljs-number">280</span>, <span class="hljs-number">60</span>, <span class="hljs-number">60</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    x += <span class="hljs-number">4</span>          <span class="hljs-comment"># ПОМИЛКА! UnboundLocalError</span>
+    move(kvadrat, x, <span class="hljs-number">280</span>)
+
+doAnimate(kadr)
+</code></pre>
+<p>Цей код одразу «впаде» з помилкою <code>UnboundLocalError<span class="hl-char">:</span> local variable 'x' referenced before assignment</code>. Python бачить, що всередині <code>kadr()</code> є рядок <code>x += 4</code> (тобто присвоєння <code>x</code>), і тому вирішує, що <code>x</code> — локальна змінна цієї функції. А оскільки локальної <code>x</code> ще не існує на момент виконання <code>x += 4</code>, стається помилка.</p>
+<p>Виправляється це одним словом — <code>global</code> на початку функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> simplegraphics <span class="hljs-keyword">import</span> *
+
+x = <span class="hljs-number">0</span>
+setFill(<span class="hljs-string">"cornflowerblue"</span>)
+kvadrat = rect(x, <span class="hljs-number">280</span>, <span class="hljs-number">60</span>, <span class="hljs-number">60</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> x        <span class="hljs-comment"># тепер x усередині функції — це та сама x, що й зовні</span>
+    x += <span class="hljs-number">4</span>
+    move(kvadrat, x, <span class="hljs-number">280</span>)
+
+doAnimate(kadr)
+</code></pre>
+<div class="warn">
+Вказівка <code>global імʼя_змінної</code> потрібна лише для тих змінних, які функція <strong>змінює</strong> (тобто присвоює їм нове значення: <code>x += 4</code>, <code>kut = 0</code>, <code>indeks = ...</code> тощо). Змінні, які функція лише <strong>читає</strong> (наприклад, передає в <code>move()</code> чи використовує в умові), у <code>global</code> не потребують. Надалі в кожному прикладі цього розділу перший рядок функції <code>kadr()</code> буде списком саме тих змінних, яких це стосується.
+</div>
+<h3 id="функція-в-якій-відбуватиметься-перемалювування">Функція, в якій відбуватиметься перемалювування</h3>
+<p>Ви маєте створити функцію, яка міститиме логіку <strong>одного кадру</strong> (зміну координат, перемалювання). 
+<em>Важливо:</em> всередині цієї функції не можна використовувати <code>while</code> або <code>sleep()</code>, інакше анімація зависне!</p>
+<h3 id="зміна-інтервалу-між-кадрами-за-допомогою-animationtime">Зміна інтервалу між кадрами за допомогою <code>animationTime()</code></h3>
+<p>Щоб змінити швидкість анімації, використовуйте функцію <code>animationTime(час_у_мілісекундах)</code>.</p>
+<ul>
+<li><code>animationTime(100)</code> — сповільнити анімацію (пауза 100 мс між кадрами).</li>
+<li><code>animationTime(20)</code> — пришвидшити анімацію (пауза 20 мс).</li>
+</ul>
+<p>Функція <code>animationTime(мілісекунди)</code> встановлює затримку між кадрами — <strong>в мілісекундах</strong>, а не в секундах! За замовчуванням це 50 мс (20 кадрів на секунду). Хочете плавнішу й швидшу анімацію — зменшіть значення (наприклад, <code>animationTime(20)</code> дає приблизно 50 кадрів на секунду); хочете уповільнити рух — збільшіть його (наприклад, <code>animationTime(200)</code>).</p>
+<pre><code class="language-python hljs" data-highlighted="yes">animationTime(<span class="hljs-number">20</span>)   <span class="hljs-comment"># тепер кадри змінюються кожні 20 мс (≈50 разів/секунду)</span>
+</code></pre>
+<p>Якщо викликати <code>animationTime()</code> без аргументів, вона поверне поточне значення затримки — це зручно, коли потрібно, наприклад, тимчасово пришвидшити гру, а потім повернути початкову швидкість.</p>
+<h3 id="запуск-і-зупинка-анімації">Запуск і зупинка анімації</h3>
+<ul>
+<li><code>doAnimate(func)</code> — запускає цикл анімації.</li>
+<li><code>noAnimate()</code> — зупиняє анімацію.</li>
+<li><code>isAnimate()</code> — повертає <code>True</code>, якщо анімація зараз працює, і <code>False</code>, якщо зупинена.</li>
+</ul>
+<p>Вказівка <code>noAnimate()</code>  зупиняє цикл анімації, запущений <code>doAnimate()</code>. Викликати її можна звідки завгодно — зокрема, з середини самої функції <code>kadr()</code> (наприклад, коли гравець програв).
+Функція <code>isAnimate()</code> повертає <code>True</code>, якщо анімація зараз запущена (тобто <code>doAnimate()</code> викликали, а <code>noAnimate()</code> — ще ні), і <code>False</code> — в іншому випадку.
+Повторний виклик <code>doAnimate()</code>, поки попередня анімація ще працює, <strong>ігнорується</strong> — це зроблено навмисно, щоб випадково не запустити дві копії циклу одночасно (тоді кадри оновлювалися б удвічі швидше, ніж ви очікуєте). Якщо потрібно замінити функцію анімації на іншу, спочатку викличте <code>noAnimate()</code>, а тоді вже <code>doAnimate(нова_функція)</code>.</p>
+<h2 id="195-керування-графічними-обєктами-під-час-анімації">19.5 Керування графічними об'єктами під час анімації</h2>
+<p>Щоб керувати об'єктом, потрібно "запам'ятати" його. Коли ви створюєте фігуру, функція повертає її унікальний ідентифікатор (ID).</p>
+<h3 id="створення-графічних-обєктів">Створення графічних об'єктів</h3>
+<p>У <code>SimpleGraphics</code> створення будь-якого графічного об'єкта (лінії, кола, прямокутника, тексту) повертає його <strong>числовий ідентифікатор (ID)</strong>. Цей ID є посиланням на конкретний об'єкт на Canvas і є критично важливим для подальшого керування ним.</p>
+<p>Бібліотека пропонує широкий набір функцій для створення примітивів, наприклад:</p>
+<ul>
+<li><code>line(x1, y1, x2, y2)</code> — відрізок.</li>
+<li><code>rect(x, y, w, h)</code> — прямокутник.</li>
+<li><code>circle(x, y, d)</code> — коло із заданим діаметром.</li>
+<li><code>text(x, y, "текст")</code> — текстовий напис.</li>
+<li><code>drawImage(img, x, y)</code> — відображення растрового зображення.</li>
+</ul>
+<p><strong>Важливо для анімації:</strong> Створення об'єктів має відбуватися <strong>до</strong> запуску <code>doAnimate()</code>. Якщо створювати об'єкти всередині функції кадру, вони будуть накопичуватися у пам'яті кожні кілька мілісекунд, що призведе до падіння продуктивності програми ("витоку пам'яті").</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Зберігаємо ID кола у змінну ball</span>
+ball = circle(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">40</span>) 
+</code></pre>
+<h3 id="переміщення-обєктів-за-допомогою-move">Переміщення об'єктів за допомогою <code>move()</code></h3>
+<p>Функція <code>move(obj, x, y)</code> переміщує об'єкт <code>obj</code> у <strong>нові абсолютні координати</strong> <code>(x, y)</code>. 
+Почнімо з фігури, яка рухається сама, без жодного втручання користувача. Малюємо квадрат один раз <em>перед</em> реєстрацією анімації, а сама функція <code>kadr()</code> лише змінює його координати та викликає <code>move()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+x, y = <span class="hljs-number">0</span>, <span class="hljs-number">280</span>
+krok = <span class="hljs-number">4</span>
+
+setFill(<span class="hljs-string">"cornflowerblue"</span>)
+kvadrat = rect(x, y, <span class="hljs-number">60</span>, <span class="hljs-number">60</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> x
+    x += krok
+    move(kvadrat, x, y)
+
+doAnimate(kadr)
+</code></pre>
+<p>Як це працює:</p>
+<ul>
+<li>Квадрат малюється <strong>один раз</strong>, до реєстрації анімації. Усередині <code>kadr()</code> ми більше ніколи не викликаємо <code>rect()</code> — лише пересуваємо вже намальований об'єкт.</li>
+<li>Змінна <code>x</code> зберігає поточну горизонтальну позицію квадрата. Оскільки <code>kadr()</code> її змінює (<code>x += krok</code>), на початку функції обов'язково стоїть <code>global x</code>.</li>
+<li>На кожному кадрі до <code>x</code> додається <code>krok</code> (4 пікселі), і нове значення одразу передається в <code>move()</code>.</li>
+<li>Результат: квадрат плавно їде вправо, доки не виїде за межі вікна.
+<div class="warn">
+<code>move(obj, x, y)</code> пересуває об'єкт <strong>у конкретну точку</strong> <code>(x, y)</code>, а не зсуває його на <code>(x, y)</code> пікселів відносно поточного положення! Саме тому ми зберігаємо повну позицію об'єкта в змінних <code>x, y</code> і щоразу обчислюємо <em>нову абсолютну</em> координату, перш ніж викликати <code>move()</code>. У класичному Tkinter метод <code>.move(id, dx, dy)</code> приймає <em>зсув</em> (на скільки пікселів перемістити від поточного положення), проте в <code>SimpleGraphics</code> функція реалізована так, що вона переміщує об'єкт у **абсолютні координати
+</div></li>
+</ul>
+<h3 id="анімація-зображення">Анімація зображення</h3>
+<p>Той самий принцип працює для зображень — адже <code>drawImage()</code>, як і <code>rect()</code>, повертає ідентифікатор об'єкта, яким потім керує <code>move()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># ruh_kachky.py</span>
+<span class="hljs-keyword">from</span> simplegraphics <span class="hljs-keyword">import</span> *
+
+x, y = <span class="hljs-number">0</span>, <span class="hljs-number">250</span>
+krok = <span class="hljs-number">3</span>
+
+zobrazhennia = loadImage(<span class="hljs-string">"duck.png"</span>)
+kachka = drawImage(zobrazhennia, x, y)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> x
+    x += krok
+    move(kachka, x, y)
+
+doAnimate(kadr)
+</code></pre>
+<p>Качка плавно пропливає зліва направо через усе вікно. Зверніть увагу: <code>drawImage()</code>, як і <code>move()</code>, використовує лівий верхній кут зображення як точку прив'язки — тож координати збігаються без жодних додаткових перетворень.</p>
+<h3 id="видалення-та-повторне-створення-обєктів">Видалення та повторне створення об'єктів</h3>
+<p>Якщо ви хочете видалити об'єкт або повністю очистити сцену:</p>
+<ul>
+<li><code>delete(obj)</code> — видаляє конкретний об'єкт.</li>
+<li><code>clear()</code> — очищує весь екран (малює новий фон). Після цього об'єкти потрібно створювати заново.</li>
+</ul>
+<h3 id="зміна-властивостей-обєктів">Зміна властивостей об'єктів</h3>
+<ul>
+<li><code>itemConfig(obj, fill="red")</code> — змінює колір заповнення об'єкта на червоний.</li>
+<li><code>scale(obj, xs, ys)</code> — змінює розмір об'єкта (розтягує або стискає).</li>
+</ul>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Зробіть так, щоб квадрат рухався не по горизонталі, а по діагоналі (одночасно змінюйте <code>x</code> і <code>y</code>).</li>
+<li>Створіть два незалежні об'єкти (наприклад, два кола різного кольору), які рухаються одночасно з різною швидкістю в одному вікні. Порада: обом об'єктам знадобляться власні змінні координат, і всі вони мають бути перелічені в <code>global</code> усередині спільної функції <code>kadr()</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<h3 id="зміна-розміру-scale">Зміна розміру: <code>scale()</code></h3>
+<p>Крім переміщення, <code>SimpleGraphics</code> дозволяє змінювати розмір уже намальованого об'єкта функцією <code>scale(obj, xs, ys)</code>, де <code>xs</code> та <code>ys</code> — коефіцієнти масштабування по осі X та Y відповідно (<code>1.0</code> залишає розмір без змін, <code>&gt; 1.0</code> — збільшує, <code>&lt; 1.0</code> — зменшує).</p>
+<p>Зробімо коло, яке «дихає» — плавно збільшується, а потім зменшується:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"mediumseagreen"</span>)
+kolo = circle(<span class="hljs-number">400</span>, <span class="hljs-number">300</span>, <span class="hljs-number">40</span>)
+
+lichylnyk = <span class="hljs-number">0</span>
+zbilshuietsia = <span class="hljs-literal">True</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> lichylnyk, zbilshuietsia
+
+    <span class="hljs-keyword">if</span> zbilshuietsia:
+        scale(kolo, <span class="hljs-number">1.03</span>, <span class="hljs-number">1.03</span>)
+    <span class="hljs-keyword">else</span>:
+        scale(kolo, <span class="hljs-number">0.97</span>, <span class="hljs-number">0.97</span>)
+
+    lichylnyk += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> lichylnyk % <span class="hljs-number">40</span> == <span class="hljs-number">0</span>:          <span class="hljs-comment"># Кожні 40 кадрів міняємо напрямок</span>
+        zbilshuietsia = <span class="hljs-keyword">not</span> zbilshuietsia
+
+doAnimate(kadr)
+</code></pre>
+<p>Як це працює:</p>
+<ul>
+<li>Кожен виклик <code>scale()</code> множить <strong>поточний</strong> розмір об'єкта на заданий коефіцієнт — ефект накопичується з кадру в кадр, тому навіть маленьке значення (<code>1.03</code>) поступово дає помітний ріст.</li>
+<li>Змінна-прапорець <code>zbilshuietsia</code> (за зразком <code>dx = -dx</code> з попередніх прикладів) визначає, ростемо ми чи зменшуємось. Лічильник <code>lichylnyk</code> перемикає цей прапорець кожні 40 кадрів, створюючи ефект пульсації. Обидві змінні змінюються всередині <code>kadr()</code>, тож обидві йдуть у <code>global</code>.</li>
+<li><code>scale()</code> масштабує об'єкт відносно <strong>першої координатної точки</strong> його форми (по суті — лівого верхнього кута обмежувальної рамки), а <strong>не</strong> відносно центра фігури. Через це коло з прикладу вище не «дихатиме» строго на місці: під час росту воно буде трохи зсуватися вниз-вправо, а під час зменшення — «повертатися» назад. Ефект непомітний при малих коефіцієнтах (<code>1.03</code>/<code>0.97</code>) та невеликій кількості кадрів, але накопичується з часом. Якщо потрібне справді симетричне масштабування навколо центра, після кожного виклику <code>scale()</code> можна додатково викликати <code>move()</code>, щоб повернути об'єкт у потрібну центральну точку.</li>
+<li>Функція <code>scale()</code> добре працює з фігурами (<code>rect</code>, <code>circle</code>, <code>ellipse</code>, <code>polygon</code>...), бо в них є повноцінний список координат, який можна перерахувати. Але вона <strong>не має жодного видимого ефекту на зображеннях і тексті</strong> — у <code>tkinter</code> (внутрішній графічній бібліотеці, на якій побудований <code>SimpleGraphics</code>) зображення й текстові об'єкти мають лише одну «точку прив'язки», тож команда <code>scale()</code> намагається змінити масштаб відносно цієї самої точки — і фактично нічого не змінюється. Щоб «збільшити» зображення, доведеться завантажити інший файл більшого розміру або намалювати замінник іншою фігурою.</li>
+</ul>
+<h3 id="обертання-обєктів">Обертання об'єктів</h3>
+<p>А що з обертанням? <strong>У <code>SimpleGraphics</code> немає функції поверни-це-на-N-градусів</strong>. Для створення програми, яка обертає зображення, нам знадобляться можливості бібліотеки <strong>PIL (Python Imaging Library)</strong> та бібліотеки <strong>SimpleGraphics</strong> для відображення анімації  —  ми будемо використовувати <strong>PIL</strong> для обертання картинки в пам'яті. Потім ми будемо перетворювати обернене зображення у формат, зрозумілий <code>SimpleGraphics</code>, і відображати його на екрані. Цей процес буде повторюватися в анімаційному циклі:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+<span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image, ImageTk
+
+<span class="hljs-comment"># Завантажуємо зображення duck.png за допомогою PIL</span>
+<span class="hljs-comment"># Переконайтеся, що файл duck.png знаходиться в тій же папці, що і цей скрипт</span>
+original_image_pil = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">"duck.png"</span>)
+
+<span class="hljs-comment"># Отримуємо розміри оригінального зображення</span>
+img_width, img_height = original_image_pil.size
+
+<span class="hljs-comment"># Розраховуємо центр вікна для відображення</span>
+center_x = getWidth() // <span class="hljs-number">2</span>
+center_y = getHeight() // <span class="hljs-number">2</span>
+
+<span class="hljs-comment"># Початкові змінні стану анімації</span>
+angle = <span class="hljs-number">0</span>          <span class="hljs-comment"># Початковий кут обертання</span>
+rotation_speed = <span class="hljs-number">10</span> <span class="hljs-comment"># Швидкість обертання (градусів за кадр)</span>
+current_image_obj = <span class="hljs-literal">None</span> <span class="hljs-comment"># Змінна для зберігання ID графічного об'єкта SimpleGraphics</span>
+
+<span class="hljs-comment"># 2. Функція одного кадру анімації</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">rotate_duck</span>():
+    <span class="hljs-keyword">global</span> angle, current_image_obj
+    
+    <span class="hljs-comment"># Крок 1: Оновлюємо кут обертання</span>
+    angle += rotation_speed
+    <span class="hljs-keyword">if</span> angle &gt;= <span class="hljs-number">360</span>:
+        angle = <span class="hljs-number">0</span>  <span class="hljs-comment"># Скидаємо кут, якщо він досяг 360 градусів</span>
+    
+    <span class="hljs-comment"># Крок 2: Обертаємо зображення PIL</span>
+    <span class="hljs-comment"># Параметр expand=True дозволяє зображенню розширюватися, щоб кути не обрізалися при обертанні</span>
+    <span class="hljs-comment"># Параметр resample=Image.BICUBIC покращує якість зображення при обертанні</span>
+    rotated_image_pil = original_image_pil.rotate(angle, resample=Image.BICUBIC, expand=<span class="hljs-literal">True</span>)
+    
+    <span class="hljs-comment"># Крок 3: Перетворюємо обернене зображення PIL у PhotoImage (формат, зрозумілий SimpleGraphics)</span>
+    <span class="hljs-comment"># createImage() та loadImage() в SimpleGraphics повертають tk.PhotoImage.</span>
+    rotated_photo_image = ImageTk.PhotoImage(rotated_image_pil)
+    
+    <span class="hljs-comment"># Отримуємо розміри вже оберненого зображення</span>
+    new_w, new_h = rotated_image_pil.size
+    
+    <span class="hljs-comment"># Крок 4: Очищення та Рендеринг (Метод перемальовування)  </span>
+    <span class="hljs-comment"># Видаляємо попереднє зображення, якщо воно було</span>
+    <span class="hljs-keyword">if</span> current_image_obj <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+        delete(current_image_obj)
+    
+    <span class="hljs-comment"># Малюємо нове обернене зображення в центрі екрана</span>
+    <span class="hljs-comment"># drawImage повертає ID об'єкта, який ми зберігаємо</span>
+    <span class="hljs-comment"># За допомогою center_x - new_w // 2, center_y - new_h // 2 ми центруємо зображення по центру, </span>
+    <span class="hljs-comment"># оскільки drawImage за замовчуванням anchor="nw"</span>
+    current_image_obj = drawImage(rotated_photo_image, center_x - new_w // <span class="hljs-number">2</span>, center_y - new_h // <span class="hljs-number">2</span>)
+    
+<span class="hljs-comment"># 3. Налаштування часу та запуск анімації</span>
+animationTime(<span class="hljs-number">50</span>)
+
+<span class="hljs-comment"># Запускаємо автоматичний цикл анімації</span>
+doAnimate(rotate_duck) 
+</code></pre>
+<p>Як це працює:</p>
+<ol>
+<li><strong>Імпорт та Завантаження:</strong> Ми імпортуємо все з <code>SimpleGraphics</code> та окремо <code>Image</code> з <code>PIL</code>. Завантаження <code>duck.png</code> виконується за допомогою <code>Image.open()</code> з PIL ще до початку анімації. Це критично для продуктивності.</li>
+<li><strong>Підготовка:</strong> Ми розраховуємо центр вікна та початкові змінні для кута та швидкості обертання. Також ми зберігаємо ID об'єкта <code>current_image_obj</code>, щоб мати змогу його видалити в наступному кадрі.</li>
+<li><strong>Логіка Анімації (<code>rotate_duck</code>)</strong>:</li>
+</ol>
+<ul>
+<li><strong>Оновлення кута</strong>: Кожен кадр збільшує кут на <code>rotation_speed</code>.</li>
+<li><strong>Обертання PIL</strong>: Функція <code>rotate()</code> з PIL обертає оригінальне зображення на потрібний кут. Параметр <code>expand=True</code> гарантує, що при обертанні на кути типу 45°, краї зображення не будуть обрізані.</li>
+<li><strong>Перетворення</strong>: Обернене зображення перетворюється у формат <code>tk.PhotoImage</code> за допомогою <code>ImageTk.PhotoImage</code>.</li>
+<li><strong>Рендеринг</strong>: За допомогою <code>delete()</code> ми видаляємо старе зображення, а за допомогою <code>drawImage()</code> малюємо нове, відцентроване на екрані.</li>
+</ul>
+<ol start="4">
+<li><strong>Запуск</strong>: <code>doAnimate(rotate_duck)</code> реєструє нашу функцію та запускає автоматичний цикл, який виконується через вбудований таймер Tkinter.</li>
+</ol>
+<h3 id="анімація-зображень-із-серії-спрайти">Анімація зображень із серії (спрайти)</h3>
+<p>Уявіть мультфільм: замість того, щоб математично обчислювати нове положення кожного пера пташки, художники просто малюють кілька готових малюнків (<strong>кадрів</strong>, або <strong>спрайтів</strong>, англ. <em>sprite</em>) — наприклад, качку з піднятими крилами і качку з опущеними крилами — і швидко чергують їх. Це і є найпростіший спосіб «оживити» зображення, коли просте переміщення чи масштабування не підходить (політ, ходьба, моргання, вибух тощо).</p>
+<p>У <code>SimpleGraphics</code> немає команди «заміни картинку в тому самому об'єкті» — кожен виклик <code>drawImage()</code> створює зовсім новий об'єкт із власним ідентифікатором. Тому техніка проста: <strong>видаляємо попередній кадр і малюємо наступний</strong> на тому самому місці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+kadry = [loadImage(<span class="hljs-string">"duck1.png"</span>), loadImage(<span class="hljs-string">"duck2.png"</span>)]
+indeks = <span class="hljs-number">0</span>
+x, y = <span class="hljs-number">0</span>, <span class="hljs-number">250</span>
+krok = <span class="hljs-number">3</span>
+
+potochnyi_kadr = drawImage(kadry[indeks], x, y)
+lichylnyk = <span class="hljs-number">0</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> x, indeks, potochnyi_kadr, lichylnyk
+
+    x += krok
+    lichylnyk += <span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">if</span> lichylnyk % <span class="hljs-number">10</span> == <span class="hljs-number">0</span>:              <span class="hljs-comment"># Кожні 10 кадрів міняємо спрайт</span>
+        indeks = (indeks + <span class="hljs-number">1</span>) % <span class="hljs-built_in">len</span>(kadry)
+        delete(potochnyi_kadr)
+        potochnyi_kadr = drawImage(kadry[indeks], x, y)
+    <span class="hljs-keyword">else</span>:
+        move(potochnyi_kadr, x, y)
+
+doAnimate(kadr)
+</code></pre>
+<p>Як це працює:</p>
+<ul>
+<li>Список <code>kadry</code> містить обидва зображення качки, завантажені один раз на самому початку (перезавантажувати файли на кожному кадрі було б повільно й непотрібно).</li>
+<li>Змінна <code>potochnyi_kadr</code> завжди зберігає ідентифікатор зображення, яке зараз відображається на екрані. Оскільки <code>x</code>, <code>indeks</code>, <code>potochnyi_kadr</code> і <code>lichylnyk</code> — усі змінюються всередині <code>kadr()</code>, усі чотири перелічені в <code>global</code>.</li>
+<li>Кожні 10 викликів <code>kadr()</code> (приблизно 2 рази на секунду при типовому <code>animationTime()</code> у 50 мс) ми видаляємо поточний кадр і малюємо наступний зі списку <code>kadry</code>, використовуючи оператор <code>%</code> для циклічного переходу від останнього кадру знову до першого.</li>
+<li>В інших кадрах, коли зображення не змінюється, ми просто пересуваємо той самий об'єкт функцією <code>move()</code> .</li>
+</ul>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Додайте до списку <code>kadry</code> третє зображення і поекспериментуйте зі швидкістю зміни кадрів (значення в <code>lichylnyk % 10</code>). Що відбувається, якщо зробити цю величину дуже малою (наприклад, <code>% 2</code>)? Дуже великою (<code>% 100</code>)?
+</p></div>
+<h3 id="керована-анімація-миша">Керована анімація: миша</h3>
+<p>Дотепер усі наші об'єкти рухалися самі — без жодного втручання користувача. Але найцікавіші анімації в іграх керує саме гравець!</p>
+<p>Оскільки <code>mousePos()</code> повертає координати миші, досить просто зчитувати їх на початку кожного кадру:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+zobrazhennia = loadImage(<span class="hljs-string">"duck.png"</span>)
+kachka = drawImage(zobrazhennia, <span class="hljs-number">400</span>, <span class="hljs-number">300</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    x, y = mousePos()
+    move(kachka, x, y)
+
+doAnimate(kadr)
+</code></pre>
+<p>Як це працює:</p>
+<ul>
+<li>На кожному кадрі ми запитуємо поточне положення курсора (<code>mousePos()</code>) і одразу пересуваємо туди качку.</li>
+<li><code>global</code> тут не знадобився: <code>x</code> та <code>y</code> — це нові локальні змінні, які створюються заново на кожному виклику <code>kadr()</code> і одразу використовуються, а не «переносяться» з попереднього кадру в наступний.</li>
+<li>Результат: качка миттєво «телепортується» слідом за курсором щоразу, коли викликається <code>kadr()</code> .</li>
+</ul>
+<h3 id="керування-лише-по-одній-осі">Керування лише по одній осі</h3>
+<p>Часто потрібно керувати об'єктом тільки по горизонталі (наприклад, ракеткою чи кораблем, який їздить по нижньому краю екрана), а по вертикалі він має залишатися на місці. Для цього достатньо взяти від <code>mousePos()</code> лише потрібну координату:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"skyblue"</span>)
+box = rect(<span class="hljs-number">400</span>, <span class="hljs-number">300</span>, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    x = mouseX()
+    move(box, x, <span class="hljs-number">300</span>)
+
+doAnimate(kadr)
+</code></pre>
+<p>Як це працює:</p>
+<ul>
+<li><code>mouseX()</code> повертає лише горизонтальну координату курсора — саме те, що нам потрібно, оскільки <code>y</code>  завжди залишається сталим.</li>
+</ul>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Змініть приклад із качкою так, щоб вона рухалася лише по вертикалі (<code>mouseY()</code>), залишаючись на сталій горизонтальній позиції.
+</p></div>
+<h3 id="керуємо-за-допомогою-клавіатури">Керуємо за допомогою клавіатури</h3>
+<p>Для керування об'єктом скористаємось функцією <code>getKeys()</code> , яка повертає множину з назв натиснутих клавіш:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+background(<span class="hljs-string">"white"</span>)
+x = <span class="hljs-number">400</span>
+y = <span class="hljs-number">300</span>
+speed = <span class="hljs-number">5</span>
+setFill(<span class="hljs-string">"orange"</span>)
+ball = circle(x, y, <span class="hljs-number">40</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kadr</span>():
+    <span class="hljs-keyword">global</span> x, y
+    keys = getKeys()
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Up"</span> <span class="hljs-keyword">in</span> keys:
+        y -= speed
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Down"</span> <span class="hljs-keyword">in</span> keys:
+        y += speed
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Left"</span> <span class="hljs-keyword">in</span> keys:
+        x -= speed
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Right"</span> <span class="hljs-keyword">in</span> keys:
+        x += speed
+    move(ball, x-<span class="hljs-number">20</span>, y-<span class="hljs-number">20</span>)
+    
+doAnimate(kadr)
+</code></pre>
+<p>Завважте - <code>х</code> та <code>y</code>  у <code>circle()</code> вказують на центр кола, а в <code>move()</code> - верхній лівий кут прямокутника, що обмежує фігуру, тому в <code>move()</code> ми використовуємо <code>move(ball, x-20, y-20)</code>, де <code>20</code> - половина діаметра.</p>
+<div class="exers">
+<h2 id="196-вправи">19.6 Вправи</h2>
+<h3 id="1-мяч-що-падає">1. М'яч, що падає</h3>
+<p>Намалюйте коло, яке падає вниз під дією «гравітації»: на кожному кадрі трохи збільшуйте вертикальну швидкість (наприклад, додавайте <code>0.5</code> до <code>shvydkist_y</code>), а коли м'яч досягає низу вікна, інвертуйте швидкість і трохи зменшіть її (наприклад, помножте на <code>0.85</code>), щоб імітувати втрату енергії при відскоку.</p>
+<h3 id="2-пінг-понг-проти-стінки">2. Пінг-понг проти стінки</h3>
+<p>Намалюйте одну ракетку (прямокутник) біля правого краю вікна та м'яч (коло), що рухається сам, відбиваючись від верхньої, нижньої та лівої стінок. Ракетка має ходити вгору-вниз, повторюючи вертикальне положення курсора миші (<code>mouseY()</code>, за зразком 19.7). Якщо м'яч долітає до ракетки й потрапляє в неї (перевірте <code>checkCollision()</code>), він має відбитися назад; якщо проминає ракетку — гра закінчується (<code>noAnimate()</code>).</p>
+<h3 id="3-годинник-із-секундною-стрілкою">3. Годинник із секундною стрілкою</h3>
+<p>Використовуючи техніку з 19.5, намалюйте циферблат (коло) і одну стрілку, яка робить повний оберт за 60 «кроків» анімації (тобто кут повороту на кожному кроці дорівнює <code>2 * math.pi / 60</code>).</p>
+<h3 id="4-пульсуюча-кнопка">4. Пульсуюча кнопка</h3>
+<p>Намалюйте прямокутник, що імітує кнопку. Поки курсор миші не над кнопкою, нехай прямокутник повільно пульсує (<code>scale()</code>, як у 19.4) на кожному кадрі. Щойно користувач наводить курсор на кнопку (підказка: порівняйте <code>mousePos()</code> із координатами прямокутника), пульсацію в цьому кадрі просто пропускайте — не викликайте <code>scale()</code>, поки курсор над кнопкою.</p>
+<h3 id="5-анімований-світлофор">5. Анімований світлофор</h3>
+<p>Використовуючи три кола (червоне, жовте, зелене) і зміну їхнього кольору функцією <code>setFill()</code> <strong>до</strong> малювання кожного кола (або малюючи наново кожне коло з потрібним кольором після <code>delete()</code>), відтворіть цикл роботи світлофора: червоний → жовтий → зелений → жовтий → червоний, витримуючи кожен колір по кілька секунд (порахуйте потрібну кількість кадрів, зважаючи на поточне значення <code>animationTime()</code>).
+</p></div>
+<div class="project">
+<h2 id="197-творча-майстерня-гра-вторгнення">19.7 Творча майстерня: гра «Вторгнення»</h2>
+<p>Об'єднаймо все, що ми вивчили в цьому розділі — керований рух, автоматичний рух, зіткнення та модуль <code>random</code> — у невеличку гру.</p>
+<p><strong>Задача «Вторгнення»</strong>
+Створіть гру <strong>«Вторгнення»</strong> — спрощений аналог гри <strong>Space Invaders</strong>.
+На екрані розташований корабель гравця, який знаходиться в нижній частині вікна. Корабель може рухатися ліворуч і праворуч за допомогою клавіш <strong>←</strong> та <strong>→</strong>. Натискання клавіші <strong>Space</strong> дозволяє випустити ракету вгору.
+У верхній частині екрана знаходиться група чужинців, які постійно рухаються горизонтально. Досягнувши лівого або правого краю вікна, чужинці змінюють напрямок руху та трохи опускаються вниз.
+Під час руху чужинці випадковим чином скидають бомби, які падають донизу. Якщо бомба потрапляє в корабель, рахунок гравця обнуляється.
+Коли ракета влучає в чужинця, і ракета, і чужинець зникають, а до рахунку додається <strong>10 очок</strong>.
+У верхньому лівому куті вікна повинен показуватися поточний рахунок.
+<strong>Керування:</strong></p>
+<ul>
+<li><strong>←</strong> — рух ліворуч;</li>
+<li><strong>→</strong> — рух праворуч;</li>
+<li><strong>Space</strong> — постріл.</li>
+</ul>
+</div><p>
+<img src="./media/ch19/134d19522e00da3728f23bd10d8c61d4.png" alt="134d19522e00da3728f23bd10d8c61d4.png"></p>
+<p><img src="./media/ch19/8acf8ca05dbc4d5f024e1a04ad7bc240.png" alt="8acf8ca05dbc4d5f024e1a04ad7bc240.png"></p>
+<div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Налаштування гри</span>
+WIDTH = getWidth()
+HEIGHT = getHeight()
+
+SHIP_W = <span class="hljs-number">44</span>
+SHIP_H = <span class="hljs-number">32</span>
+SHIP_SPEED = <span class="hljs-number">7</span>
+
+BULLET_W = <span class="hljs-number">4</span>
+BULLET_H = <span class="hljs-number">12</span>
+BULLET_SPEED = <span class="hljs-number">11</span>
+SHOOT_COOLDOWN = <span class="hljs-number">8</span>          <span class="hljs-comment"># мінімальна кількість кадрів між пострілами</span>
+
+ALIEN_ROWS = <span class="hljs-number">3</span>
+ALIEN_COLS = <span class="hljs-number">8</span>
+ALIEN_R = <span class="hljs-number">18</span>                 <span class="hljs-comment"># приблизний радіус чужинця-блоба</span>
+ALIEN_GAP_X = <span class="hljs-number">55</span>
+ALIEN_GAP_Y = <span class="hljs-number">48</span>
+ALIEN_TOP = <span class="hljs-number">60</span>
+ALIEN_START_SPEED = <span class="hljs-number">2</span>
+ALIEN_BOMB_CHANCE = <span class="hljs-number">0.0008</span>     <span class="hljs-comment"># ймовірність скидання бомби чужинцем за кадр</span>
+ALIEN_DESCEND = <span class="hljs-number">14</span>            <span class="hljs-comment"># на скільки чужинці спускаються, відбившись від краю</span>
+ALIEN_MIN_Y_ABOVE_SHIP = <span class="hljs-number">90</span>   <span class="hljs-comment"># чужинці не спускаються нижче цієї межі над кораблем</span>
+
+BOMB_W = <span class="hljs-number">4</span>
+BOMB_H = <span class="hljs-number">12</span>
+BOMB_SPEED = <span class="hljs-number">5</span>
+
+ALIEN_COLORS = [<span class="hljs-string">"red"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"yellow"</span>, <span class="hljs-string">"violet"</span>,
+                <span class="hljs-string">"blue"</span>, <span class="hljs-string">"grass"</span>, <span class="hljs-string">"pink"</span>, <span class="hljs-string">"orange"</span>, <span class="hljs-string">"olive"</span>]
+
+setWindowTitle(<span class="hljs-string">"Вторгнення"</span>)
+setFont(<span class="hljs-string">"Arial"</span>, <span class="hljs-number">18</span>, <span class="hljs-string">"bold"</span>)
+background(<span class="hljs-string">"black"</span>)
+
+<span class="hljs-comment"># Стан гри (глобальні змінні)</span>
+ship_x = WIDTH // <span class="hljs-number">2</span> - SHIP_W // <span class="hljs-number">2</span>
+ship_y = HEIGHT - SHIP_H - <span class="hljs-number">20</span>
+ship_shape = <span class="hljs-literal">None</span>
+
+bullets = []        <span class="hljs-comment"># кулі</span>
+aliens = []         <span class="hljs-comment"># чужинці</span>
+bombs = []          <span class="hljs-comment"># бомби</span>
+
+alien_dir = <span class="hljs-number">1</span>       <span class="hljs-comment"># 1 - рух праворуч, -1 - рух ліворуч</span>
+alien_speed = ALIEN_START_SPEED
+wave = <span class="hljs-number">1</span>
+score = <span class="hljs-number">0</span>
+score_text = <span class="hljs-literal">None</span>
+shoot_timer = <span class="hljs-number">0</span>
+keyPressed = <span class="hljs-literal">None</span>;
+
+<span class="hljs-comment"># функції створення об'єктів</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">make_blob_points</span>(<span class="hljs-params">cx, cy, r</span>):
+    <span class="hljs-string">"""Генерує точки блоба навколо центру (cx, cy)."""</span>
+    points = []
+    n = <span class="hljs-number">10</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+        angle = <span class="hljs-number">2</span> * math.pi * i / n
+        rr = r + random.uniform(-r * <span class="hljs-number">0.25</span>, r * <span class="hljs-number">0.25</span>)
+        points.append(cx + rr * math.cos(angle))
+        points.append(cy + rr * math.sin(angle))
+    <span class="hljs-keyword">return</span> points
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">create_ship</span>():
+    <span class="hljs-keyword">global</span> ship_shape
+    setColor(<span class="hljs-string">"gray"</span>)
+    ship_shape = polygon(
+        ship_x, ship_y + SHIP_H,
+        ship_x + SHIP_W, ship_y + SHIP_H,
+        ship_x + SHIP_W // <span class="hljs-number">2</span>, ship_y
+    )
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">create_aliens</span>():
+    <span class="hljs-keyword">global</span> aliens
+    aliens = []
+    start_x = <span class="hljs-number">60</span>
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(ALIEN_ROWS):
+        <span class="hljs-keyword">for</span> col <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(ALIEN_COLS):
+            cx = start_x + col * ALIEN_GAP_X
+            cy = ALIEN_TOP + row * ALIEN_GAP_Y
+            setFill(random.choice(ALIEN_COLORS))
+            shape = blob(make_blob_points(cx, cy, ALIEN_R))
+            aliens.append({<span class="hljs-string">"shape"</span>: shape, <span class="hljs-string">"x"</span>: cx, <span class="hljs-string">"y"</span>: cy})
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">create_score_text</span>():
+    <span class="hljs-keyword">global</span> score_text
+    setOutline(<span class="hljs-string">"white"</span>)
+    score_text = text(<span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-string">"Рахунок: 0"</span>, align=<span class="hljs-string">"w"</span>)
+
+<span class="hljs-comment"># Логіка руху</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">getKey</span>():
+    <span class="hljs-keyword">global</span> keyPressed
+    keyPressed = getKeys()
+    <span class="hljs-keyword">return</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">move_ship</span>():
+    <span class="hljs-keyword">global</span> ship_x
+    keys = keyPressed
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Left"</span> <span class="hljs-keyword">in</span> keys:
+        ship_x -= SHIP_SPEED
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"Right"</span> <span class="hljs-keyword">in</span> keys:
+        ship_x += SHIP_SPEED
+    ship_x = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(WIDTH - SHIP_W, ship_x))
+    move(ship_shape, ship_x, ship_y)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">try_shoot</span>():
+    <span class="hljs-keyword">global</span> shoot_timer
+    <span class="hljs-keyword">if</span> shoot_timer &gt; <span class="hljs-number">0</span>:
+        shoot_timer -= <span class="hljs-number">1</span>
+
+    keys = keyPressed    
+    <span class="hljs-keyword">if</span> <span class="hljs-string">"space"</span> <span class="hljs-keyword">in</span> keys <span class="hljs-keyword">and</span> shoot_timer == <span class="hljs-number">0</span>:        
+        setColor(<span class="hljs-string">"#ffe600"</span>)
+        setWidth(<span class="hljs-number">1</span>)
+        bx = ship_x + SHIP_W // <span class="hljs-number">2</span> - BULLET_W // <span class="hljs-number">2</span>
+        by = ship_y - BULLET_H
+        shape = rect(bx, by, BULLET_W, BULLET_H)
+        bullets.append({<span class="hljs-string">"shape"</span>: shape, <span class="hljs-string">"x"</span>: bx, <span class="hljs-string">"y"</span>: by})
+        shoot_timer = SHOOT_COOLDOWN
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">move_bullets</span>():    
+    <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> bullets[:]:
+        b[<span class="hljs-string">"y"</span>] -= BULLET_SPEED
+        <span class="hljs-keyword">if</span> b[<span class="hljs-string">"y"</span>] + BULLET_H &lt; <span class="hljs-number">0</span>:
+            delete(b[<span class="hljs-string">"shape"</span>])
+            bullets.remove(b)
+        <span class="hljs-keyword">else</span>:
+            move(b[<span class="hljs-string">"shape"</span>], b[<span class="hljs-string">"x"</span>], b[<span class="hljs-string">"y"</span>])
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">move_aliens</span>():
+    <span class="hljs-keyword">global</span> alien_dir
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> aliens:
+        <span class="hljs-keyword">return</span>
+    leftmost = <span class="hljs-built_in">min</span>(a[<span class="hljs-string">"x"</span>] - ALIEN_R <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens)
+    rightmost = <span class="hljs-built_in">max</span>(a[<span class="hljs-string">"x"</span>] + ALIEN_R <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens)
+    hit_edge = (rightmost &gt;= WIDTH <span class="hljs-keyword">and</span> alien_dir == <span class="hljs-number">1</span>) <span class="hljs-keyword">or</span> \
+               (leftmost &lt;= <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> alien_dir == -<span class="hljs-number">1</span>)
+    <span class="hljs-keyword">if</span> hit_edge:
+        alien_dir *= -<span class="hljs-number">1</span>
+        limit_y = ship_y - ALIEN_MIN_Y_ABOVE_SHIP
+        <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens:
+            <span class="hljs-keyword">if</span> a[<span class="hljs-string">"y"</span>] + ALIEN_DESCEND &lt; limit_y:
+                a[<span class="hljs-string">"y"</span>] += ALIEN_DESCEND
+    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens:
+        a[<span class="hljs-string">"x"</span>] += alien_speed * alien_dir
+        move(a[<span class="hljs-string">"shape"</span>], a[<span class="hljs-string">"x"</span>] - ALIEN_R, a[<span class="hljs-string">"y"</span>] - ALIEN_R)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">drop_bombs</span>():
+    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens:
+        <span class="hljs-keyword">if</span> random.random() &lt; ALIEN_BOMB_CHANCE:
+            setColor(<span class="hljs-string">"#ff5050"</span>)
+            bx = a[<span class="hljs-string">"x"</span>] - BOMB_W // <span class="hljs-number">2</span>
+            by = a[<span class="hljs-string">"y"</span>] + ALIEN_R
+            shape = rect(bx, by, BOMB_W, BOMB_H)
+            bombs.append({<span class="hljs-string">"shape"</span>: shape, <span class="hljs-string">"x"</span>: bx, <span class="hljs-string">"y"</span>: by})
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">move_bombs</span>():
+    <span class="hljs-keyword">for</span> bm <span class="hljs-keyword">in</span> bombs[:]:
+        bm[<span class="hljs-string">"y"</span>] += BOMB_SPEED
+        <span class="hljs-keyword">if</span> bm[<span class="hljs-string">"y"</span>] &gt; HEIGHT:
+            delete(bm[<span class="hljs-string">"shape"</span>])
+            bombs.remove(bm)
+        <span class="hljs-keyword">else</span>:
+            move(bm[<span class="hljs-string">"shape"</span>], bm[<span class="hljs-string">"x"</span>], bm[<span class="hljs-string">"y"</span>])
+
+<span class="hljs-comment"># Зіткнення</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">check_collisions</span>():
+    <span class="hljs-keyword">global</span> score
+    <span class="hljs-comment"># ракета влучає у чужинця</span>
+    <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> bullets[:]:
+        <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aliens[:]:
+            <span class="hljs-keyword">if</span> checkCollision(b[<span class="hljs-string">"shape"</span>], a[<span class="hljs-string">"shape"</span>]):
+                delete(b[<span class="hljs-string">"shape"</span>])
+                delete(a[<span class="hljs-string">"shape"</span>])
+                <span class="hljs-keyword">if</span> b <span class="hljs-keyword">in</span> bullets:
+                    bullets.remove(b)
+                <span class="hljs-keyword">if</span> a <span class="hljs-keyword">in</span> aliens:
+                    aliens.remove(a)
+                score += <span class="hljs-number">10</span>
+                <span class="hljs-keyword">break</span>
+
+    <span class="hljs-comment"># бомба влучає у корабель</span>
+    <span class="hljs-keyword">for</span> bm <span class="hljs-keyword">in</span> bombs[:]:
+        <span class="hljs-keyword">if</span> checkCollision(bm[<span class="hljs-string">"shape"</span>], ship_shape):
+            delete(bm[<span class="hljs-string">"shape"</span>])
+            bombs.remove(bm)
+            score = <span class="hljs-number">0</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">update_score_text</span>():
+    itemConfig(score_text, text=<span class="hljs-string">"Рахунок: "</span> + <span class="hljs-built_in">str</span>(score))
+
+<span class="hljs-comment"># Головний ігровий цикл</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">game_loop</span>():
+    getKey()
+    move_ship()
+    try_shoot()
+    move_aliens()
+    drop_bombs()
+    move_bullets()
+    move_bombs()
+    check_collisions()
+    update_score_text()
+ 
+create_ship()
+create_aliens()
+create_score_text()
+
+doAnimate(game_loop)
+</code></pre>
+</div></div>
+<p><strong>Як це працює:</strong></p>
+<ol>
+<li>Підготовка програми</li>
+<li>Імпортувати модулі <code>random</code>, <code>math</code> та бібліотеку <code>SimpleGraphics</code>.</li>
+<li>Отримати ширину та висоту ігрового вікна.</li>
+<li>Оголосити константи:<ul>
+<li>розміри та швидкість корабля;</li>
+<li>розміри, швидкість і затримку між пострілами;</li>
+<li>кількість рядків і стовпців чужинців;</li>
+<li>параметри руху чужинців;</li>
+<li>параметри бомб;</li>
+<li>список можливих кольорів чужинців.</li>
+</ul>
+</li>
+<li>Встановити назву вікна, шрифт і чорний фон.</li>
+<li>Створити глобальні змінні для:</li>
+</ol>
+<ul>
+<li>корабля;</li>
+<li>списку куль;</li>
+<li>списку чужинців;</li>
+<li>списку бомб;</li>
+<li>напрямку руху чужинців;</li>
+<li>швидкості їх руху;</li>
+<li>рахунку;</li>
+<li>таймера пострілів;</li>
+<li>натиснутих клавіш.</li>
+</ul>
+<ol start="2">
+<li><p>Створення ігрових об'єктів</p>
+<ol>
+<li>Створення корабля</li>
+<li>Створення чужинців</li>
+</ol>
+<ul>
+<li>для кожного чужинця:<ul>
+<li>обчислити координати;</li>
+<li>випадково вибрати колір;</li>
+<li>створити випадковий «блоб»;</li>
+<li>додати його до списку чужинців.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Створення напису рахунку</p>
+</li>
+<li><p>Отримання натиснутих клавіш
+На початку кожного кадру:</p>
+</li>
+</ol>
+<ul>
+<li>Викликати функцію <code>getKeys()</code>.</li>
+<li>Зберегти список натиснутих клавіш.</li>
+</ul>
+<ol start="4">
+<li>Рух корабля</li>
+</ol>
+<ul>
+<li>якщо натиснуто клавішу <strong>←</strong>, змістити корабель ліворуч.</li>
+<li>якщо натиснуто клавішу <strong>→</strong>, змістити корабель праворуч.</li>
+<li>не дозволяти кораблю виходити за межі вікна.</li>
+<li>перемістити графічне зображення корабля.</li>
+</ul>
+<ol start="5">
+<li>Постріл</li>
+</ol>
+<ul>
+<li>Якщо таймер пострілу більший за нуль:<ul>
+<li>зменшити його.</li>
+</ul>
+</li>
+<li>Якщо натиснуто <strong>Space</strong> і таймер дорівнює нулю:<ul>
+<li>створити кулю над кораблем;</li>
+<li>додати її до списку куль;</li>
+<li>встановити таймер затримки між пострілами.</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li>Рух куль
+Для кожної кулі:</li>
+</ol>
+<ul>
+<li>Перемістити її вгору.</li>
+<li>Якщо вона вийшла за верхню межу:<ul>
+<li>видалити кулю;</li>
+<li>вилучити її зі списку.</li>
+</ul>
+</li>
+<li>Інакше оновити її положення на екрані.</li>
+</ul>
+<ol start="7">
+<li>Рух чужинців</li>
+</ol>
+<ul>
+<li>Якщо чужинців не залишилося — завершити виконання функції.</li>
+<li>Знайти крайнього лівого та крайнього правого чужинця.</li>
+<li>Якщо група торкнулася краю вікна:<ul>
+<li>змінити напрямок руху;</li>
+<li>опустити всіх чужинців вниз.</li>
+</ul>
+</li>
+<li>Перемістити всіх чужинців у новому напрямку.</li>
+</ul>
+<ol start="8">
+<li>Скидання бомб
+Для кожного чужинця:</li>
+</ol>
+<ul>
+<li>Згенерувати випадкове число.</li>
+<li>Якщо воно менше заданої ймовірності:<ul>
+<li>створити бомбу під чужинцем;</li>
+<li>додати її до списку бомб.</li>
+</ul>
+</li>
+</ul>
+<ol start="9">
+<li>Рух бомб
+Для кожної бомби:</li>
+</ol>
+<ul>
+<li>Перемістити її вниз.</li>
+<li>Якщо вона вийшла за нижню межу:<ul>
+<li>видалити бомбу;</li>
+<li>вилучити її зі списку.</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><p>Інакше оновити її положення.</p>
+</li>
+<li><p>Перевірка зіткнень
+<strong>Куля — чужинець</strong>
+Для кожної кулі:</p>
+</li>
+</ol>
+<ul>
+<li>Перевірити зіткнення з кожним чужинцем.</li>
+<li>Якщо зіткнення відбулося:<ul>
+<li>видалити кулю;</li>
+<li>видалити чужинця;</li>
+<li>вилучити їх зі списків;</li>
+<li>збільшити рахунок на <strong>10</strong>;</li>
+<li>перейти до перевірки наступної кулі.</li>
+</ul>
+</li>
+</ul>
+<p>*<strong>Бомба — корабель</strong>
+Для кожної бомби:</p>
+<ul>
+<li>Перевірити зіткнення з кораблем.</li>
+<li>Якщо зіткнення відбулося:<ul>
+<li>видалити бомбу;</li>
+<li>вилучити її зі списку;</li>
+<li>обнулити рахунок.</li>
+</ul>
+</li>
+</ul>
+<ol start="11">
+<li><p>Оновлення рахунку
+ Замінити текст напису на нове значення рахунку.</p>
+</li>
+<li><p>Головний цикл гри
+Отримати натиснуті клавіші.
+Перемістити корабель.
+Обробити постріл.
+Перемістити чужинців.
+Створити нові бомби.
+Перемістити кулі.
+Перемістити бомби.
+Перевірити всі зіткнення.
+Оновити напис із рахунком.</p>
+</li>
+<li><p>Запуск гри</p>
+</li>
+</ol>
+<ul>
+<li>Створити корабель.</li>
+<li>Створити всіх чужинців.</li>
+<li>Створити напис із рахунком.</li>
+<li>Запустити анімацію за допомогою функції <code>doAnimate(game_loop)</code>, яка багаторазово викликає головний цикл гри.</li>
+</ul>
+<hr>
+<div class="read">
+<ol>
+<li><a href="https://docs.python.org/3/library/math.html">Python Docs — math.cos, math.sin</a>.</li>
+<li><a href="https://docs.python.org/3/library/math.html#math.sqrt">Python Docs — math.sqrt</a>.</li>
+<li><a href="https://docs.python.org/3/library/random.html#random.randint">Python Docs — random.randint</a>.</li>
+<li><a href="https://docs.python.org/3/library/tkinter.html">Python Docs — tkinter.Canvas (move, scale, coords, bbox, after)</a>.</li>
+<li><a href="https://docs.python.org/3/reference/simple_stmts.html#the-global-statement">Python Docs — global statement</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

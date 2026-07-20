@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch10</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-10-функції">РОЗДІЛ 10. Функції</h1>
+<h2 id="101-навіщо-потрібні-функції">10.1 Навіщо потрібні функції?</h2>
+<p>У попередніх розділах програми складалися з послідовності вказівок-команд. Але зі збільшенням обсягу програм виникає ситуація, коли потрібно повторно використовувати однакові фрагменти коду. Щоразу писати однаковий код незручно. Значно краще один раз створити потрібний набір команд, а потім викликати його в будь-якому місці програми. Саме для цього в Python існують функції — вони допомагають зробити програми коротшими, зрозумілішими й зручнішими для супроводу.</p>
+<p>Функції дають змогу об'єднати будь-яку кількість вказівок програмного коду в блок під одним ім'ям і виконувати їх за потреби. Вони допомагають уникати повторення коду, спрощують розробку програм і роблять їх зрозумілішими.</p>
+<blockquote>
+<p>Функція — поіменований блок програмного коду, призначений для виконання певних дій. Функцію можна багаторазово викликати за іменем, за потреби їй можна передавати аргументи, вона може повертати результат.</p>
+</blockquote>
+<p>Припустімо, що ви — розробник, який створює комп'ютерну гру, і після кожного раунду вам потрібно вивести на екран вітання:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"🏆  Вітаємо переможця!  🥇"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟"</span>)
+</code></pre>
+<p>Якщо у вашій грі є 10 різних рівнів, вам доведеться скопіювати ці три рядки 10 разів у різні місця файлу. Це створює одразу кілька проблем:</p>
+<ul>
+<li><strong>збільшення обсягу програми</strong>: код стає занадто довгим, його важко читати;</li>
+<li><strong>складність оновлення</strong>: якщо ви вирішите змінити текст, вам доведеться шукати та вручну змінювати код у десяти різних місцях;</li>
+<li><strong>можливість помилок</strong>: під час копіювання легко щось пропустити чи випадково стерти.</li>
+</ul>
+<p>Функції дозволяють написати цей алгоритм один раз, дати йому зрозуміле ім'я (наприклад, <code>show_victory()</code>) і викликати його стільки разів, скільки потрібно.</p>
+<h3 id="функції-які-ми-вже-знаємо">Функції, які ми вже знаємо</h3>
+<p>Насправді функції не є для вас чимось абсолютно новим, адже ви користуєтеся ними з першого дня вивчення Python! Всі знайомі вам базові команди — це готові функції, які розробники мови програмування Python заздалегідь написали для нас:</p>
+<ul>
+<li><code>print()</code> — функція виведення тексту на екран.</li>
+<li><code>input()</code> — функція зчитування даних з клавіатури.</li>
+<li><code>len()</code> — функція обчислення довжини (кількості елементів у списку чи літер у тексті).</li>
+<li><code>int()</code> / <code>str()</code> — функції перетворення типів даних.</li>
+<li><code>random.randint()</code> — функція генерації випадкового числа з модуля <code>random</code>.</li>
+</ul>
+<p>Коли ви пишете <code>len(my_list)</code>, ви запускаєте прихований складний алгоритм, який рахує елементи списку. Вам не потрібно знати, як саме він це робить — ви просто берете готовий результат. Тож тепер ми навчимося створювати власні функції.</p>
+<h2 id="102-як-працюють-функції">10.2 Як працюють функції?</h2>
+<p>Функції — один із найважливіших інструментів програмування. Поки що функція є для вас своєрідною «чорною скринькою»:
+<img src="./media/ch10/6f449123fd7a793aab45bf364b0e3264.png" alt="6f449123fd7a793aab45bf364b0e3264.png"></p>
+<ol>
+<li>Їй передають нуль, одну або кілька змінних у дужках. Ці змінні називаються аргументами. Це можуть бути об'єкти Python будь-якого типу.</li>
+<li>Вона виконує дію.</li>
+<li>Вона повертає результат або нічого.</li>
+</ol>
+<p>Наприклад, якщо ви викликаєте функцію <code>len()</code> так:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+</code></pre>
+<p>ось що відбувається:</p>
+<ol>
+<li>ви викликаєте <code>len()</code>, передаючи їй список як аргумент (тут список <code>[0, 1, 2]</code>);</li>
+<li>функція обчислює довжину цього списку;</li>
+<li>вона повертає вам ціле число, що дорівнює цій довжині.</li>
+</ol>
+<p>Інший приклад — виклик методу <code>moy_spysok.append()</code> (не забувайте, метод — це функція, яка діє на об'єкт, до якого вона прикріплена):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: dodaty_element.py</span>
+moy_spysok = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+moy_spysok.append(<span class="hljs-number">5</span>)
+<span class="hljs-built_in">print</span>(moy_spysok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, 2, 3, 5</span>]
+</code></pre>
+<ol>
+<li>Ви передаєте ціле число 5 як аргумент;</li>
+<li>метод <code>append()</code> додає ціле число 5 до об'єкта <code>moy_spysok</code>;</li>
+<li>і він нічого не повертає.</li>
+</ol>
+<p>Для програміста функція — це частина коду, що виконує певну послідовність інструкцій. Але перш ніж перейти до створення власних функцій, повернемося ще раз до поняття «чорної скриньки»:</p>
+<ul>
+<li>Функція виконує завдання. Для цього вона, можливо, отримує аргументи і, можливо, щось повертає. Алгоритм, використаний всередині функції, безпосередньо не цікавить того, хто нею користується. Наприклад, немає потреби знати, як саме функція <code>math.cos()</code> обчислює косинус. Нам просто потрібно знати, що їй потрібно передати кут у радіанах, і вона поверне косинус цього кута. Те, що відбувається всередині функції, стосується лише того, хто її написав.</li>
+<li>Кожна функція загалом виконує одне унікальне та точне завдання. Якщо все ускладнюється, доцільніше написати кілька функцій (які, можливо, викликатимуть одна одну). Ця модульність покращує загальну якість та читабельність коду.</li>
+</ul>
+<p>Щоб позначити місце, звідки ми викликаємо функцію, використовують термін «головна програма» (англ. <em>main</em>) — ми побачимо пізніше, що насправді функцію можна викликати з будь-якого місця коду. Головна програма — це код, який виконується під час запуску скрипту Python, тобто вся послідовність інструкцій поза функціями. </p>
+<p><img src="./media/ch10/de9ba0fac01276f7c8c870c9f08814cd.png" alt="de9ba0fac01276f7c8c870c9f08814cd.png"></p>
+<p>Загалом у Python спочатку пишуть функції, а потім головну програму.</p>
+<h2 id="103-визначення-функції">10.3 Визначення функції</h2>
+<p>Щоб визначити функцію, Python використовує ключове слово <code>def</code> (від англійського <em>define</em> — визначити). Якщо ми хочемо, щоб функція щось повертала, потрібно використати ключове слово <code>return</code>. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x**<span class="hljs-number">2</span>
+
+<span class="hljs-built_in">print</span>(kvadrat(<span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+</code></pre>
+<p><img src="./media/ch10/205fc16fb6158a0894b24f817aa9d9a6.png" alt="205fc16fb6158a0894b24f817aa9d9a6.png"></p>
+<p>Зверніть увагу, що синтаксис <code>def</code> використовує двокрапку, як і цикли <code>for</code> та <code>while</code>, а також умови <code>if</code>: тому очікується блок інструкцій. Так само, як для циклів і умов, відступ цього блоку інструкцій (який називається тілом функції) є обов'язковим.</p>
+<p>Розберемо створення функції по частинах на найпростішому прикладі — функції, яка просто каже «Привіт!»:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">hello</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт!"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Гарного дня!"</span>)
+</code></pre>
+<ul>
+<li><strong>Ключове слово <code>def</code></strong> починає створення інструмента.</li>
+<li><strong>Назва функції</strong> має бути зрозумілою (що саме вона робить) і відображати дію, тому зазвичай використовують дієслова (<code>hello</code>, <code>calculate_price</code>, <code>save_file</code>).</li>
+<li><strong>Круглі дужки <code>()</code></strong> обов'язково йдуть після назви.</li>
+<li><strong>Двокрапка <code><span class="hl-char">:</span></code></strong> наприкінці рядка сигналізує про початок блока коду.</li>
+<li><strong>Тіло функції</strong> (відступ 4 пробіли) — рядки, які виконуватимуться лише тоді, коли ми покличемо цю функцію.
+<img src="./media/ch10/04ef9d3a56322d5ec80c5fd0977209ac.png" alt="Оголошення функції" title="04ef9d3a56322d5ec80c5fd0977209ac.png"></li>
+</ul>
+<h3 id="1031-виклик-функції">10.3.1 Виклик функції</h3>
+<p>Якщо ви просто напишете конструкцію <code>def hello()<span class="hl-char">:</span></code> і запустите програму, на екрані нічого не з'явиться. Створення функції — це як купівля кухонного комбайна: він просто стоїть у коробці, поки ви не ввімкнете його в розетку.</p>
+<p>Щоб функція спрацювала, її потрібно <strong>викликати</strong> по імені у вашому основному коді (без відступів):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">hello</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт!"</span>)
+
+<span class="hljs-comment"># Наш основний код:</span>
+hello()  <span class="hljs-comment"># Перший виклик</span>
+hello()  <span class="hljs-comment"># Другий виклик. Програма знову виконає код зсередини функції!</span>
+</code></pre>
+<p>У попередньому прикладі ми передали аргумент функції <code>kvadrat()</code>, яка повернула значення, і ми одразу вивели його на екран за допомогою <code>print()</code>. Що означає «значення, що повертається»? Це означає, що його можна зберегти у змінній:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: zberezhy_rezultat.py</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x**<span class="hljs-number">2</span>
+
+rezultat = kvadrat(<span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(rezultat)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+</code></pre>
+<p>Тут результат, повернутий функцією, зберігається у змінній <code>rezultat</code>. Зауважте, що функція не обов'язково приймає аргумент і не обов'язково повертає значення, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: pryvitannya.py</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>)
+
+pryvitannya()
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Привіт
+</code></pre>
+<p>У цьому випадку функція <code>pryvitannya()</code> просто виводить рядок <code>"Привіт"</code> на екран. Вона не приймає жодного аргументу і нічого не повертає. Отже, немає сенсу намагатися зберегти в змінній результат, повернутий такою функцією. Якщо ми все ж спробуємо, Python призначить значення <code>None</code>, що означає «ніщо»:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: povernene_znachennya.py</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт"</span>)
+
+zminna = pryvitannya()
+<span class="hljs-built_in">print</span>(zminna)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">Привіт
+<span class="hljs-attribute">None</span>
+</code></pre>
+<p>Це не є помилкою, оскільки Python не видає повідомлення про помилку, проте це здебільшого не має великого сенсу.</p>
+<p>Програма на Python може мати як завгодно багато функцій, визначених користувачем (або й не мати жодної), викликати ці функції можна в будь-якому місці програми або з інших функцій.
+<img src="./media/ch10/83f1e7e3fc53a01baddbacc393839c25.png" alt="83f1e7e3fc53a01baddbacc393839c25.png"></p>
+<h2 id="104-аргументи-функцій-вхідні-дані">10.4 Аргументи функцій (вхідні дані)</h2>
+<p>Функція стає набагато кориснішою, якщо вона вміє підлаштовуватися під ситуацію. Наприклад, вітатися не просто абстрактно, а з конкретною людиною. Для цього використовують <strong>аргументи</strong> — імена змінних, які ми записуємо всередині круглих дужок під час створення функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">name</span>):  <span class="hljs-comment"># name — це аргумент (вхідна кишенька для даних)</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт,"</span>, name)
+
+<span class="hljs-comment"># Виклик функції з різними аргументами:</span>
+hello(<span class="hljs-string">"Оля"</span>)     <span class="hljs-comment"># На екрані: Привіт, Оля</span>
+hello(<span class="hljs-string">"Андрій"</span>)  <span class="hljs-comment"># На екрані: Привіт, Андрій</span>
+</code></pre>
+<p>Історично склалося так, що імена аргументів, які записані у рядку оголошення функції, називають параметрами - таке формулювання ми можете зустріти у багатьох посібниках.
+<img src="./media/ch10/83a7b2f6d7c4922e75ecbf6052a62239.png" alt="83a7b2f6d7c4922e75ecbf6052a62239.png"></p>
+<h3 id="кілька-аргументів">Кілька аргументів</h3>
+<p>Функція може отримувати скільки завгодно аргументів — просто розділяйте їх комами. Наприклад, вказівка для обчислення площі прямокутника потребує ширини та висоти:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">print_rectangle_area</span>(<span class="hljs-params">width, height</span>):
+    area = width * height
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Площа прямокутника:"</span>, area)
+
+print_rectangle_area(<span class="hljs-number">5</span>, <span class="hljs-number">10</span>)  <span class="hljs-comment"># Передаємо числа по порядку</span>
+</code></pre>
+<p>Кількість аргументів, які можна передати функції, є змінною. Ми бачили вище функції, яким передавали нуль, один або кілька аргументів. У попередніх розділах ви зустрічали вбудовані функції Python, які приймали принаймні два аргументи. Згадайте, наприклад, <code>range(1, 10)</code> або <code>range(1, 10, 2)</code>. Кількість аргументів залишається на розсуд того, хто розробляє нову функцію.</p>
+<p>Особливість функцій у Python полягає в тому, що ви не зобов'язані вказувати тип аргументів, які їм передаєте, за умови, що операції, які ви виконуєте з цими аргументами, є допустимими. Python — мова з «динамічною типізацією», тобто він розпізнає тип змінних для вас під час виконання. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pomnozhyty</span>(<span class="hljs-params">x, y</span>):
+    <span class="hljs-keyword">return</span> x * y
+
+<span class="hljs-built_in">print</span>(pomnozhyty(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))
+<span class="hljs-built_in">print</span>(pomnozhyty(<span class="hljs-number">3.1415</span>, <span class="hljs-number">5.23</span>))
+<span class="hljs-built_in">print</span>(pomnozhyty(<span class="hljs-string">"to"</span>, <span class="hljs-number">2</span>))
+<span class="hljs-built_in">print</span>(pomnozhyty([<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp"><span class="hljs-number">6</span>
+<span class="hljs-number">16.430045000000003</span>
+toto
+[<span class="hljs-meta">1, 3, 1, 3</span>]
+</code></pre>
+<p>Оператор <code>*</code> розпізнає кілька типів (цілі числа, float, рядки, списки). Отже, наша функція <code>pomnozhyty()</code> здатна виконувати різні завдання! Хоча Python це дозволяє, будьте обережні з цією великою гнучкістю, яка може призвести до несподіванок у ваших майбутніх програмах. Загалом доцільніше, щоб кожен аргумент мав точний тип (цілі числа, float, рядки тощо).</p>
+<h2 id="105-повернення-результату-return">10.5 Повернення результату (<code>return</code>)</h2>
+<p>У прикладі вище функція просто виводила площу на екран. Але частіше нам потрібно, щоб функція обчислила якесь значення і віддала його назад в основну програму, щоб ми могли далі використовувати його в математичних розрахунках чи записати у файл.</p>
+<p>Для цього використовують ключове слово <code>return</code> (з англійської — повернути):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">square</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x * x  <span class="hljs-comment"># Обчислити і віддати результат назад</span>
+</code></pre>
+<div class="warn">
+Вказівка <code>return</code> зупиняє виконання функції. Якщо після рядка з <code>return</code> написати будь-який інший код із відступом у цій же функції, комп'ютер його просто проігнорує.
+</div>
+<h3 id="використання-результату-функції">Використання результату функції</h3>
+<p>Коли функція повертає значення через <code>return</code>, її виклик перетворюється на готовий результат. Ми можемо зберегти його у змінну або одразу вивести на екран:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">square</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x * x
+
+<span class="hljs-comment"># Зберігаємо результат у змінну:</span>
+result = square(<span class="hljs-number">5</span>)  <span class="hljs-comment"># тепер у змінній result лежить число 25</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Квадрат числа 5 дорівнює:"</span>, result)
+
+<span class="hljs-comment"># Або виводимо результат одразу в print():</span>
+<span class="hljs-built_in">print</span>(square(<span class="hljs-number">7</span>))    <span class="hljs-comment"># Виведе: 49</span>
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<ol>
+<li>Створіть функцію <code>multiply(a, b)</code>, яка приймає два числа, перемножує їх та повертає результат через <code>return</code>. Викличте її для чисел 6 та 7.</li>
+<li>Напишіть функцію <code>is_even(number)</code>, яка повертає <code>True</code>, якщо число парне, і <code>False</code>, якщо непарне (використовуйте <code>% 2 == 0</code>).
+</li></ol></div><ol><li></li>
+</ol>
+<h2 id="106-локальні-та-глобальні-змінні">10.6 Локальні та глобальні змінні</h2>
+<p>Коли ми працюємо з функціями, важливо добре розуміти, як поводяться змінні. </p>
+<blockquote>
+<p>Змінна називається <strong>локальною</strong>, якщо вона створена у функції.
+Локальна змінна існуватиме і буде видимою лише під час виконання цієї функції.</p>
+</blockquote>
+<p>Змінні, які ви створюєте всередині функції, народжуються, коли функція починає роботу, і повністю знищуються (забуваються) комп'ютером, як тільки функція завершується через <code>return</code> або кінець відступів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>():
+    secret_number = <span class="hljs-number">10</span>  <span class="hljs-comment"># Локальна змінна</span>
+    <span class="hljs-built_in">print</span>(secret_number)
+
+test()  <span class="hljs-comment"># Виведе 10</span>
+
+<span class="hljs-built_in">print</span>(secret_number)  <span class="hljs-comment"># ПОМИЛКА! NameError: name 'secret_number' is not defined</span>
+</code></pre>
+<p>Чому виникає помилка: основна програма нічого не знає про те, що відбувається всередині «секретної кімнати» функції <code>test</code>. Це захищає нас від випадкового затирання змінних із однаковими іменами у різних частинах коду.</p>
+<blockquote>
+<p>Змінна називається <strong>глобальною</strong>, якщо вона створена в головній програмі (поза межами будь-яких функцій). </p>
+</blockquote>
+<p>Глобальна змінна видима всюди в програмі, навіть всередині функцій:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">school_name = <span class="hljs-string">"Нечаївський ліцей"</span>  <span class="hljs-comment"># Глобальна змінна</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">show_school</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Я навчаюся в:"</span>, school_name)  <span class="hljs-comment"># Функція без проблем бачить її</span>
+
+show_school()
+</code></pre>
+<div class="warn">
+Не варто зловживати глобальними змінними та намагатися міняти їх всередині функцій. Професійні програми намагаються будувати так, щоб функції отримували всі потрібні дані через параметри, а повертали — через <code>return</code>. Це робить код передбачуваним і чистим.
+</div>
+<p>Розглянемо детальніший приклад, який допоможе краще зрозуміти ці концепції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat</span>(<span class="hljs-params">x</span>):
+    y = x**<span class="hljs-number">2</span>
+    <span class="hljs-keyword">return</span> y
+
+<span class="hljs-comment"># Головна програма.</span>
+zminna = <span class="hljs-number">5</span>
+rezultat = kvadrat(zminna)
+<span class="hljs-built_in">print</span>(rezultat)
+</code></pre>
+<p>Подивімося, що відбувається в наведеному вище коді крок за кроком:</p>
+<ul>
+<li><strong>Крок 1.</strong> Python готовий прочитати перший рядок коду.</li>
+<li><strong>Крок 2.</strong> Python зберігає функцію <code>kvadrat()</code> у пам'яті. Зверніть увагу, що він її ще не виконує! Функція поміщається в область пам'яті з назвою <em>Global frame</em> — це простір головної програми. У цьому просторі зберігатимуться всі глобальні змінні, створені в програмі. Python тепер готовий виконати головну програму.</li>
+<li><strong>Крок 3.</strong> Python читає і зберігає змінну <code>zminna</code>. Оскільки вона створена в головній програмі, це буде глобальна змінна. Вона зберігатиметься в <em>Global frame</em>.</li>
+<li><strong>Крок 4.</strong> Функція <code>kvadrat()</code> викликається, і їй передається число <code>zminna</code> як аргумент. Функція виконується, і створюється новий фрейм, у якому Python Tutor покаже всі локальні змінні функції. Зверніть увагу, що змінна, передана як аргумент, яка називається <code>x</code> у функції, створюється як локальна змінна. Глобальні змінні, розташовані в <em>Global frame</em>, залишаються там.</li>
+<li><strong>Крок 5.</strong> Python готовий виконати кожен рядок коду функції.</li>
+<li><strong>Крок 6.</strong> Змінна <code>y</code> створюється у функції. Отже, вона зберігається як локальна змінна функції.</li>
+<li><strong>Крок 7.</strong> Python готовий повернути локальну змінну <code>y</code> головній програмі. Python Tutor показує вміст значення, що повертається.</li>
+<li><strong>Крок 8.</strong> Python виходить з функції, і значення, повернуте нею, призначається глобальній змінній <code>rezultat</code>. Зверніть увагу: коли Python виходить з функції, простір змінних, виділений для функції, знищується. Усі змінні, створені у функції, більше не існують. Ми розуміємо, чому вони називаються локальними — вони існують лише тоді, коли функція виконується.</li>
+<li><strong>Крок 9.</strong> Python виводить вміст змінної <code>rezultat</code>, і виконання завершено.</li>
+</ul>
+<h2 id="107-позиційні-аргументи-та-аргументи-за-ключовим-словом">10.7 Позиційні аргументи та аргументи за ключовим словом</h2>
+<p>До цього часу ми систематично передавали ту кількість аргументів, яку очікувала функція. Що станеться, якщо функція очікує два аргументи, а ми передамо їй лише один?</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pomnozhyty</span>(<span class="hljs-params">x, y</span>):
+    <span class="hljs-keyword">return</span> x * y
+
+<span class="hljs-built_in">print</span>(pomnozhyty(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))
+<span class="hljs-built_in">print</span>(pomnozhyty(<span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss"><span class="hljs-number">6</span>
+Traceback (most recent call last):
+  File <span class="hljs-string">"pomnozhyty_pomylka.py"</span>, line <span class="hljs-number">5</span>, in &lt;module&gt;
+    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">pomnozhyty</span>(<span class="hljs-number">2</span>))
+TypeError: <span class="hljs-built_in">pomnozhyty</span>() missing <span class="hljs-number">1</span> required positional argument: <span class="hljs-string">'y'</span>
+</code></pre>
+<p>Ми бачимо, що передача лише одного аргументу функції, яка очікує два, призводить до помилки.</p>
+<blockquote>
+<p>Коли ми визначаємо функцію <code>def funktsiia(x, y)<span class="hl-char">:</span></code>, аргументи <code>x</code> та <code>y</code> називаються позиційними аргументами (англ. <em>positional arguments</em>). Їх обов'язково вказувати під час виклику функції. Крім того, необхідно дотримуватися того ж порядку під час виклику, що й у визначенні функції. У наведеному вище прикладі 2 відповідатиме <code>x</code>, а 3 відповідатиме <code>y</code>. Усе залежить від їхньої позиції, звідси й назва «позиційні».</p>
+</blockquote>
+<h3 id="значення-параметрів-за-замовчуванням">Значення параметрів за замовчуванням</h3>
+<p>Іноді параметру можна дати початкове (стандартне) значення. Якщо користувач під час виклику забуде передати свої дані, функція не видасть помилку, а просто скористається цим значенням за замовчуванням:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">name=<span class="hljs-string">"друже"</span></span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт,"</span>, name)
+
+hello(<span class="hljs-string">"Оля"</span>)  <span class="hljs-comment"># Виведе: Привіт, Оля</span>
+hello()       <span class="hljs-comment"># Аргументу немає, тому виведе: Привіт, друже</span>
+</code></pre>
+<p>Те саме, більш формально:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: znachennya_za_zamovchuvannyam.py</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">x=<span class="hljs-number">1</span></span>):
+    <span class="hljs-keyword">return</span> x
+
+<span class="hljs-built_in">print</span>(funktsiia())
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">1
+10
+</code></pre>
+<blockquote>
+<p>Аргумент, визначений із синтаксисом <code>def funktsiia(arg=val)<span class="hl-char">:</span></code>, називається аргументом за ключовим словом (англ. <em>keyword argument</em>). Передача такого аргументу під час виклику функції є необов'язковою. Цей тип аргументу не слід плутати з позиційними аргументами, представленими вище, синтаксис яких <code>def funktsiia(arg)<span class="hl-char">:</span></code>.</p>
+</blockquote>
+<p>Звичайно, можна передати кілька аргументів за ключовим словом:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>, z=<span class="hljs-number">0</span></span>):
+    <span class="hljs-keyword">return</span> x, y, z
+
+<span class="hljs-built_in">print</span>(funktsiia())
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">10</span>))
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">3</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
+(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
+(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">0</span>)
+(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">3</span>)
+</code></pre>
+<p>Ми бачимо, що наразі аргументи за ключовим словом приймаються в тому порядку, у якому ми їх передаємо під час виклику. Як зробити, якщо ми хочемо вказати аргумент за ключовим словом <code>z</code>, зберігши значення <code>x</code> та <code>y</code> за замовчуванням? Просто вказавши ім'я аргументу під час виклику:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Скрипт: argument_za_imenem.py</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>, z=<span class="hljs-number">0</span></span>):
+    <span class="hljs-keyword">return</span> x, y, z
+
+<span class="hljs-built_in">print</span>(funktsiia(z=<span class="hljs-number">10</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>)
+</code></pre>
+<h3 id="іменовані-аргументи">Іменовані аргументи</h3>
+<p>Коли у функції багато параметрів, легко переплутати їхній порядок під час виклику. У Python ви можете чітко вказувати імена параметрів під час передачі даних, і тоді їхній порядок стає неважливим:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_card</span>(<span class="hljs-params">name, grade</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Учень: <span class="hljs-subst">{name}</span>, Клас: <span class="hljs-subst">{grade}</span>"</span>)
+
+<span class="hljs-comment"># Вказуємо імена параметрів явно:</span>
+create_card(grade=<span class="hljs-number">10</span>, name=<span class="hljs-string">"Максим"</span>)  <span class="hljs-comment"># Все спрацює ідеально!</span>
+</code></pre>
+<p>Python навіть дозволяє вводити аргументи за ключовим словом у довільному порядку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>, z=<span class="hljs-number">0</span></span>):
+    <span class="hljs-keyword">return</span> x, y, z
+
+<span class="hljs-built_in">print</span>(funktsiia(z=<span class="hljs-number">10</span>, x=<span class="hljs-number">3</span>, y=<span class="hljs-number">80</span>))
+<span class="hljs-built_in">print</span>(funktsiia(z=<span class="hljs-number">10</span>, y=<span class="hljs-number">80</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">3</span>, <span class="hljs-number">80</span>, <span class="hljs-number">10</span>)
+(<span class="hljs-number">0</span>, <span class="hljs-number">80</span>, <span class="hljs-number">10</span>)
+</code></pre>
+<p>Що відбувається, коли ми маємо суміш позиційних аргументів та аргументів за ключовим словом? Позиційні аргументи завжди повинні стояти перед аргументами за ключовим словом:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">a, b, x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>, z=<span class="hljs-number">0</span></span>):
+    <span class="hljs-keyword">return</span> a, b, x, y, z
+
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, z=<span class="hljs-number">5</span>))
+<span class="hljs-built_in">print</span>(funktsiia(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, z=<span class="hljs-number">5</span>, y=<span class="hljs-number">32</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
+(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>)
+(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">32</span>, <span class="hljs-number">5</span>)
+</code></pre>
+<p>Аргументи за ключовим словом завжди можна передавати в довільному порядку, якщо вказати їхні імена. Проте, якщо обидва позиційні аргументи <code>a</code> та <code>b</code> не передані функції, Python поверне помилку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">funktsiia</span>(<span class="hljs-params">a, b, x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>, z=<span class="hljs-number">0</span></span>):
+    <span class="hljs-keyword">return</span> a, b, x, y, z
+
+<span class="hljs-built_in">print</span>(funktsiia(z=<span class="hljs-number">0</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">Traceback (most recent call last):
+  File <span class="hljs-string">"vidsutni_pozytsiini_argumenty.py"</span>, line <span class="hljs-number">4</span>, in &lt;module&gt;
+    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">funktsiia</span>(z=<span class="hljs-number">0</span>))
+TypeError: <span class="hljs-built_in">funktsiia</span>() missing <span class="hljs-number">2</span> required positional arguments: <span class="hljs-string">'a'</span> and <span class="hljs-string">'b'</span>
+</code></pre>
+<p>Вказувати імена аргументів за ключовим словом під час виклику функції — практика, яку ми рекомендуємо. Це чітко відрізняє їх від позиційних аргументів і є звичним стилем у Python. Це також дозволяє змінювати поведінку за замовчуванням багатьох вбудованих функцій. Наприклад, якщо ми хочемо, щоб функція <code>print()</code> не виводила символ нового рядка, ми можемо використати аргумент <code>end</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Повідомлення"</span>, end=<span class="hljs-string">""</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">" — продовження на тому ж рядку"</span>)
+</code></pre>
+<p>Результат виконання:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined"> Повідомлення — продовження на тому ж рядку
+</code></pre>
+<h2 id="108-повернення-кількох-значень">10.8 Повернення кількох значень</h2>
+<p>Величезна перевага Python полягає в тому, що функції здатні повертати кілька об'єктів одночасно, як у цьому фрагменті коду:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat_kub</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> x**<span class="hljs-number">2</span>, x**<span class="hljs-number">3</span>
+
+<span class="hljs-built_in">print</span>(kvadrat_kub(<span class="hljs-number">2</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-scss">(<span class="hljs-number">4</span>, <span class="hljs-number">8</span>)
+</code></pre>
+<p>Насправді Python повертає лише один об'єкт, але він може бути послідовним, тобто містити інші об'єкти. У нашому прикладі Python повертає об'єкт типу кортеж (tuple) — тип, який ми бачили в Розділі «Словники та кортежі» (це своєрідний список з іншими властивостями). Наша функція могла б так само повернути список:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat_kub2</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> [x**<span class="hljs-number">2</span>, x**<span class="hljs-number">3</span>]
+
+<span class="hljs-built_in">print</span>(kvadrat_kub2(<span class="hljs-number">3</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">9, 27</span>]
+</code></pre>
+<p>Повернення кортежу або списку з двох (або більше) елементів дуже зручно у поєднанні з множинним присвоюванням, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat_kub2</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">return</span> [x**<span class="hljs-number">2</span>, x**<span class="hljs-number">3</span>]
+
+z1, z2 = kvadrat_kub2(<span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(z1)
+<span class="hljs-built_in">print</span>(z2)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">9
+27
+</code></pre>
+<p>Це дозволяє отримати кілька значень, повернутих функцією, і одразу призначити їх різним змінним. Той самий принцип чудово працює завдяки кортежам:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_min_max</span>(<span class="hljs-params">numbers</span>):
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">min</span>(numbers), <span class="hljs-built_in">max</span>(numbers)  <span class="hljs-comment"># Повертає кортеж із двох чисел</span>
+
+<span class="hljs-comment"># Миттєве розпакування результату в дві змінні:</span>
+lowest, highest = get_min_max([<span class="hljs-number">5</span>, <span class="hljs-number">12</span>, <span class="hljs-number">3</span>, <span class="hljs-number">89</span>, <span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Найменше:"</span>, lowest, <span class="hljs-string">"Найбільше:"</span>, highest)
+</code></pre>
+<p>Функція також може повертати булеве значення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">ie_parnym</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">if</span> x % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+
+<span class="hljs-comment"># Головна програма.</span>
+<span class="hljs-keyword">for</span> chyslo <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>):
+    <span class="hljs-keyword">if</span> ie_parnym(chyslo):
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{chyslo}</span> є парним"</span>)
+</code></pre>
+<p>Оскільки функція повертає булеве значення, ми можемо використовувати запис <code>if ie_parnym(chyslo)<span class="hl-char">:</span></code>, що еквівалентно <code>if ie_parnym(chyslo) == True<span class="hl-char">:</span></code>. Зазвичай функцію, яка повертає булеве значення, називають <code>ie_schos</code> (від англ. <em>is_something</em>), оскільки зрозуміло, що вона ставить питання, чи це правда, чи ні. Ми повернемося до цих понять у Розділі 13 «Більше про функції».</p>
+<h2 id="109-документування-функцій-docstrings">10.9 Документування функцій (docstrings)</h2>
+<p>Щоб інші програмісти (або ви самі через кілька місяців) могли швидко зрозуміти, навіщо потрібна створена функція, одразу під рядком <code>def</code> додають короткий опис у потрійних лапках <code>"""</code>. Це називається рядок документації, або <strong>docstring</strong>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_circle_area</span>(<span class="hljs-params">radius</span>):
+    <span class="hljs-string">"""Обчислює та повертає площу круга за його радіусом."""</span>
+    <span class="hljs-keyword">import</span> math
+    <span class="hljs-keyword">return</span> math.pi * (radius ** <span class="hljs-number">2</span>)
+</code></pre>
+<h2 id="1010-взаємодія-функції-та-списки-словники-файли">10.10 Взаємодія: функції та списки, словники, файли</h2>
+<p>Функції можуть без проблем приймати списки як параметри та обробляти їх:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">show_words</span>(<span class="hljs-params">words_list</span>):
+    <span class="hljs-string">"""Виводить кожен елемент списку з нового рядка з красивим маркером."""</span>
+    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> words_list:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"📍"</span>, word)
+
+my_items = [<span class="hljs-string">"Зошит"</span>, <span class="hljs-string">"Ручка"</span>, <span class="hljs-string">"Лінійка"</span>]
+show_words(my_items)
+</code></pre>
+<p>Функції чудово допомагають структурувати роботу зі словниками, ховаючи всередині логіку пошуку чи додавання елементів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">find_phone</span>(<span class="hljs-params">phone_book, contact_name</span>):
+    <span class="hljs-string">"""Шукає контакт у словнику телефонної книги."""</span>
+    <span class="hljs-keyword">return</span> phone_book.get(contact_name, <span class="hljs-string">"Контакт не знайдено"</span>)
+
+my_contacts = {<span class="hljs-string">"Марко"</span>: <span class="hljs-string">"+38093..."</span>, <span class="hljs-string">"Олена"</span>: <span class="hljs-string">"+38050..."</span>}
+<span class="hljs-built_in">print</span>(find_phone(my_contacts, <span class="hljs-string">"Олена"</span>))
+</code></pre>
+<p>Поєднання функцій та операцій з файлами — найкращий спосіб очистити головний код програми від технічних деталей читання/запису:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_scores</span>(<span class="hljs-params">scores_list, filename=<span class="hljs-string">"results.txt"</span></span>):
+    <span class="hljs-string">"""Записує список оцінок у текстовий файл."""</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename, <span class="hljs-string">"w"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> file:
+        <span class="hljs-keyword">for</span> score <span class="hljs-keyword">in</span> scores_list:
+            file.write(<span class="hljs-built_in">str</span>(score) + <span class="hljs-string">"\n"</span>)
+</code></pre>
+<h2 id="1011-рекурсія">10.11 Рекурсія</h2>
+<p><strong>Рекурсія</strong> — це особливий прийом у програмуванні, коли функція всередині свого тіла викликає сама себе.</p>
+<p>Уявіть, що ви стоїте між двома дзеркалами і бачите нескінченний коридор зі своїх відображень. Це і є рекурсія:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">countdown</span>(<span class="hljs-params">number</span>):
+    <span class="hljs-built_in">print</span>(number)
+    <span class="hljs-keyword">if</span> number &lt;= <span class="hljs-number">1</span>:  <span class="hljs-comment"># Умова зупинки, щоб програма не зависла назавжди!</span>
+        <span class="hljs-keyword">return</span>
+    countdown(number - <span class="hljs-number">1</span>)  <span class="hljs-comment"># Функція кличе саму себе з меншим числом</span>
+
+countdown(<span class="hljs-number">3</span>)
+<span class="hljs-comment"># Виведе:</span>
+<span class="hljs-comment"># 3</span>
+<span class="hljs-comment"># 2</span>
+<span class="hljs-comment"># 1</span>
+</code></pre>
+<div class="warn">
+Будь-яка рекурсивна функція обов'язково повинна мати умову завершення (базовий випадок). Якщо її забути, функція викликатиме себе нескінченно, поки комп'ютер не зупинить програму через помилку «переповнення рекурсії» (<code>RecursionError</code>).
+</div>
+<h2 id="1012-принцип-dry">10.12 Принцип DRY</h2>
+<p>Акронім <a href="https://www.earthdatascience.org/courses/intro-to-earth-data-science/write-efficient-python-code/intro-to-clean-code/dry-modular-code/">DRY</a> означає <em>Don't Repeat Yourself</em> («Не повторюйся»). Функції дозволяють дотримуватись цього принципу, уникаючи дублювання коду. Чим більше код дублюється в програмі, тим більше він стає джерелом помилок — особливо коли його доведеться змінювати.</p>
+<p>Розглянемо, наприклад, наступний код, який перетворює кілька температур із градусів Фаренгейта в градуси Цельсія:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">temp_u_fahrenheit = <span class="hljs-number">60</span>
+<span class="hljs-built_in">print</span>((temp_u_fahrenheit - <span class="hljs-number">32</span>) * (<span class="hljs-number">5</span> / <span class="hljs-number">8</span>))
+
+temp_u_fahrenheit = <span class="hljs-number">80</span>
+<span class="hljs-built_in">print</span>((temp_u_fahrenheit - <span class="hljs-number">32</span>) * (<span class="hljs-number">5</span> / <span class="hljs-number">8</span>))
+
+temp_u_fahrenheit = <span class="hljs-number">100</span>
+<span class="hljs-built_in">print</span>((temp_u_fahrenheit - <span class="hljs-number">32</span>) * (<span class="hljs-number">5</span> / <span class="hljs-number">8</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">17.5
+30.0
+42.5
+</code></pre>
+<p>На жаль, у формулі перетворення є помилка. Правильна формула: <code>temp_celsius = (temp_fahrenheit - 32) * (5 / 9)</code>. Потрібно повернутися до кожного рядка коду й виправити його. Це неефективно, особливо якщо той самий код використовується в різних місцях програми.</p>
+<p>Записавши формулу перетворення лише один раз у функції, ми застосовуємо принцип DRY:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">konvertuvaty_fahrenheit_v_celsius</span>(<span class="hljs-params">temperatura</span>):
+    <span class="hljs-keyword">return</span> (temperatura - <span class="hljs-number">32</span>) * (<span class="hljs-number">5</span> / <span class="hljs-number">9</span>)
+
+temp_u_fahrenheit = <span class="hljs-number">60</span>
+<span class="hljs-built_in">print</span>(konvertuvaty_fahrenheit_v_celsius(temp_u_fahrenheit))
+
+temp_u_fahrenheit = <span class="hljs-number">80</span>
+<span class="hljs-built_in">print</span>(konvertuvaty_fahrenheit_v_celsius(temp_u_fahrenheit))
+
+temp_u_fahrenheit = <span class="hljs-number">100</span>
+<span class="hljs-built_in">print</span>(konvertuvaty_fahrenheit_v_celsius(temp_u_fahrenheit))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">15.555555555555557
+26.666666666666668
+37.77777777777778
+</code></pre>
+<p>І якщо у формулі знайдеться помилка, достатньо буде виправити її лише один раз — у функції <code>konvertuvaty_fahrenheit_v_celsius()</code>.</p>
+<h2 id="1013-поділ-великої-програми-на-функції">10.13 Поділ великої програми на функції</h2>
+<p>До вивчення цієї теми наш основний файл програми міг містити 200 рядків суцільного тексту, де перемішувалися меню, читання файлу, математичні розрахунки та виведення на екран.</p>
+<p>Професійний підхід вимагає розділити цей моноліт на маленькі логічні цеглинки. Тоді наш головний код програми стає коротким, зрозумілим і читається як план дій:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Було (суцільний клубок коду без функцій) -&gt; Стало:</span>
+
+data = load_data_from_file(<span class="hljs-string">"input.txt"</span>)
+results = calculate_statistics(data)
+show_report_on_screen(results)
+save_report_to_file(results, <span class="hljs-string">"report.txt"</span>)
+</code></pre>
+<p>Кожне слово тут — це окрема функція, написана нами вище. Таку програму неймовірно легко тестувати та читати.</p>
+<h2 id="1014-типові-помилки-початківців">10.14 Типові помилки початківців</h2>
+<p><strong>1. Забули поставити круглі дужки при виклику.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">greet</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Привіт!"</span>)
+
+greet  <span class="hljs-comment"># Помилка! Без дужок функція не виконається, Python просто покаже, що такий інструмент існує.</span>
+</code></pre>
+<p>Правильно: <code>greet()</code>.</p>
+<p><strong>2. Забули написати <code>return</code>.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">double</span>(<span class="hljs-params">x</span>):
+    result = x * <span class="hljs-number">2</span>  <span class="hljs-comment"># Обчислили, але забули віддати!</span>
+
+my_num = double(<span class="hljs-number">5</span>)
+<span class="hljs-built_in">print</span>(my_num)  <span class="hljs-comment"># Виведе: None (нічого)</span>
+</code></pre>
+<p>Як виправити: завжди пишіть <code>return result</code> наприкінці обчислень.</p>
+<p><strong>3. Спроба використати локальну змінну ззовні.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">build</span>():
+    status = <span class="hljs-string">"Готово"</span>
+
+build()
+<span class="hljs-built_in">print</span>(status)  <span class="hljs-comment"># Помилка NameError! Змінна status померла разом із завершенням функції.</span>
+</code></pre>
+<p>[!exers]</p>
+<h2 id="1015-вправи">10.15 Вправи</h2>
+<h3 id="1-квадрат-та-факторіал">1. Квадрат та факторіал</h3>
+<p>Відтворіть цей приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">kvadrat</span>(<span class="hljs-params">x</span>):
+    y = x**<span class="hljs-number">2</span>
+    <span class="hljs-keyword">return</span> y
+
+<span class="hljs-comment"># Головна програма.</span>
+z = <span class="hljs-number">5</span>
+rezultat = kvadrat(z)
+<span class="hljs-built_in">print</span>(rezultat)
+</code></pre>
+<p>Потім проаналізуйте наступний код і спробуйте передбачити його виведення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">obchyslyty_faktorial</span>(<span class="hljs-params">n</span>):
+    faktorial = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, n + <span class="hljs-number">1</span>):
+        faktorial = faktorial * i
+    <span class="hljs-keyword">return</span> faktorial
+
+<span class="hljs-comment"># Головна програма.</span>
+nb = <span class="hljs-number">4</span>
+faktorial_nb = obchyslyty_faktorial(nb)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{nb}</span>! = <span class="hljs-subst">{faktorial_nb}</span>"</span>)
+nb2 = <span class="hljs-number">10</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{nb2}</span>! = <span class="hljs-subst">{obchyslyty_faktorial(nb2)}</span>"</span>)
+</code></pre>
+<p>Чи змогли ви правильно передбачити виведення?</p>
+<blockquote>
+<p>Зверніть увагу на використання f-рядків, які ми розглядали в Розділі «Виведення даних». Тут ми бачимо ще одну можливість f-рядків у виразі <code>f"{nb2}! = {obchyslyty_faktorial(nb2)}"</code>: можна викликати функцію прямо між фігурними дужками (тут <code>{obchyslyty_faktorial(nb2)}</code>)! Тому немає потреби створювати проміжну змінну для збереження результату функції.</p>
+</blockquote>
+<h3 id="2-степінь">2. Степінь</h3>
+<p>Створіть функцію <code>obchyslyty_stepin(x, y)</code>, яка повертає <code>x**y</code>, використовуючи оператор <code>**</code>. Нагадаємо:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">2</span>**<span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">2</span>**<span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">2</span>**<span class="hljs-number">4</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+8
+16
+</code></pre>
+<p>У головній програмі обчисліть і виведіть на екран <code>2**i</code> з <code>i</code>, що змінюється від 0 до 20 включно. Ми хочемо, щоб результат був представлений у такому форматі:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2^0 = 1
+2^1 = 2
+2^2 = 4
+[...]
+2^20 = 1048576
+</code></pre>
+<h3 id="3-піраміда">3. Піраміда</h3>
+<p>Повторіть вправу, яка малює піраміду. Cтворіть функцію <code>zgeneruvaty_piramidu()</code>, якій ви передаєте ціле число <code>N</code> і яка повертає піраміду з <code>N</code> рядків у вигляді рядка. Головна програма запитає користувача про бажану кількість рядків (використовуйте для цього функцію <code>input()</code>) і виведе піраміду на екран.</p>
+<h3 id="4-прості-числа">4. Прості числа</h3>
+<p>Створіть функцію <code>ie_prostym()</code>, яка приймає як аргумент додатне ціле число <code>n</code> (більше 2) і повертає булеве значення <code>True</code>, якщо <code>n</code> є простим, і <code>False</code>, якщо <code>n</code> не є простим. Визначте всі прості числа від 2 до 100. Ми хочемо отримати виведення, схоже на це:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-number">2</span> є простим
+<span class="hljs-number">3</span> є простим
+<span class="hljs-number">4</span> не є простим
+<span class="hljs-selector-attr">[...]</span>
+<span class="hljs-number">100</span> не є простим
+</code></pre>
+<h3 id="5-шифрування-зсувом-літер">5. Шифрування зсувом літер</h3>
+<p>Створіть функцію <code>zashyfruvaty_litery()</code>, яка приймає як аргумент список літер (наприклад <code>["a", "b", "c", "d", "e"]</code>) і повертає новий список, у якому кожна літера замінена на наступну літеру латинського алфавіту (після <code>"z"</code> знову йде <code>"a"</code>).</p>
+<p>У головній програмі, починаючи зі списку <code>literatury = ["a", "b", "c", "d", "e"]</code>, виведіть цей список та його зашифровану версію, отриману за допомогою вашої функції <code>zashyfruvaty_litery()</code>. Наприклад:</p>
+<pre><code data-highlighted="yes" class="hljs language-less">Оригінал: <span class="hljs-selector-attr">[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'e'</span>]</span>
+Зашифровано: <span class="hljs-selector-attr">[<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'e'</span>, <span class="hljs-string">'f'</span>]</span>
+</code></pre>
+<blockquote>
+<p>Позицію літери в алфавіті можна отримати за допомогою функції <code>ord()</code>, а перетворити код назад у літеру — за допомогою функції <code>chr()</code>.</p>
+</blockquote>
+<div class="project">
+<h2 id="1016-творча-майстерня-рефакторинг-телефонного-довідника">10.16 Творча майстерня: рефакторинг телефонного довідника</h2>
+<blockquote>
+<p><strong>Рефакторинг</strong> — перебудова і покращення структури вже написаного коду без зміни того, як сама програма працює для користувача.</p>
+</blockquote>
+<p>Раніше ми створювали «Телефонний довідник» за допомогою великого циклу та словника, тож перетворимо його на більш професійний застосунок — розділимо кожну дію користувача в окрему, незалежну функцію.
+</p></div>
+<div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Головна база даних контактів (глобальний словник)</span>
+phone_book = {<span class="hljs-string">"Марко"</span>: <span class="hljs-string">"+380931112233"</span>, <span class="hljs-string">"Олена"</span>: <span class="hljs-string">"+380504445566"</span>}
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">show_all_contacts</span>():
+    <span class="hljs-string">"""Виводить усі контакти на екран."""</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"\n--- Список контактів ---"</span>)
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> phone_book:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Довідник порожній."</span>)
+    <span class="hljs-keyword">for</span> name, phone <span class="hljs-keyword">in</span> phone_book.items():
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"👤 <span class="hljs-subst">{name}</span>: <span class="hljs-subst">{phone}</span>"</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">add_contact</span>():
+    <span class="hljs-string">"""Запитує дані та додає новий контакт."""</span>
+    name = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ім'я: "</span>).strip()
+    phone = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть номер телефону: "</span>).strip()
+    <span class="hljs-keyword">if</span> name <span class="hljs-keyword">and</span> phone:
+        phone_book[name] = phone
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"✅ Контакт <span class="hljs-subst">{name}</span> успішно додано!"</span>)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"❌ Помилка: ім'я або телефон не можуть бути порожніми."</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">find_contact</span>():
+    <span class="hljs-string">"""Шукає контакт за іменем."""</span>
+    name = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ім'я для пошуку: "</span>).strip()
+    phone = phone_book.get(name)
+    <span class="hljs-keyword">if</span> phone:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"🔍 Знайдено: <span class="hljs-subst">{name}</span> -&gt; <span class="hljs-subst">{phone}</span>"</span>)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"❌ Контакту з таким іменем не існує."</span>)
+
+<span class="hljs-comment"># Головний цикл програми (Інтерфейс користувача)</span>
+<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"\nМЕНЮ ДОВІДНИКА:"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"1. Показати всі контакти"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"2. Додати новий контакт"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"3. Знайти контакт за іменем"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"4. Вийти з програми"</span>)
+
+    choice = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Оберіть дію (1-4): "</span>).strip()
+
+    <span class="hljs-keyword">if</span> choice == <span class="hljs-string">"1"</span>:
+        show_all_contacts()
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"2"</span>:
+        add_contact()
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"3"</span>:
+        find_contact()
+    <span class="hljs-keyword">elif</span> choice == <span class="hljs-string">"4"</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Дякуємо за використання довідника! До побачення."</span>)
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Некоректний вибір. Спробуйте ще раз."</span>)
+</code></pre>
+<h3 id="чому-цей-код-став-набагато-кращим">Чому цей код став набагато кращим?</h3>
+<ul>
+<li><strong>Легко читати.</strong> Дивлячись на блок <code>while True</code>, ми одразу розуміємо логіку програми. Технічні деталі (як саме працює <code>input</code> чи <code>print</code>) сховалися у функціях вище.</li>
+<li><strong>Легко розширювати.</strong> Якщо завтра вчитель попросить вас додати нову дію — наприклад, видалення контакту — вам не доведеться переписувати весь великий цикл. Ви просто допишете окрему маленьку функцію <code>delete_contact()</code> та додасте один рядок <code>elif choice == "5"<span class="hl-char">:</span> delete_contact()</code> у меню.
+</li></ul></div></div><ul><li></li>
+</ul>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li>DRY (Don't Repeat Yourself) — принцип модульного коду: <a href="https://www.earthdatascience.org/courses/intro-to-earth-data-science/write-efficient-python-code/intro-to-clean-code/dry-modular-code/">https://www.earthdatascience.org/courses/intro-to-earth-data-science/write-efficient-python-code/intro-to-clean-code/dry-modular-code/</a></li>
+<li>Офіційна документація Python — модуль <code>random</code>: <a href="https://docs.python.org/3/library/random.html">https://docs.python.org/3/library/random.html</a></li>
+<li>Офіційна документація Python — модуль <code>math</code>: <a href="https://docs.python.org/3/library/math.html">https://docs.python.org/3/library/math.html</a>
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

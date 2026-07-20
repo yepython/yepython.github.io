@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch15</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-15-візуалізація-даних-за-допомогою-matplotlib">РОЗДІЛ 15. Візуалізація даних за допомогою Matplotlib</h1>
+<p>Python може обробляти великі масиви числових даних,  проте таблиці, що містять довгі стовпчики чисел важко сприймати візуально. Людський мозок набагато швидше знаходить закономірності, якщо представити інформацію у вигляді малюнка-діаграми.</p>
+<p><strong>Візуалізація даних</strong> — це мистецтво перетворення чисел на графіки, діаграми та карти. Вона допомагає миттєво побачити, як змінюється температура протягом місяця, який предмет у школі є найпопулярнішим, чи коли курс валюти досяг свого піка. Головним інструментом для створення графіків у Python є бібліотека <strong>Matplotlib</strong>— найвідоміша бібліотека Python для побудови двовимірних графіків та діаграм, яка є фундаментом аналізу даних (<em>Data Science</em>) та машинного навчання.</p>
+<h2 id="151-навіщо-потрібна-matplotlib">15.1 Навіщо потрібна Matplotlib?</h2>
+<p><strong>Matplotlib</strong> — це найпопулярніша бібліотека для візуалізації даних у мові програмування Python. Якщо говорити просто, вона перетворює набори даних  — числові дані, масиви <code>NumPy</code> та таблиці <code>Pandas</code> на зрозумілі графіки, діаграми та креслення.</p>
+<p>Ця бібліотека є фундаментальною для аналізу даних (Data Science), машинного навчання, а також для створення ілюстрацій до наукових і навчальних робіт.</p>
+<p>Matplotlib дозволяє будувати різні типи графіків. Ось основні сфери її застосування:</p>
+<ul>
+<li><strong>побудова графіків математичних функцій</strong> —  візуалізація парабол, синусоїд, графіків розподілу тощо (що надзвичайно корисно на уроках математики та інформатики);</li>
+<li><strong>аналіз тенденцій</strong> —  створення лінійних графіків для демонстрації того, як змінюються дані з часом (наприклад, температура, курси валют або статистика відвідуваності);</li>
+<li><strong>порівняння категорій</strong>  — створення стовпчастих (<code>bar charts</code>) та кругових (<code>pie charts</code>) діаграм для наочного порівняння окремих елементів або часток від цілого;</li>
+<li><strong>дослідження залежностей</strong>  — побудова діаграм розсіювання (<code>scatter plots</code>), які допомагають побачити, чи пов'язані два параметри між собою (наприклад, зріст і вага учнів);</li>
+<li><strong>статистичний аналіз</strong>  — візуалізація розподілу даних за допомогою гістограм.
+Такі візуалізації широко використовуються у бізнес-аналітиці, статистиці, опрацюванні результатів наукових експериментів, освіті.</li>
+</ul>
+<h2 id="152-встановлення-та-підключення-бібліотеки">15.2 Встановлення та підключення бібліотеки</h2>
+<p>Matplotlib — це стороння бібліотека, тому перед першим використанням її потрібно встановити через командний рядок або термінал вашого середовища розробки:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">pip install matplotlib
+</code></pre>
+<blockquote>
+<p> У Linux та macOS команда встановлення бібліотеки має вигляд <code>pip3 install matplotlib</code>. Також для комфортної математичної обробки часто встановлюють бібліотеку NumPy, яка чудово інтегрована з Matplotlib.</p>
+</blockquote>
+<p>Для побудови графіків нам потрібен спеціальний підмодуль усередині бібліотеки, який називається <code>pyplot</code>. Його за загальноприйнятим стандартом підключають під коротким псевдонімом <code>plt</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Тепер усі команди для малювання ми будемо викликати через коротке "plt."</span>
+</code></pre>
+<h2 id="153-ваш-перший-графік">15.3 Ваш перший графік</h2>
+<p>Давайте не будемо заглиблюватися у складну будову бібліотеки, а одразу перетворимо набір чисел на малюнок. Створимо ламану лінію за чотирма точками:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Координати точок на горизонтальній осі (вісь X).</span>
+x = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
+<span class="hljs-comment"># Координати точок на вертикальній осі (вісь Y).</span>
+y = [<span class="hljs-number">2</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>]
+
+<span class="hljs-comment"># Команда plt.plot() з'єднує точки (x, y) послідовними лініями.</span>
+plt.plot(x, y)
+<span class="hljs-comment"># Команда plt.show() відчиняє вікно з готовим графіком.</span>
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/567e8d5c805852cc70c925d450267b72.png" alt="567e8d5c805852cc70c925d450267b72.png"></p>
+<p><strong>📊 Аналізуємо графік.</strong> Подивіться на результат. Що ми бачимо? На проміжку від 1 до 2 відбувається різке зростання, потім у точці 3 значення падає, а далі знову стрімко зростає до максимуму в точці 4.</p>
+<blockquote>
+<p>Якщо передати функції <code>plt.plot()</code> лише один список, наприклад <code>plt.plot(y)</code>, бібліотека автоматично згенерує координати <code>x</code> як послідовність індексів <code>[0, 1, 2, 3...]</code>.</p>
+</blockquote>
+<h2 id="154-побудова-графіка-за-масивами-numpy">15.4 Побудова графіка за масивами NumPy</h2>
+<p>Matplotlib та NumPy створені для спільної роботи. Передавати масиви NumPy у графіки не менш зручно, ніж звичайні списки, а якщо точок дуже багато — набагато швидше:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Генеруємо масив чисел від 0 до 9.</span>
+x = np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)
+<span class="hljs-comment"># Обчислюємо квадрат кожного числа (математична функція y = x^2).</span>
+y = x ** <span class="hljs-number">2</span>
+
+plt.plot(x, y)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/6c7ae5226f50a555575473704d4f9781.png" alt="6c7ae5226f50a555575473704d4f9781.png"></p>
+<h2 id="155-оформлення-графіка">15.5 Оформлення графіка</h2>
+<p>Графік без підписів — це просто лінія, яка ні про що не розповідає. Будь-яка серйозна візуалізація повинна мати назву, підписані осі та, за потреби, сітку для точного визначення значень. Для цього використовують такі команди:</p>
+<ul>
+<li><code>plt.title("Текст")</code> — додає головний заголовок угорі рисунка;</li>
+<li><code>plt.xlabel("Назва")</code> та <code>plt.ylabel("Назва")</code> — підписують горизонтальну (X) та вертикальну (Y) осі;</li>
+<li><code>plt.grid(True)</code> — вмикає тонку координатну сітку на задньому плані;</li>
+<li><code>plt.xlim(мінімум, максимум)</code> та <code>plt.ylim(мінімум, максимум)</code> — вручну фіксують межі відображення осей, якщо потрібно наблизити чи, навпаки, віддалити якусь зону графіка.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes">plt.plot(x, y)
+plt.title(<span class="hljs-string">"Динаміка росту показників"</span>, fontsize=<span class="hljs-number">14</span>)
+plt.xlabel(<span class="hljs-string">"Час (у секундах)"</span>)
+plt.ylabel(<span class="hljs-string">"Швидкість (м/с)"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+x = np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)
+y = x ** <span class="hljs-number">2</span>
+
+plt.plot(x, y)
+plt.title(<span class="hljs-string">"Динаміка росту показників"</span>, fontsize=<span class="hljs-number">14</span>)
+plt.xlabel(<span class="hljs-string">"Час (у секундах)"</span>)
+plt.ylabel(<span class="hljs-string">"Швидкість (м/с)"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/77b9d27b8f8c24ee6d932299c8737f7b.png" alt="77b9d27b8f8c24ee6d932299c8737f7b.png"></p>
+<h2 id="156-колір-стиль-лінії-та-маркери">15.6 Колір, стиль лінії та маркери</h2>
+<p>Ми можемо повністю змінювати дизайн нашої лінії за допомогою додаткових іменованих параметрів усередині команди <code>plt.plot()</code>:</p>
+<ul>
+<li><code>color</code> (або <code>c</code>) — колір лінії: назва (<code>"red"</code>, <code>"green"</code>, <code>"blue"</code>) або шістнадцятковий код (<code>"<span class="hl-char">#</span>FF5733"</code>)[^2];</li>
+<li><code>linestyle</code> (або <code>ls</code>) — стиль лінії: <code>"-"</code> — суцільна (за замовчуванням), <code>"--"</code> — штрихова, <code>"<span class="hl-char">:</span>"</code> — пунктирна, <code>"-."</code> — штрих-пунктирна;</li>
+<li><code>linewidth</code> (або <code>lw</code>) — товщина лінії (наприклад, <code>2.5</code>);</li>
+<li><code>marker</code> — форма маркера в кожній точці: <code>"o"</code> — кружечок, <code>"s"</code> — квадрат, <code>"^"</code> — трикутник, <code>"x"</code> — хрестик;</li>
+<li><code>markersize</code> (або <code>ms</code>) — розмір маркера.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Малюємо товсту червону пунктирну лінію з круглими маркерами на точках.</span>
+plt.plot(x, y, color=<span class="hljs-string">"red"</span>, linestyle=<span class="hljs-string">"--"</span>, linewidth=<span class="hljs-number">3</span>, marker=<span class="hljs-string">"o"</span>, markersize=<span class="hljs-number">8</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/107b733189ba59a687bc9b283c1b8779.png" alt="107b733189ba59a687bc9b283c1b8779.png"></p>
+<h2 id="157-кілька-графіків-на-одному-малюнку-та-легенда">15.7 Кілька графіків на одному малюнку та легенда</h2>
+<p>Якщо нам потрібно порівняти дві величини (наприклад, температуру в Києві та Одесі), можна викликати команду <code>plt.plot()</code> кілька разів поспіль перед тим, як написати <code>plt.show()</code>: Matplotlib автоматично накладе нові лінії на те саме полотно. Щоб глядач розумів, яка лінія що означає, використовують параметр <code>label</code> та команду <code>plt.legend()</code> (легенда графіка). Для того щоб лінії не зливалися, обирайте контрастні кольори та різні стилі — наприклад, суцільну лінію для фактичних даних і штрихову для прогнозованих.</p>
+<pre><code class="language-python hljs" data-highlighted="yes">dimport numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+days = np.arange(<span class="hljs-number">1</span>, <span class="hljs-number">6</span>)
+kyiv_temp = [<span class="hljs-number">15</span>, <span class="hljs-number">17</span>, <span class="hljs-number">16</span>, <span class="hljs-number">19</span>, <span class="hljs-number">20</span>]
+odesa_temp = [<span class="hljs-number">19</span>, <span class="hljs-number">20</span>, <span class="hljs-number">22</span>, <span class="hljs-number">21</span>, <span class="hljs-number">23</span>]
+
+plt.plot(days, kyiv_temp, color=<span class="hljs-string">"blue"</span>, marker=<span class="hljs-string">"o"</span>, label=<span class="hljs-string">"Київ"</span>)
+plt.plot(days, odesa_temp, color=<span class="hljs-string">"orange"</span>, marker=<span class="hljs-string">"s"</span>, label=<span class="hljs-string">"Одеса"</span>)
+
+plt.title(<span class="hljs-string">"Порівняння температур"</span>)
+plt.xlabel(<span class="hljs-string">"День місяця"</span>)
+plt.ylabel(<span class="hljs-string">"Температура (°C)"</span>)
+plt.legend()  <span class="hljs-comment"># пояснення з назвами міст.</span>
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/46ec19eefc14d1a9dc1c8ecede261f2c.png" alt="46ec19eefc14d1a9dc1c8ecede261f2c.png"></p>
+<p><strong>📊 Аналізуємо графік.</strong> Яка тенденція спостерігається? В Одесі протягом усіх днів стабільно тепліше, ніж у Києві. Найменша різниця температур між містами була у 4-й день.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Створіть графік успішності учня з інформатики за 4 тижні (наприклад, бали <code>[9, 10, 11, 12]</code>). Зробіть лінію зеленою, додайте квадратні маркери на точках, підпишіть осі та ввімкніть сітку.
+</p></div>
+<h2 id="158-стовпчаста-діаграма-pltbar">15.8 Стовпчаста діаграма (<code>plt.bar</code>)</h2>
+<p>Коли дані мають категоріальну структуру (назви товарів, класи, роки) і потрібно порівняти їхні абсолютні значення, замість лінійного графіка використовують стовпчасту діаграму — вона ідеально підходить для порівняння окремих категорій між собою. Будується функцією <code>plt.bar(x, height, width=0.8, color=None)</code>, де <code>x</code> — категорії, <code>height</code> — висота стовпчиків, а <code>width</code> — їхня товщина (значення від 0 до 1).</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+classes = [<span class="hljs-string">"5-А"</span>, <span class="hljs-string">"5-Б"</span>, <span class="hljs-string">"6-А"</span>, <span class="hljs-string">"6-Б"</span>]
+students_count = [<span class="hljs-number">25</span>, <span class="hljs-number">22</span>, <span class="hljs-number">28</span>, <span class="hljs-number">24</span>]
+
+plt.bar(classes, students_count, color=<span class="hljs-string">"skyblue"</span>)
+plt.title(<span class="hljs-string">"Кількість учнів у класах"</span>)
+plt.ylabel(<span class="hljs-string">"Учні"</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/1786df44e8696922c4568586f3a7af7a.png" alt="1786df44e8696922c4568586f3a7af7a.png"></p>
+<blockquote>
+<p>Якщо текстові назви категорій занадто довгі (наприклад, повні ПІБ або довгі назви предметів), вертикальні підписи накладатимуться один на одного. У такому випадку скористайтеся горизонтальною лінійчатою діаграмою — командою <code>plt.barh(y, width)</code>. Тут <code>y</code> відповідає за категорії по вертикалі, а <code>width</code> — за довжину стовпчика по горизонталі.</p>
+</blockquote>
+<h2 id="159-кругова-діаграма-pltpie">15.9 Кругова діаграма (<code>plt.pie</code>)</h2>
+<p>Кругова діаграма використовується для демонстрації часток (відсотків) від одного цілого — наприклад, структура сімейного бюджету або розподіл вільного часу протягом доби. Будується функцією <code>plt.pie(x, labels=None, autopct=None, startangle=0)</code>:</p>
+<ul>
+<li><code>x</code> — список числових значень (часток). Matplotlib самостійно підсумує їх та обчислить пропорційні сектори кола;</li>
+<li><code>labels</code> — текстові підписи для кожного сектора;</li>
+<li><code>autopct</code> — формат виведення відсотків прямо всередині секторів (наприклад, <code>"%1.1f%%"</code> виведе число з одним знаком після коми та знаком відсотка);</li>
+<li><code>startangle</code> — кут початку першого сектора у градусах (<code>90</code> розташовує перший сектор строго зверху, «з 12-ї години»);</li>
+<li><code>explode</code> — список відступів, який дозволяє «висунути» обраний сектор із кола для акцентування уваги.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+activities = [<span class="hljs-string">"Сон"</span>, <span class="hljs-string">"Навчання"</span>, <span class="hljs-string">"Відпочинок"</span>, <span class="hljs-string">"Спорт"</span>]
+hours = [<span class="hljs-number">8</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">3</span>]
+
+<span class="hljs-comment"># Параметр autopct='%1.1f%%' автоматично рахує та виводить відсотки на екрані.</span>
+plt.pie(hours, labels=activities, autopct=<span class="hljs-string">'%1.1f%%'</span>,
+        colors=[<span class="hljs-string">"gray"</span>, <span class="hljs-string">"blue"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"yellow"</span>])
+plt.title(<span class="hljs-string">"Розподіл часу за добу"</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/6da6857b943d304316629932eb51c389.png" alt="6da6857b943d304316629932eb51c389.png"></p>
+<h2 id="1510-точкова-діаграма-pltscatter">15.10 Точкова діаграма (<code>plt.scatter</code>)</h2>
+<p>Точкова діаграма (діаграма розсіювання) потрібна для дослідження взаємозв'язку між двома величинами. На відміну від <code>plt.plot()</code>, вона не з'єднує точки лініями, а просто розсипає їх по площині — це допомагає перевірити, чи впливає один показник на інший. Будується функцією <code>plt.scatter(x, y, s=None, c=None, marker=None)</code>, де <code>s</code> (<em>size</em>) задає розмір маркера, а <code>c</code> (<em>color</em>) — його колір.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Досліджуємо: чи впливає час підготовки на оцінку за контрольну?</span>
+study_hours = [<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">6</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>]
+exam_grades = [<span class="hljs-number">6</span>, <span class="hljs-number">11</span>, <span class="hljs-number">9</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">12</span>]
+
+plt.scatter(study_hours, exam_grades, color=<span class="hljs-string">"purple"</span>, s=<span class="hljs-number">100</span>, edgecolors=<span class="hljs-string">"black"</span>)
+plt.title(<span class="hljs-string">"Залежність оцінки від часу навчання"</span>)
+plt.xlabel(<span class="hljs-string">"Час підготовки (години)"</span>)
+plt.ylabel(<span class="hljs-string">"Оцінка (бали)"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/2b577a02879dd5f62f2bb0b6cb960b3c.png" alt="2b577a02879dd5f62f2bb0b6cb960b3c.png"></p>
+<p><strong>📊 Аналізуємо графік.</strong> Чи є тут аномальні значення? Ми бачимо чітку тенденцію: що більше годин учень вчиться, то вищу оцінку отримує. Усі точки вишикувалися по діагоналі вгору — це ознака сильного взаємозв'язку (<em>кореляції</em>) між двома величинами.</p>
+<h2 id="1511-гістограма-plthist">15.11 Гістограма (<code>plt.hist</code>)</h2>
+<blockquote>
+<p>Гістограма ззовні схожа на стовпчасту діаграму, але має зовсім інше призначення, і початківці їх часто плутають! <code>plt.bar()</code> відображає вже готові значення для окремих (дискретних) категорій. А <code>plt.hist()</code> приймає один великий масив несортованих числових даних і самостійно групує їх в інтервали («кошики», або <em>bins</em>), підраховуючи, скільки чисел потрапило в кожен інтервал. Гістограма показує розподіл безперервної величини — наприклад, скільки людей у місті мають зріст від 160 до 170 см, скільки — від 170 до 180 см тощо.</p>
+</blockquote>
+<p>Синтаксис: <code>plt.hist(x, bins=None, color=None, edgecolor=None)</code>, де <code>bins</code> — ціле число, що вказує, на скільки однакових інтервалів розбити весь діапазон даних (за замовчуванням <code>bins=10</code>), а <code>edgecolor</code> — колір меж стовпчиків, який допомагає візуально відокремити інтервали один від одного.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> numpy <span class="hljs-keyword">import</span> random
+
+<span class="hljs-comment"># Масив зі 100 випадкових оцінок великої школи.</span>
+all_grades = np.random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">13</span>, size=<span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Будуємо гістограму. Параметр bins вказує кількість стовпчиків-інтервалів.</span>
+plt.hist(all_grades, bins=<span class="hljs-number">12</span>, color=<span class="hljs-string">"green"</span>, edgecolor=<span class="hljs-string">"black"</span>)
+plt.title(<span class="hljs-string">"Розподіл оцінок у школі"</span>)
+plt.xlabel(<span class="hljs-string">"Бали"</span>)
+plt.ylabel(<span class="hljs-string">"Кількість оцінок цього рівня"</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/700aa302db4eba5878e65f771bd5998a.png" alt="700aa302db4eba5878e65f771bd5998a.png"></p>
+<h2 id="1512-побудова-графіків-математичних-функцій">15.12 Побудова графіків математичних функцій</h2>
+<p>Щоб побудувати графік математичної функції (наприклад, параболи чи синусоїди), потрібна велика кількість точок з маленьким кроком, інакше замість гладкої кривої ми отримаємо некрасиву ламану лінію. Тут нам знову знадобиться NumPy, а саме команда <code>np.linspace()</code> (Розділ 14.6), яка генерує потрібну кількість рівновіддалених точок. Оскільки масиви NumPy обчислюються векторизовано, формула на кшталт <code>y = x ** 2</code> миттєво порахує координату <code>y</code> для кожної точки одразу, без циклу <code>for</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Генеруємо значення x від -2π до +2π.</span>
+x = np.linspace(-<span class="hljs-number">2</span> * np.pi, <span class="hljs-number">2</span> * np.pi, <span class="hljs-number">200</span>)
+y_sin = np.sin(x)
+y_cos = np.cos(x)
+
+plt.plot(x, y_sin, color=<span class="hljs-string">"blue"</span>, label=<span class="hljs-string">"y = sin(x)"</span>)
+plt.plot(x, y_cos, color=<span class="hljs-string">"green"</span>, linestyle=<span class="hljs-string">"--"</span>, label=<span class="hljs-string">"y = cos(x)"</span>)
+
+plt.title(<span class="hljs-string">"Тригонометричні функції"</span>)
+plt.xlabel(<span class="hljs-string">"Аргумент x (радіани)"</span>)
+plt.ylabel(<span class="hljs-string">"Значення функції"</span>)
+plt.axhline(<span class="hljs-number">0</span>, color=<span class="hljs-string">"black"</span>, linewidth=<span class="hljs-number">0.8</span>)  <span class="hljs-comment"># Лінія нуля по горизонталі.</span>
+plt.axvline(<span class="hljs-number">0</span>, color=<span class="hljs-string">"black"</span>, linewidth=<span class="hljs-number">0.8</span>)  <span class="hljs-comment"># Лінія нуля по вертикалі.</span>
+plt.grid(<span class="hljs-literal">True</span>, linestyle=<span class="hljs-string">":"</span>)
+plt.legend()
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/d0d399f8666229a0c0308b046935afb1.png" alt="d0d399f8666229a0c0308b046935afb1.png"></p>
+<h2 id="1513-додаткові-інструменти-оформлення">15.13 Додаткові інструменти оформлення</h2>
+<p>Ще дві команди допомагають зробити графік виразнішим:</p>
+<ul>
+<li><code>plt.fill_between(x, y)</code> — зафарбовує всю область між лінією графіка та віссю X. Це додає малюнку сучасного «об'ємного» вигляду;</li>
+<li>параметр <code>alpha</code> (від 0 до 1), який приймають майже всі функції побудови графіків, — задає прозорість заливки чи лінії.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Номери контрольних робіт</span>
+x = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>]
+
+<span class="hljs-comment"># Оцінки (у відсотках)</span>
+y = [<span class="hljs-number">62</span>, <span class="hljs-number">75</span>, <span class="hljs-number">68</span>, <span class="hljs-number">80</span>, <span class="hljs-number">91</span>, <span class="hljs-number">87</span>, <span class="hljs-number">95</span>, <span class="hljs-number">89</span>, <span class="hljs-number">93</span>, <span class="hljs-number">97</span>]
+
+<span class="hljs-comment"># Побудова графіка</span>
+plt.plot(x, y, color=<span class="hljs-string">"blue"</span>)
+
+<span class="hljs-comment"># Зафарбування області під графіком</span>
+plt.fill_between(x, y, color=<span class="hljs-string">"lightblue"</span>, alpha=<span class="hljs-number">0.5</span>)
+
+<span class="hljs-comment"># Межі осі Y</span>
+plt.ylim(<span class="hljs-number">0</span>, <span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Додавання заголовка та підписів осей</span>
+plt.title(<span class="hljs-string">"Успішність учня"</span>)
+plt.xlabel(<span class="hljs-string">"Контрольна робота"</span>)
+plt.ylabel(<span class="hljs-string">"Результат (%)"</span>)
+
+<span class="hljs-comment"># Сітка</span>
+plt.grid(<span class="hljs-literal">True</span>)
+
+<span class="hljs-comment"># Відображення графіка</span>
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/88aa4d4e547bad4d91d474596d208bb1.png" alt="88aa4d4e547bad4d91d474596d208bb1.png"></p>
+<h2 id="1514-візуалізація-реальних-даних">15.14 Візуалізація реальних даних</h2>
+<p>У реальному житті аналітики не вигадують масиви з голови, а завантажують їх із зовнішніх джерел: баз даних, файлів чи інтернет-сервісів. Найпростіший випадок — це коли дані вже лежать у звичайних списках Python:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+years = [<span class="hljs-number">2020</span>, <span class="hljs-number">2021</span>, <span class="hljs-number">2022</span>, <span class="hljs-number">2023</span>, <span class="hljs-number">2024</span>, <span class="hljs-number">2025</span>, <span class="hljs-number">2026</span>]
+population = [<span class="hljs-number">50</span>, <span class="hljs-number">52</span>, <span class="hljs-number">55</span>, <span class="hljs-number">54</span>, <span class="hljs-number">58</span>, <span class="hljs-number">61</span>, <span class="hljs-number">65</span>]  <span class="hljs-comment"># Населення умовного міста, тис. осіб.</span>
+
+plt.plot(years, population, marker=<span class="hljs-string">"o"</span>, color=<span class="hljs-string">"darkgreen"</span>, linewidth=<span class="hljs-number">2</span>)
+plt.title(<span class="hljs-string">"Динаміка зростання чисельності населення міста"</span>)
+plt.xlabel(<span class="hljs-string">"Рік"</span>)
+plt.ylabel(<span class="hljs-string">"Населення (тис. чол.)"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/bfee9acb4319d94f8f39d8a26ab0d475.png" alt="bfee9acb4319d94f8f39d8a26ab0d475.png"></p>
+<p>Якщо ж дані зберігаються у текстовому CSV-файлі (значення, розділені комами), їх можна прочитати за допомогою вбудованого модуля <code>csv</code>: відкрити файл, пройти циклом по його рядках і розкласти потрібні стовпчики у звичайні списки, не забуваючи конвертувати текстові числа у <code>float</code> чи <code>int</code>.
+Для виконання наступної вправи вам знадобиться файл <code>weather_stats.csv</code> , який ви можете створити у будь-якому текстовому редакторі, скопіювавши подані нижче дані:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Experiment,Measurement
+1,18.5
+2,19.1
+3,20.0
+4,19.8
+5,21.3
+6,22.0
+7,21.6
+8,23.4
+9,24.1
+10,23.8
+11,25.0
+12,25.7
+13,26.1
+14,25.9
+15,27.3
+16,28.0
+17,27.8
+18,29.1
+19,29.7
+20,30.2
+</code></pre>
+<blockquote>
+<p><strong>CSV (Comma-Separated Values)</strong> — простий текстовий формат для зберігання табличних даних. Кожен рядок файлу відповідає одному рядку таблиці, а значення в рядку розділяються спеціальним символом (найчастіше комою).</p>
+</blockquote>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> csv
+
+experiments = []
+results = []
+
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"weather_stats.csv"</span>, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> file:
+    reader = csv.reader(file)
+    header = <span class="hljs-built_in">next</span>(reader)  <span class="hljs-comment"># Пропускаємо перший рядок-заголовок.</span>
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> reader:
+        experiments.append(<span class="hljs-built_in">int</span>(row[<span class="hljs-number">0</span>]))    <span class="hljs-comment"># Перша колонка — номер досліду.</span>
+        results.append(<span class="hljs-built_in">float</span>(row[<span class="hljs-number">1</span>]))      <span class="hljs-comment"># Друга колонка — показник.</span>
+
+<span class="hljs-comment"># Будуємо графік за реальними даними з файлу.</span>
+plt.plot(experiments, results, color=<span class="hljs-string">"navy"</span>, marker=<span class="hljs-string">"s"</span>, linestyle=<span class="hljs-string">"-."</span>)
+plt.title(<span class="hljs-string">"Візуалізація результатів лабораторного експерименту"</span>)
+plt.xlabel(<span class="hljs-string">"Номер досліду"</span>)
+plt.ylabel(<span class="hljs-string">"Виміряний показник"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/7cae45a7fc301c0db1aaea424efa5fa7.png" alt="7cae45a7fc301c0db1aaea424efa5fa7.png"></p>
+<blockquote>
+<p>Якщо ж числові дані у файлі не містять текстових заголовків і розділені пробілами чи комами, часто зручніше скористатися вже знайомою нам функцією <code>np.loadtxt()</code> (Розділ 14.16), яка одразу поверне готовий масив NumPy.</p>
+</blockquote>
+<h2 id="1515-збереження-графіків-у-файл-pltsavefig">15.15 Збереження графіків у файл (<code>plt.savefig</code>)</h2>
+<p>Побудований графік можна автоматично зберегти на диск як картинку — для звіту чи презентації.</p>
+<blockquote>
+<p>Вказівку <code>plt.savefig()</code> потрібно викликати обов'язково <strong>до</strong> <code>plt.show()</code>, інакше вікно очиститься і ви збережете порожнє біле полотно.</p>
+</blockquote>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> csv
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+experiments = []
+results = []
+
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"weather_stats.csv"</span>, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> file:
+    reader = csv.reader(file)
+    header = <span class="hljs-built_in">next</span>(reader)  <span class="hljs-comment"># Пропускаємо перший рядок-заголовок.</span>
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> reader:
+        experiments.append(<span class="hljs-built_in">int</span>(row[<span class="hljs-number">0</span>]))    <span class="hljs-comment"># Перша колонка — номер досліду.</span>
+        results.append(<span class="hljs-built_in">float</span>(row[<span class="hljs-number">1</span>]))      <span class="hljs-comment"># Друга колонка — показник.</span>
+
+<span class="hljs-comment"># Будуємо графік за реальними даними з файлу.</span>
+plt.plot(experiments, results, color=<span class="hljs-string">"navy"</span>, marker=<span class="hljs-string">"s"</span>, linestyle=<span class="hljs-string">"-."</span>)
+plt.title(<span class="hljs-string">"Візуалізація результатів лабораторного експерименту"</span>)
+plt.xlabel(<span class="hljs-string">"Номер досліду"</span>)
+plt.ylabel(<span class="hljs-string">"Виміряний показник"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+
+<span class="hljs-comment"># Зберігаємо картинку в поточну папку проекту.</span>
+plt.savefig(<span class="hljs-string">"my_plot.png"</span>, dpi=<span class="hljs-number">100</span>)  <span class="hljs-comment"># dpi — чіткість/якість зображення.</span>
+plt.savefig(<span class="hljs-string">"report.pdf"</span>)            <span class="hljs-comment"># Можна зберегти навіть у векторному форматі PDF!</span>
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/6f5e6765b1d9cbf1121e1d25e84d19e1.png" alt="6f5e6765b1d9cbf1121e1d25e84d19e1.png"></p>
+<h2 id="1516-кілька-графіків-в-одному-вікні-pltsubplot">15.16 Кілька графіків в одному вікні (<code>plt.subplot</code>)</h2>
+<p>Якщо потрібно розмістити кілька різних діаграм поруч в одному великому вікні, використовують команду <code>plt.subplot(рядків, стовпців, номер_зони)</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+x = np.arange(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>)
+
+<span class="hljs-comment"># Створюємо сітку 1 рядок, 2 стовпці. Активуємо зону 1 (ліворуч).</span>
+plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>)
+plt.plot(x, x ** <span class="hljs-number">2</span>, color=<span class="hljs-string">"red"</span>)
+plt.title(<span class="hljs-string">"Квадрати"</span>)
+
+<span class="hljs-comment"># Активуємо зону 2 (праворуч).</span>
+plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>)
+plt.bar(x, x ** <span class="hljs-number">3</span>, color=<span class="hljs-string">"blue"</span>)
+plt.title(<span class="hljs-string">"Куби"</span>)
+
+plt.show()
+</code></pre>
+<p><img src="./media/ch15/770cfab70c2c2bd09a8996a6463b7093.png" alt="770cfab70c2c2bd09a8996a6463b7093.png"></p>
+<h2 id="1517-типові-помилки">15.17 Типові помилки</h2>
+<p><strong>1. Забути написати <code>plt.show()</code>.</strong></p>
+<p>Програма виконає всі розрахунки в пам'яті, побудує графік, але екран залишиться порожнім — ви просто не побачите результат, і жодного повідомлення про помилку при цьому не буде.</p>
+<p><strong>2. Різна кількість значень X та Y.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">plt.plot([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>])
+Traceback (most recent call last):
+  File <span class="hljs-string">"&lt;stdin&gt;"</span>, line <span class="hljs-number">1</span>, <span class="hljs-keyword">in</span> &lt;module&gt;
+ValueError: x <span class="hljs-keyword">and</span> y must have same first dimension, but have shapes (<span class="hljs-number">3</span>,) <span class="hljs-keyword">and</span> (<span class="hljs-number">4</span>,)
+</code></pre>
+<p>Як виправити: перевірте довжину обох списків за допомогою <code>len()</code>. Кількість точок на осях X і Y завжди повинна бути однаковою.</p>
+<p><strong>3. Викликати <code>plt.savefig()</code> після <code>plt.show()</code>.</strong></p>
+<p>Як ми вже зазначали в розділі 15.15, після закриття вікна <code>plt.show()</code> полотно очищується, тому збережений файл виявиться порожнім.</p>
+<p>Як виправити: завжди розташовуйте <code>plt.savefig()</code> до рядка з <code>plt.show()</code>.</p>
+<p><strong>4. Занадто багато ліній на одному малюнку.</strong></p>
+<p>Якщо накласти два десятки графіків одночасно, малюнок перетвориться на кольорову пляму, де нічого неможливо розібрати.</p>
+<p>Як виправити: розділіть графіки на кілька окремих вікон командою <code>plt.subplot()</code> (Розділ 15.16) замість того, щоб зображати все на одному полотні.</p>
+<h2 id="1518-найчастіше-використовувані-функції-та-типи-графіків">15.18 Найчастіше використовувані функції та типи графіків</h2>
+<table>
+<thead>
+<tr>
+<th>Категорія</th>
+<th>Функція</th>
+<th>Типи графіків / параметри</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Побудова графіків</strong></td>
+<td><code>plot(x, y, color=, linewidth=, marker=, linestyle=/ls=, markersize=, label=)</code></td>
+<td>лінійний (<code>line</code>)</td>
+<td>Лінійний графік, підтримує циклічну палітру кольорів за замовчуванням</td>
+</tr>
+<tr>
+<td></td>
+<td><code>bar(x, y, ...)</code></td>
+<td>стовпчиковий (<code>bar</code>)</td>
+<td>Вертикальна стовпчикова діаграма</td>
+</tr>
+<tr>
+<td></td>
+<td><code>barh(x, y, ...)</code></td>
+<td>лінійчата (<code>barh</code>)</td>
+<td>Горизонтальна лінійчата діаграма (<code>isHorizontal</code>)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>scatter(x, y, color=)</code></td>
+<td>точковий (<code>scatter</code>)</td>
+<td>Діаграма розсіювання (точки без лінії)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>pie(sizes, labels=)</code></td>
+<td>кругова (<code>pie</code>)</td>
+<td>Кругова діаграма з підписами часток</td>
+</tr>
+<tr>
+<td></td>
+<td><code>hist(data, bins=)</code></td>
+<td>гістограма</td>
+<td>Будує стовпчикову гістограму розподілу</td>
+</tr>
+<tr>
+<td></td>
+<td><code>fill_between(x, y1, y2=, alpha=)</code></td>
+<td>заповнена область</td>
+<td>Заливка області між двома кривими</td>
+</tr>
+<tr>
+<td></td>
+<td><code>axhline(y, color=, linewidth=, linestyle=)</code></td>
+<td>горизонтальна лінія</td>
+<td>Допоміжна лінія на всю ширину графіка</td>
+</tr>
+<tr>
+<td></td>
+<td><code>axvline(x, color=, linewidth=, linestyle=)</code></td>
+<td>вертикальна лінія</td>
+<td>Допоміжна лінія на всю висоту графіка</td>
+</tr>
+<tr>
+<td><strong>Оформлення</strong></td>
+<td><code>title(label, fontsize=, color=)</code></td>
+<td>—</td>
+<td>Заголовок графіка</td>
+</tr>
+<tr>
+<td></td>
+<td><code>xlabel(s)</code> / <code>ylabel(s)</code></td>
+<td>—</td>
+<td>Підписи осей</td>
+</tr>
+<tr>
+<td></td>
+<td><code>grid(visible, axis=)</code></td>
+<td>—</td>
+<td>Увімкнення/вимкнення сітки по осях X/Y</td>
+</tr>
+<tr>
+<td></td>
+<td><code>legend()</code></td>
+<td>—</td>
+<td>Примусове увімкнення легенди</td>
+</tr>
+<tr>
+<td></td>
+<td><code>xlim(min, max)</code> / <code>ylim(min, max)</code></td>
+<td>—</td>
+<td>Встановлення (і читання) меж осей</td>
+</tr>
+<tr>
+<td></td>
+<td><code>axis(...)</code></td>
+<td>—</td>
+<td>Приймає аргументи без помилки</td>
+</tr>
+<tr>
+<td><strong>Керування фігурою</strong></td>
+<td><code>show()</code></td>
+<td>—</td>
+<td>Відтворює графіки</td>
+</tr>
+<tr>
+<td></td>
+<td><code>clf()</code></td>
+<td>—</td>
+<td>Очищає поточну (ще не показану) фігуру</td>
+</tr>
+<tr>
+<td></td>
+<td><code>subplot(nrows, ncols, index)</code></td>
+<td>—</td>
+<td>Сітка підобластей</td>
+</tr>
+<tr>
+<td><strong>Експорт</strong></td>
+<td><code>savefig(fname, dpi=, format=, transparent=, facecolor=)</code></td>
+<td>—</td>
+<td>Збереження у PNG, JPEG або PDF</td>
+</tr>
+</tbody></table>
+<p><img src="./media/ch15/e36ac065aa8d2fd1431d70f38e5450a9.png" alt="e36ac065aa8d2fd1431d70f38e5450a9.png">
+</p><div class="exers">
+<h2 id="1519-вправи">15.19 Вправи</h2>
+<h3 id="1-моніторинг-завантаження-процесора">1. Моніторинг завантаження процесора</h3>
+<p>Побудуйте графік завантаження процесора (%) для шести моментів часу <code>["10<span class="hl-char">:</span>00", "10<span class="hl-char">:</span>05", "10<span class="hl-char">:</span>10", "10<span class="hl-char">:</span>15", "10<span class="hl-char">:</span>20", "10<span class="hl-char">:</span>25"]</code> зі значеннями <code>[45, 55, 88, 95, 30, 40]</code>. Додайте заголовок, підписи осей, обмежте вісь Y діапазоном від 0 до 100 за допомогою <code>plt.ylim()</code> та ввімкніть сітку.</p>
+<h3 id="2-порівняльний-аналіз-функцій">2. Порівняльний аналіз функцій</h3>
+<p>За допомогою <code>np.linspace()</code> створіть масив <code>x</code> від -5 до 5. Побудуйте на одному малюнку два графіки: лінійну функцію <code>y = 2x</code> (червона суцільна лінія) та квадратичну <code>y = x**2</code> (синя пунктирна лінія). Додайте легенду, заголовок та підписи осей.</p>
+<h3 id="3-рейтинг-спортивних-команд">3. Рейтинг спортивних команд</h3>
+<p>Дано список команд <code>["Соколи", "Беркути", "Тигри", "Леви"]</code> та їхні очки <code>[45, 58, 38, 62]</code>. Побудуйте горизонтальну стовпчасту діаграму рейтингу (<code>plt.barh()</code>) з підписаною віссю очок.</p>
+<h3 id="4-сімейний-бюджет">4. Сімейний бюджет</h3>
+<p>Створіть кругову діаграму витрат родини за місяць: комуналка — 3000 грн, продукти — 6000 грн, розваги — 1500 грн, транспорт — 1000 грн. Виведіть відсотки на екран, а сектор із найбільшою статтею витрат «висуньте» за допомогою параметра <code>explode</code>.</p>
+<h3 id="5-щоденник-погоди">5. Щоденник погоди</h3>
+<p>Побудуйте лінійний графік зміни температури за тиждень (оберіть 7 довільних значень). Додайте заголовок, сітку, підписи осей та збережіть результат у файл <code>weather.png</code>.
+</p></div>
+<div class="project">
+<h2 id="1520-творча-майстерня-повний-цикл-аналізу-та-візуалізації-даних">15.20 Творча майстерня: повний цикл аналізу та візуалізації даних</h2>
+<p>Об'єднаємо всі знання цього розділу (і попереднього, про NumPy) в одному великому проєкті. Пройдемо весь шлях справжнього дата-аналітика: зчитаємо дані з файлу, обробимо їх математично за допомогою NumPy, намалюємо графік у Matplotlib та збережемо результат на диск.</p>
+<p><strong>Задача.</strong> Є текстовий файл <code>sales.txt</code>, у якому записані суми продажів магазину за кожен місяць року (12 чисел, кожне з нового рядка). Потрібно:</p>
+<ol>
+<li>зчитати дані в масив NumPy;</li>
+<li>автоматично розрахувати середній показник продажів за рік;</li>
+<li>побудувати стовпчасту діаграму продажів, де лінією показати середній рівень (для порівняння);</li>
+<li>зберегти фінальний звіт у файл.</li>
+</ol>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># --- КРОК 1: емуляція створення файлу (для тестування проєкту) ---</span>
+demo_data = [<span class="hljs-number">120</span>, <span class="hljs-number">150</span>, <span class="hljs-number">90</span>, <span class="hljs-number">140</span>, <span class="hljs-number">210</span>, <span class="hljs-number">180</span>, <span class="hljs-number">250</span>, <span class="hljs-number">300</span>, <span class="hljs-number">220</span>, <span class="hljs-number">190</span>, <span class="hljs-number">260</span>, <span class="hljs-number">280</span>]
+np.savetxt(<span class="hljs-string">"sales.txt"</span>, demo_data)
+
+<span class="hljs-comment"># --- КРОК 2: зчитування та обробка за допомогою NumPy ---</span>
+sales = np.loadtxt(<span class="hljs-string">"sales.txt"</span>)
+months = np.arange(<span class="hljs-number">1</span>, <span class="hljs-number">13</span>)
+average_sales = np.mean(sales)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Середні продажі за рік: <span class="hljs-subst">{average_sales}</span> тис. грн"</span>)
+
+<span class="hljs-comment"># --- КРОК 3: візуалізація через Matplotlib ---</span>
+<span class="hljs-comment"># Малюємо стовпчики продажів.</span>
+plt.bar(months, sales, color=<span class="hljs-string">"lightgreen"</span>, edgecolor=<span class="hljs-string">"darkgreen"</span>, label=<span class="hljs-string">"Продажі за місяць"</span>)
+<span class="hljs-comment"># Малюємо горизонтальну лінію середнього значення для порівняння.</span>
+plt.axhline(y=average_sales, color=<span class="hljs-string">"red"</span>, linestyle=<span class="hljs-string">"--"</span>, linewidth=<span class="hljs-number">2</span>,
+            label=<span class="hljs-string">f"Середнє (<span class="hljs-subst">{average_sales:<span class="hljs-number">.1</span>f}</span>)"</span>)
+
+<span class="hljs-comment"># Оформлення.</span>
+plt.title(<span class="hljs-string">"Фінансовий звіт магазину за рік"</span>, fontsize=<span class="hljs-number">14</span>)
+plt.xlabel(<span class="hljs-string">"Місяць року"</span>)
+plt.ylabel(<span class="hljs-string">"Сума (тис. грн)"</span>)
+plt.xticks(months)  <span class="hljs-comment"># Показувати номери місяців чітко від 1 до 12.</span>
+plt.grid(<span class="hljs-literal">True</span>, axis=<span class="hljs-string">"y"</span>, linestyle=<span class="hljs-string">":"</span>)
+plt.legend()
+
+<span class="hljs-comment"># --- КРОК 4: збереження результату ---</span>
+plt.savefig(<span class="hljs-string">"sales_report.png"</span>, dpi=<span class="hljs-number">300</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Графік успішно збережено у файл sales_report.png!"</span>)
+plt.show()
+</code></pre>
+</div>
+<div class="read">
+<h2 id="що-читати">Що читати:</h2>
+<ol>
+<li><a href="https://matplotlib.org/stable/">Matplotlib — офіційна документація</a>.</li>
+<li><a href="https://matplotlib.org/stable/gallery/color/named_colors.html">Matplotlib Docs — Named colors</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

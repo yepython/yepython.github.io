@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch7</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-7-файли">РОЗДІЛ 7. Файли</h1>
+<p>Коли ви створюєте список покупок у програмі, вимикаєте калькулятор чи закриваєте гру, усі змінні, списки й результати обчислень миттєво зникають з пам'яті комп'ютера. Наступного разу програму доводиться запускати «з чистого аркуша». Річ у тім, що оперативна пам'ять (RAM), у якій живуть наші змінні під час виконання програми, працює лише доти, доки програма запущена, — щойно вона завершується, ця пам'ять очищується. Щоб дані зберігалися надійно й довго, навіть після вимкнення комп'ютера, потрібна постійна пам'ять — диск або SSD, де інформація зберігається у вигляді файлів.</p>
+<p>Велика частина інформації — журнали подій, налаштування програм, результати обчислень, текстові документи, збереження ігор, історія повідомлень — зберігається саме у файлах. Щоб обробляти таку інформацію, найчастіше доведеться читати або писати в один чи кілька файлів. Python має для цього багато зручних інструментів.</p>
+<h2 id="71-читання-з-файлу">7.1 Читання з файлу</h2>
+<h1 id="711-метод-readlines">7.1.1 Метод <code>.readlines()</code></h1>
+<p>Перш ніж перейти до прикладу, створіть файл у своєму улюбленому текстовому редакторі з таким вмістом:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>Збережіть цей файл у своєму поточному каталозі з ім'ям <code>frukty.txt</code>. 
+</p><div class="warn">
+Якщо ви працюєте у ЄPython, то можете створити цей файл безпосередньо у вкладці редактора середовища програмування та перейменувавши створену вкладку, або завантажити раніше створений файл через Файли-Розпорядник файлів
+</div>
+<p>Потім протестуйте наступний код:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">fayl_vh = <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>)
+riadky = fayl_vh.readlines()
+<span class="hljs-built_in">print</span>(riadky)
+<span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> riadky:
+    <span class="hljs-built_in">print</span>(riadok)
+fayl_vh.close()
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust">[<span class="hljs-string">'яблуко<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'банан<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'апельсин<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'груша<span class="hljs-char escape_">\n</span>'</span>]
+яблуко
+
+банан
+
+апельсин
+
+груша
+</code></pre>
+<p>Щодо цього прикладу слід зробити кілька коментарів:</p>
+<ul>
+<li><strong>Рядок 1.</strong> Функція <code>open()</code> відкриває файл <code>frukty.txt</code>. Файл відкривається лише для читання, як вказує другий аргумент <code>"r"</code> (від <em>read</em>) функції <code>open()</code>. Зверніть увагу, що файл ще не прочитано, а лише відкрито (подібно до того, як ми відкриваємо книгу, але ще не читаємо її). Курсор читання готовий прочитати перший символ файлу. Інструкція <code>open("frukty.txt", "r")</code> передбачає, що файл <code>frukty.txt</code> знаходиться в тому каталозі, з якого запущено інтерпретатор Python. Якщо це не так, потрібно вказати шлях до файлу — наприклад, <code>/home/user/frukty.txt</code> для Linux чи macOS, або <code>C<span class="hl-char">:</span>\Users\user\frukty.txt</code> для Windows.</li>
+<li><strong><code>.readlines()</code>.</strong> Тут використано вже знайомий синтаксис <code>obiekt.metod()</code> (Розділ 3 «Виведення даних»). Метод <code>.readlines()</code> діє на об'єкт <code>fayl_vh</code>, переміщуючи вказівник читання від початку до кінця файлу, а потім повертає список усіх рядків файлу (у нашій аналогії з книгою це відповідало б прочитанню всіх її рядків).</li>
+<li><strong><code>.close()</code>.</strong> Метод <code>.close()</code>, застосований до <code>fayl_vh</code>, закриває файл (як закриття книги). Він нічого не повертає, але змінює стан об'єкта на «закритий файл».</li>
+</ul>
+<p>За п'ять рядків коду файл прочитано, перебрано і виведено.</p>
+<blockquote>
+<p>Кожен елемент списку <code>riadky</code> є рядком — Python читає вміст файлу саме як рядки. Кожен елемент списку <code>riadky</code> закінчується символом <code>\n</code> — «символом нового рядка» (англ. <em>line feed</em>), який дозволяє переходити від одного рядка до наступного. Часто цей символ також називають «символом повернення каретки» — цей вираз нам здається інтуїтивнішим, і ми будемо використовувати його далі в книзі. За замовчуванням інструкція <code>print()</code> виводить текст, а потім сама додає перехід на новий рядок. Це накладається на символ <code>\n</code>, який уже є в кінці кожного рядка файлу, — тому й здається, що між рядками з'являється порожній рядок.</p>
+</blockquote>
+<h2 id="навіщо-взагалі-закривати-файл">Навіщо взагалі закривати файл</h2>
+<p>Навіщо взагалі обов'язково закривати файл? По-перше, поки файл відкритий вашою програмою, операційна система може заблокувати його для інших програм — наприклад, ви не зможете видалити чи перейменувати його вручну. По-друге, якщо програма раптово завершиться аварійно, дані, які ви намагалися записати, можуть «зависнути» в буфері та так і не потрапити на диск. По-третє, відкриті файли просто споживають ресурси комп'ютера, тож їх варто звільняти, щойно робота з ними завершена.</p>
+<p>А що станеться, якщо спробувати прочитати файл <em>після</em> того, як його вже закрито? Подивімося:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">fayl_vh = <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>)
+<span class="hljs-built_in">print</span>(fayl_vh.readlines())
+fayl_vh.close()
+<span class="hljs-built_in">print</span>(fayl_vh.readlines())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust">[<span class="hljs-string">'яблуко<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'банан<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'апельсин<span class="hljs-char escape_">\n</span>'</span>, <span class="hljs-string">'груша<span class="hljs-char escape_">\n</span>'</span>]
+<span class="hljs-title function_ invoke__">Traceback</span> (most recent call last):
+  File <span class="hljs-string">"chytannya_readlines.py"</span>, line <span class="hljs-number">4</span>, <span class="hljs-keyword">in</span> &lt;module&gt;
+    <span class="hljs-title function_ invoke__">print</span>(fayl_vh.<span class="hljs-title function_ invoke__">readlines</span>())
+ValueError: I/O operation on closed file.
+</code></pre>
+<p>Перший виклик <code>.readlines()</code> спрацьовує без проблем — файл ще відкритий. Але після <code>fayl_vh.close()</code> об'єкт <code>fayl_vh</code> переходить у стан «закритий файл», і будь-яка спроба знову щось із нього прочитати призводить до помилки <code>ValueError<span class="hl-char">:</span> I/O operation on closed file.</code> Python таким чином захищає нас від роботи з ресурсом, який уже звільнено.</p>
+<h2 id="ключове-слово-with">Ключове слово <code>with</code></h2>
+<p>У Python є ключове слово <code>with</code>, яке дозволяє відкривати й закривати файл ефективним способом. Якщо під час відкриття чи читання файлу станеться помилка, <code>with</code> гарантує, що файл буде коректно закрито — на відміну від попередніх прикладів, де про закриття потрібно було дбати самостійно. Ось той самий приклад із <code>with</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">'r'</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    riadky = fayl_vh.readlines()
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> riadky:
+        <span class="hljs-built_in">print</span>(riadok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+
+банан
+
+апельсин
+
+груша
+</code></pre>
+<blockquote>
+<p>Інструкція <code>with</code> вводить блок інструкцій, який повинен мати відступ. Саме в цьому блоці виконуються всі операції з файлом. Після виходу з блоку Python автоматично закриє файл — метод <code>.close()</code> більше не потрібен.</p>
+</blockquote>
+<h3 id="712-метод-read">7.1.2 Метод <code>.read()</code></h3>
+<p>Метод <code>.read()</code> читає весь вміст файлу і повертає його у вигляді єдиного рядка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    vmist = fayl_vh.read()
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(vmist))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-rust"><span class="hljs-string">'яблуко<span class="hljs-char escape_">\n</span>банан<span class="hljs-char escape_">\n</span>апельсин<span class="hljs-char escape_">\n</span>груша<span class="hljs-char escape_">\n</span>'</span>
+</code></pre>
+<h3 id="713-метод-readline">7.1.3 Метод <code>.readline()</code></h3>
+<p>Метод <code>.readline()</code> (без <code>s</code> в кінці) читає один рядок файлу і повертає його у вигляді рядка. При кожному новому виклику <code>.readline()</code> повертає наступний рядок. У поєднанні з циклом <code>while</code> цей метод дозволяє читати файл рядок за рядком:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    riadok = fayl_vh.readline()
+    <span class="hljs-keyword">while</span> riadok != <span class="hljs-string">""</span>:
+        <span class="hljs-built_in">print</span>(riadok)
+        riadok = fayl_vh.readline()
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+
+банан
+
+апельсин
+
+груша
+</code></pre>
+<h3 id="714-пряма-ітерація-по-файлу">7.1.4 Пряма ітерація по файлу</h3>
+<p>Ось простий і елегантний спосіб перебору файлу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl_vh:
+        <span class="hljs-built_in">print</span>(riadok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+
+банан
+
+апельсин
+
+груша
+</code></pre>
+<p>Об'єкт <code>fayl_vh</code> є «ітерованим», тому цикл <code>for</code> попросить Python читати файл рядок за рядком. Такий підхід ще й економніший за <code>.readlines()</code>: файл читається порціями, по одному рядку, а не завантажується цілком у пам'ять, — це особливо важливо для великих файлів.</p>
+<blockquote>
+<p>Надалі віддавайте перевагу саме цьому методу.</p>
+</blockquote>
+<p>Розглянуті методи дають доступ до вмісту файлу: рядок за рядком (<code>.readline()</code>), повністю в одному рядку (<code>.read()</code>), або повністю у вигляді списку рядків (<code>.readlines()</code>). У Python також можна перейти до певного місця у файлі за допомогою методу <code>.seek()</code>, але це виходить за рамки цієї книги.</p>
+<h3 id="715-очищення-рядків-метод-strip">7.1.5 Очищення рядків: метод <code>.strip()</code></h3>
+<p>Як ми щойно бачили, кожен рядок, прочитаний із файлу, закінчується прихованим символом <code>\n</code>. Найчастіше цей символ заважає — наприклад, якщо ми хочемо порівняти прочитаний рядок з якимось рядком, чи згодом використати його як частину іншого рядка. Щоб прибрати зайві пробіли та символ <code>\n</code> з початку й кінця рядка, використовують метод <code>.strip()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl_vh:
+        <span class="hljs-built_in">print</span>(riadok.strip())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>Тепер, оскільки <code>\n</code> видалено з кожного рядка ще до виклику <code>print()</code>, порожні рядки між елементами зникли. <code>.strip()</code> варто застосовувати практично щоразу, коли прочитаний із файлу рядок треба порівняти з іншим значенням, перетворити на число чи додати до списку.</p>
+<h2 id="72-запис-у-файл">7.2 Запис у файл</h2>
+<p>Запис у файл настільки ж простий, як і читання. Розглянемо приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">mista = [<span class="hljs-string">"Київ"</span>, <span class="hljs-string">"Львів"</span>, <span class="hljs-string">"Одеса"</span>]
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"mista.txt"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    <span class="hljs-keyword">for</span> misto <span class="hljs-keyword">in</span> mista:
+        znakiv = fayl_vykh.write(misto)
+        <span class="hljs-built_in">print</span>(znakiv)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">4
+5
+5
+</code></pre>
+<p>Кілька коментарів щодо цього прикладу:</p>
+<ul>
+<li><strong>Рядок 1.</strong> Створення списку рядків <code>mista</code>.</li>
+<li><strong>Рядок 2.</strong> Відкриття файлу <code>mista.txt</code> у режимі запису — символ <code>"w"</code> (від <em>write</em>). Інструкція <code>with</code> створює блок інструкцій, який повинен мати відступ.</li>
+<li><strong>Рядок 3.</strong> Перебір списку <code>mista</code> за допомогою циклу <code>for</code>.</li>
+<li><strong>Рядок 4.</strong> На кожній ітерації ми записуємо елемент списку у файл. Метод <code>.write()</code> застосовується до об'єкта <code>fayl_vykh</code>. Зверніть увагу, що при кожному виклику <code>.write()</code> в інтерпретаторі відображається кількість записаних символів. Це стосується лише інтерактивного інтерпретатора: у звичайному скрипті ці значення на екрані не з'являться.</li>
+</ul>
+<p>Якщо відкрити файл <code>mista.txt</code> у текстовому редакторі, побачимо: <code>КиївЛьвівОдеса</code>. Це не зовсім той результат, якого ми очікували, — адже хотілося, щоб кожна назва була на окремому рядку. Ми забули додати символ кінця рядка після кожного слова. На відміну від <code>print()</code>, метод <code>.write()</code> не переводить курсор на новий рядок автоматично — цей символ завжди потрібно додавати самостійно. Виправимо це форматованим виведенням:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">mista = [<span class="hljs-string">"Київ"</span>, <span class="hljs-string">"Львів"</span>, <span class="hljs-string">"Одеса"</span>]
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"mista.txt"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    <span class="hljs-keyword">for</span> misto <span class="hljs-keyword">in</span> mista:
+        znakiv = fayl_vykh.write(<span class="hljs-string">f"<span class="hljs-subst">{misto}</span>\n"</span>)
+        <span class="hljs-built_in">print</span>(znakiv)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">5
+6
+6
+</code></pre>
+<ul>
+<li><strong>Рядок 4.</strong> Форматоване виведення (Розділ 3 «Виведення даних») дозволяє додати символ нового рядка (<code>\n</code>) після кожної назви.</li>
+<li><strong>Кількість символів</strong> збільшилася на 1 порівняно з попереднім прикладом, оскільки символ переходу на новий рядок теж враховується.</li>
+</ul>
+<p>Тепер вміст файлу <code>mista.txt</code>:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Київ
+Львів
+Одеса
+</code></pre>
+<p>Як бачите, у Python читати чи писати у файл відносно просто.</p>
+<h3 id="721-режими-відкриття-файлів">7.2.1 Режими відкриття файлів</h3>
+<p>У наведених вище прикладах ми користувалися лише двома режимами — <code>"r"</code> та <code>"w"</code>. Насправді <code>open()</code> підтримує чотири основні режими, які вказуються другим аргументом:</p>
+<table>
+<thead>
+<tr>
+<th>Режим</th>
+<th>Назва</th>
+<th>Призначення</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>"r"</code></td>
+<td>Read (читання)</td>
+<td>Режим за замовчуванням. Файл лише читають; якщо файлу немає на диску, виникає помилка <code>FileNotFoundError</code>.</td>
+</tr>
+<tr>
+<td><code>"w"</code></td>
+<td>Write (запис)</td>
+<td>Якщо файл уже існує, його вміст повністю стирається, і запис починається «з чистого аркуша». Якщо файлу немає — Python створює його сам.</td>
+</tr>
+<tr>
+<td><code>"a"</code></td>
+<td>Append (дописування)</td>
+<td>Нові дані додаються в самий кінець файлу; наявний вміст не видаляється. Якщо файлу немає — Python створює його.</td>
+</tr>
+<tr>
+<td><code>"x"</code></td>
+<td>Exclusive creation (створення нового файлу)</td>
+<td>Створює новий файл, але лише якщо такого файлу ще не існує; якщо файл уже є, виникає помилка — це захищає від випадкового перезапису.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Режим <code>"w"</code> варто використовувати обережно: він мовчки й без попереджень стирає весь наявний вміст файлу. Якщо мета — зберегти старі дані й лише додати нові, потрібен режим <code>"a"</code>.</p>
+</blockquote>
+<h3 id="722-дописування-у-файл-режим-a">7.2.2 Дописування у файл (режим <code>"a"</code>)</h3>
+<p>Якщо ми хочемо зберегти вже наявний вміст файлу та лише додати до нього нову інформацію, використовують режим <code>"a"</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"mista.txt"</span>, <span class="hljs-string">"a"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    znakiv = fayl_vykh.write(<span class="hljs-string">"Харків\n"</span>)
+    <span class="hljs-built_in">print</span>(znakiv)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">7
+</code></pre>
+<p>Тепер файл <code>mista.txt</code> міститиме:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Київ
+Львів
+Одеса
+Харків
+</code></pre>
+<p>Кожен наступний запуск програми з режимом <code>"a"</code> додаватиме новий рядок у кінець файлу, не торкаючись того, що вже там є, — це зручно, наприклад, для журналів подій або програм, які поступово накопичують дані (щоденник тренувань, історія повідомлень тощо).</p>
+<h2 id="73-відкриття-двох-файлів-з-інструкцією-with">7.3 Відкриття двох файлів з інструкцією <code>with</code></h2>
+<p>За допомогою <code>with</code> можна відкрити одразу два (і більше) файли. Розглянемо приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl1, <span class="hljs-built_in">open</span>(<span class="hljs-string">"frukty2.txt"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> fayl2:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl1:
+        fayl2.write(<span class="hljs-string">"*"</span> + riadok)
+</code></pre>
+<p>Якщо <code>frukty.txt</code> містить:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">яблуко
+банан
+апельсин
+груша
+</code></pre>
+<p>то вміст <code>frukty2.txt</code> буде:</p>
+<pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-emphasis">*яблуко
+*</span>банан
+<span class="hljs-emphasis">*апельсин
+*</span>груша
+</code></pre>
+<p>У цьому прикладі <code>with</code> дозволяє дуже компактний запис, звільняючи від двох викликів <code>.close()</code>. Якщо хочете піти далі: інструкція <code>with</code> є більш загальною і може використовуватися в інших контекстах[^2].</p>
+<h2 id="74-примітка-про-символи-нового-рядка-в-macoslinux-та-windows">7.4 Примітка про символи нового рядка в macOS/Linux та Windows</h2>
+<p>Ми бачили, що спеціальний символ <code>\n</code> відповідає переходу на новий рядок — це стандарт у Unix (macOS і Linux). Однак Windows традиційно використовує два символи: <code>\r</code> (повернення каретки, успадковане від друкарських машинок) і <code>\n</code>, як у Unix. У Python 2 залежно від версії читання файлу іноді видаляло <code>\r</code>, а іноді залишало. На щастя, функція <code>open()</code> у Python 3 обробляє це автоматично й повертає лише <code>\n</code> — навіть якщо файл був створений у Windows і початково містив <code>\r</code>.</p>
+<h2 id="75-кодування-файлів-utf-8">7.5 Кодування файлів (UTF-8)</h2>
+<p>Іноді трапляється прикра проблема: програма зчитує файл з українським текстом, але замість очікуваних літер у консолі з'являються незрозумілі значки («кракозябри»). Причина — комп'ютер намагається прочитати файл за неправильними чи застарілими правилами <strong>кодування символів</strong>: спеціальної таблиці, яка перекладає кожну літеру в число, зрозуміле процесору.</p>
+<p>Щоб уникнути цієї проблеми, під час роботи з файлами, що містять текст українською (чи будь-якою іншою не-англійською) мовою, варто явно вказувати сучасний міжнародний стандарт кодування — <code>encoding="utf-8"</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"text.txt"</span>, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-built_in">print</span>(fayl_vh.read())
+</code></pre>
+<p>Той самий аргумент <code>encoding="utf-8"</code> варто додавати і під час запису у файл, щоб бути впевненим, що дані збережуться коректно незалежно від налаштувань операційної системи:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"text.txt"</span>, <span class="hljs-string">"w"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    fayl_vykh.write(<span class="hljs-string">"Привіт, Python!"</span>)
+</code></pre>
+<h2 id="76-важливість-перетворення-типів-при-роботі-з-файлами">7.6 Важливість перетворення типів при роботі з файлами</h2>
+<p>Методи читання файлу (наприклад, <code>.readlines()</code>) завжди повертають рядки. Так само, щоб записати щось у файл, методу <code>.write()</code> потрібно передати саме рядок. Щоб врахувати ці обмеження, знадобляться функції перетворення типів із Розділу 2 «Змінні»: <code>int()</code>, <code>float()</code> та <code>str()</code>. Ці функції важливі при читанні чи записі чисел у файл: числа у файлі — це завжди текст (рядки) з погляду <code>.readlines()</code>, тож їх потрібно перетворити (на ціле число чи <code>float</code>), якщо ви плануєте виконувати з ними обчислення.</p>
+<p>Ось типовий приклад: запис числа у файл потребує <code>str()</code>, а зчитування назад — <code>int()</code> або <code>float()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chyslo = <span class="hljs-number">45</span>
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"otsinky.txt"</span>, <span class="hljs-string">"w"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vykh:
+    fayl_vykh.write(<span class="hljs-built_in">str</span>(chyslo) + <span class="hljs-string">"\n"</span>)
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"otsinky.txt"</span>, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl_vh:
+        otsinka = <span class="hljs-built_in">int</span>(riadok.strip())
+        <span class="hljs-keyword">if</span> otsinka &gt;= <span class="hljs-number">10</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"Висока оцінка:"</span>, otsinka)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Висока оцінка: 45
+</code></pre>
+<p>Той самий принцип (прочитати рядок → <code>.strip()</code> → перетворити на число чи очищений рядок → додати в список) добре поєднується з побудовою списку в циклі <code>for</code> (підрозділ 5.5.4 «Обробка списків»). Наприклад, щоб відновити список даних, збережений минулого разу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok_pokupok = []
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"items.txt"</span>, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-keyword">for</span> riadok <span class="hljs-keyword">in</span> fayl_vh:
+        ochyshcheno = riadok.strip()
+        spysok_pokupok.append(ochyshcheno)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Список покупок відновлено:"</span>, spysok_pokupok)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-less">Список покупок відновлено: <span class="hljs-selector-attr">[<span class="hljs-string">'молоко'</span>, <span class="hljs-string">'хліб'</span>, <span class="hljs-string">'яйця'</span>]</span>
+</code></pre>
+<h2 id="77-дотримання-форматів-даних-та-файлів">7.7 Дотримання форматів даних та файлів</h2>
+<p>Тепер, коли ви вмієте читати й писати файли в Python, ви здатні працювати з великою кількістю різноманітної інформації. Будьте лише уважні до форматів файлів — тобто того, як саме дані структуровані всередині них (наприклад, CSV, JSON чи власний текстовий формат). Це особливо важливо, коли файл створено іншою програмою або іншою людиною: перш ніж писати код обробки, варто відкрити файл і подивитися на його реальну структуру.</p>
+<h2 id="78-типові-помилки">7.8 Типові помилки</h2>
+<p>Працюючи з файлами, початківці регулярно натрапляють на той самий невеликий набір помилок.</p>
+<p><strong>Файл не знайдено (<code>FileNotFoundError</code>).</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"zaguble.txt"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> fayl_vh:
+    <span class="hljs-built_in">print</span>(fayl_vh.read())
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "fayl_ne_znaydeno.py", line <span class="hljs-number">2</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-keyword">open</span>("zaguble.txt", "r") <span class="hljs-keyword">as</span> fayl_vh:
+FileNotFoundError: [Errno <span class="hljs-number">2</span>] <span class="hljs-keyword">No</span> such file <span class="hljs-keyword">or</span> directory: <span class="hljs-string">'zaguble.txt'</span>
+</code></pre>
+<p>Це трапляється, коли ви намагаєтесь прочитати файл, якого немає на диску, або припустилися одруку в його імені чи розширенні. Перевірте, чи лежить файл у тому самому каталозі, що й ваш скрипт, і чи правильно написано його ім'я.</p>
+<p><strong>Випадкове знищення даних режимом <code>"w"</code>.</strong> Якщо мета була лише додати запис, а помилково вжито режим <code>"w"</code> замість <code>"a"</code>, Python миттєво й без попереджень очистить увесь наявний вміст файлу. Щоб зберегти стару інформацію, завжди перевіряйте, який саме режим ви вказуєте: <code>"a"</code> для дописування, <code>"w"</code> — лише коли справді потрібно почати «з чистого аркуша».</p>
+<p><strong>Забули перетворити рядок на число.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">riadok = <span class="hljs-string">"10\n"</span>
+<span class="hljs-built_in">print</span>(riadok + <span class="hljs-number">5</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "zabuly_peretvoryty.py", line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print(riadok <span class="hljs-operator">+</span> <span class="hljs-number">5</span>)
+TypeError: can <span class="hljs-keyword">only</span> concatenate str (<span class="hljs-keyword">not</span> "int") <span class="hljs-keyword">to</span> str
+</code></pre>
+<p>Прочитаний із файлу рядок завжди залишається текстом, навіть якщо виглядає як число, — щоб виконувати з ним арифметичні операції, спершу застосуйте <code>int(riadok.strip())</code> або <code>float(riadok.strip())</code> .</p>
+<div class="exers">
+<h2 id="79-вправи">7.9 Вправи</h2>
+<h3 id="1-середній-бал">1. Середній бал</h3>
+<p>Створіть текстовий файл <code>otsinky.txt</code>, де кожен рядок міститиме рівно одну оцінку. Наприклад, скопіюйте у файл такий вміст:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">13.5
+17.0
+9.5
+11.0
+15.5
+8.0
+12.5
+16.0
+10.0
+14.5
+</code></pre>
+<p>Створіть скрипт Python, який читає кожен рядок цього файлу, витягує оцінки у вигляді <code>float</code> і зберігає їх у списку. Завершіть скрипт обчисленням і виведенням середнього балу з двома десятковими знаками.</p>
+<h3 id="2-зараховано-або-не-зараховано">2. Зараховано або не зараховано</h3>
+<p>Використайте файл <code>otsinky.txt</code> з попередньої вправи. Створіть скрипт Python, який читає кожен рядок файлу, видобуває оцінки у вигляді <code>float</code> і зберігає їх у списку. Потім скрипт має записати оцінки у новий файл <code>otsinky2.txt</code> — по одній оцінці на рядок, після кожної позначка «відраховано», якщо оцінка менша за 10, і «зараховано», якщо оцінка більша або дорівнює 10. Усі оцінки виводьте з одним десятковим знаком. Наприклад, перші три очікувані рядки файлу <code>otsinky2.txt</code>:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">13.5 зараховано
+17.0 зараховано
+9.5 не зараховано
+</code></pre>
+<h3 id="3-фільтр-оцінок">3. Фільтр оцінок</h3>
+<p>Створіть файл <code>all_otsinky.txt</code> з оцінками (від 1 до 12, по одній на рядок). Напишіть скрипт, який читає цей файл і записує оцінки, більші або рівні 7, в окремий файл <code>good_otsinky.txt</code></p>
+<h3 id="4-шкільний-журнал">4. Шкільний журнал</h3>
+<p>Створіть файл <code>zhurnal.txt</code> з оцінками учнів класу за контрольну роботу (по одному числу на рядок). Напишіть скрипт, який зчитує всі оцінки у список чисел, знаходить максимальну й мінімальну оцінку (за допомогою <code>max()</code> та <code>min()</code>), обчислює середній бал класу, а потім виводить охайний звіт на екран і дописує цей самий звіт у кінець файлу <code>zvit.txt</code> (режим <code>"a"</code>).</p>
+</div>
+<div class="project">
+<h2 id="710-творча-майстерня-спіраль">7.10 Творча майстерня: Спіраль</h2>
+<p>Створіть скрипт <code>spiral.py</code>, який обчислює декартові координати двовимірної спіралі. 
+Декартові координати <em>x</em> та <em>y</em> точки A на колі радіуса <em>r</em> виражаються через кут <em>theta</em> так:</p>
+<p><img src="./media/ch7/594a5ef0701147e17c5a5c24aecb2aa3.png" alt="594a5ef0701147e17c5a5c24aecb2aa3.png"></p>
+<p>Щоб обчислити координати, які описують спіраль, потрібно одночасно змінювати дві величини:</p>
+<ul>
+<li>кут, який набуватиме значень від 0 до 4pi радіан із кроком 0.1 (це відповідає двом повним обертам);</li>
+<li>радіус кола, який почне з 0.5, а потім поступово збільшуватиметься з кроком 0.1.</li>
+</ul>
+<p>Тригонометричні функції синуса й косинуса доступні в модулі <code>math</code>. Щоб їх використати, додайте на початку скрипта:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+</code></pre>
+<p>Функція синуса — <code>math.sin()</code>, косинуса — <code>math.cos()</code>. Обидві приймають аргумент у радіанах. Математична константа <em>pi</em> доступна через <code>math.pi</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+
+<span class="hljs-built_in">print</span>(math.sin(<span class="hljs-number">0</span>))
+<span class="hljs-built_in">print</span>(math.sin(math.pi / <span class="hljs-number">2</span>))
+<span class="hljs-built_in">print</span>(math.cos(math.pi))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-diff">0.0
+1.0
+<span class="hljs-deletion">-1.0</span>
+</code></pre>
+<p>Збережіть декартові координати у файлі <code>spiral.dat</code>, дотримуючись такого формату:</p>
+<ul>
+<li>пара координат <em>x</em> і <em>y</em> на рядок;</li>
+<li>принаймні один пробіл між координатами <em>x</em> та <em>y</em>;</li>
+<li>координати виводяться на 10 символів із 5 цифрами після коми.</li>
+</ul>
+<p>Перші рядки <code>spirala.dat</code> мають виглядати так:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-number">0.50000</span> <span class="hljs-number">0.00000</span>
+<span class="hljs-number">0.59700</span> <span class="hljs-number">0.05990</span>
+<span class="hljs-number">0.68605</span> <span class="hljs-number">0.13907</span>
+<span class="hljs-number">0.76427</span> <span class="hljs-number">0.23642</span>
+<span class="hljs-number">0.82895</span> <span class="hljs-number">0.35048</span>
+<span class="hljs-number">0.87758</span> <span class="hljs-number">0.47943</span>
+<span class="hljs-selector-attr">[...]</span>
+</code></pre>
+<p>Після того як файл <code>spiral.dat</code> згенеровано, візуалізуйте спіраль наступним кодом (можна дописати в той самий скрипт або створити новий):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = []
+y = []
+
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"spiral.dat"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> file:
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> file:
+        parts = line.split()
+        x.append(<span class="hljs-built_in">float</span>(parts[<span class="hljs-number">0</span>]))
+        y.append(<span class="hljs-built_in">float</span>(parts[<span class="hljs-number">1</span>]))
+
+<span class="hljs-comment"># Побудова графіка</span>
+plt.plot(x, y)
+plt.title(<span class="hljs-string">"Спіраль"</span>)
+plt.xlabel(<span class="hljs-string">"x"</span>)
+plt.ylabel(<span class="hljs-string">"y"</span>)
+plt.axis(<span class="hljs-string">"equal"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+<blockquote>
+<p>Модуль <code>matplotlib</code> тут використано для візуалізації спіралі. Спробуйте поекспериментувати зі значеннями theta та r і кроком їхнього збільшення, щоб побудувати інші спіралі.</p>
+</blockquote>
+</div>
+<p><img src="./media/ch7/61a8bd9e023b44afc55e93df88bd932c.png" alt="61a8bd9e023b44afc55e93df88bd932c.png"></p>
+<div class="preview"><div class="preview-header"><button type="button" class="preview-toggle">👇</button></div><div class="preview-content">
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Генерація та запис координат</span>
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"spiral.dat"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> file:
+    a = <span class="hljs-number">0.5</span>
+    b = <span class="hljs-number">0.1</span>
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">200</span>):
+        t = i * <span class="hljs-number">0.1</span>
+        r = a + b * t
+
+        x = r * math.cos(t)
+        y = r * math.sin(t)
+
+        file.write(<span class="hljs-string">f"<span class="hljs-subst">{x:<span class="hljs-number">10.5</span>f}</span> <span class="hljs-subst">{y:<span class="hljs-number">10.5</span>f}</span>\n"</span>)
+
+<span class="hljs-comment"># Зчитування координат</span>
+x = []
+y = []
+
+<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"spiral.dat"</span>, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> file:
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> file:
+        parts = line.split()
+        x.append(<span class="hljs-built_in">float</span>(parts[<span class="hljs-number">0</span>]))
+        y.append(<span class="hljs-built_in">float</span>(parts[<span class="hljs-number">1</span>]))
+
+<span class="hljs-comment"># Побудова графіка</span>
+plt.plot(x, y)
+plt.title(<span class="hljs-string">"Спіраль"</span>)
+plt.xlabel(<span class="hljs-string">"x"</span>)
+plt.ylabel(<span class="hljs-string">"y"</span>)
+plt.axis(<span class="hljs-string">"equal"</span>)
+plt.grid(<span class="hljs-literal">True</span>)
+plt.show()
+</code></pre>
+</div></div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><strong>Офіційна документація Python – <code>open()</code></strong><br><a href="https://docs.python.org/3/library/functions.html#open">https://docs.python.org/3/library/functions.html#open</a></li>
+<li><strong>Офіційна документація Python – Робота з файлами (Tutorial: Reading and Writing Files)</strong><br><a href="https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files">https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files</a></li>
+<li><strong>W3Schools – Python File Handling</strong><br><a href="https://www.w3schools.com/python/python_file_handling.asp">https://www.w3schools.com/python/python_file_handling.asp</a></li>
+<li><strong>Programiz – Python File Handling</strong><br><a href="https://www.programiz.com/python-programming/file-operation">https://www.programiz.com/python-programming/file-operation</a></li>
+<li><strong>Real Python – Reading and Writing Files in Python</strong><br><a href="https://realpython.com/read-write-files-python/">https://realpython.com/read-write-files-python/</a></li>
+<li><strong>GeeksforGeeks – File Handling in Python</strong><br><a href="https://www.geeksforgeeks.org/file-handling-python/">https://www.geeksforgeeks.org/file-handling-python/</a></li>
+<li><strong>Про символ нового рядка</strong> <br> <a href="https://en.wikipedia.org/wiki/Newline">Wikipedia — Newline</a>.</li>
+<li><strong>Офіційна документація Python</strong><br><a href="https://docs.python.org/3/reference/compound_stmts.html#the-with-statement">The with statement</a></li>
+<li><strong>Про кодування символів</strong> <br><a href="https://uk.wikipedia.org/wiki/UTF-8">uk.wikipedia.org — UTF-8</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

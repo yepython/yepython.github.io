@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch13</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-13-більше-про-функції">РОЗДІЛ 13. Більше про функції</h1>
+<h2 id="131-навіщо-заглиблюватися-у-функції">13.1 Навіщо заглиблюватися у функції?</h2>
+<p>Ми вже ознайомилися з основами роботи функцій та розібрали поняття локальних і глобальних змінних. Однак у реальних проєктах функції рідко існують ізольовано — вони постійно взаємодіють: викликають одна одну або навіть звертаються до самих себе. Саме під час такої взаємодії керування потоком даних та видимістю змінних стає ключовим завданням для програміста.</p>
+<p>У цьому розділі ми детально розберемо практичні сценарії:</p>
+<ul>
+<li>чому локальна змінна, створена всередині однієї функції, є недоступною в інших частинах програми;</li>
+<li>як правильно організувати виклик функції з самої себе для обчислення факторіала чи ефективного поділу складної задачі на менші підзадачі;</li>
+<li>чому зміна елементів списку всередині функції може неочікувано вплинути на початковий список у головній програмі.</li>
+</ul>
+<p>Вивчення матеріалу побудовано послідовно: спочатку ми дослідимо взаємодію функцій та рекурсію, після чого перейдемо до детального аналізу областей видимості змінних і поведінки складних типів даних (списків). Наприкінці розділу наведено практичні рекомендації та найкращі підходи до проектування функцій, які допоможуть уникнути типових помилок.</p>
+<h2 id="132-виклик-функції-з-іншої-функції">13.2 Виклик функції з іншої функції</h2>
+<p>При вивченні функцій ми дізнались, як їх викликати з головної програми. Насправді можна викликати функцію з іншої функції. І, більш загально, можна викликати функцію звідусіль, головне, щоб вона була видимою для Python (тобто завантаженою в пам'ять). Подивіться на цей приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Визначення функцій.</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ye_parnym</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-keyword">if</span> x % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">obchyslyty_sumu_parnykh</span>(<span class="hljs-params">debut, kinets</span>):
+    suma = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> chyslo <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(debut, kinets + <span class="hljs-number">1</span>):
+        <span class="hljs-keyword">if</span> ye_parnym(chyslo):
+            suma += chyslo
+    <span class="hljs-keyword">return</span> suma
+
+<span class="hljs-comment"># Головна програма.</span>
+suma = obchyslyty_sumu_parnykh(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Сума парних чисел від 1 до 5 дорівнює <span class="hljs-subst">{suma}</span>"</span>)
+</code></pre>
+<p>Ми викликаємо функцію <code>obchyslyty_sumu_parnykh()</code> з головної програми, а потім усередині неї викликаємо іншу функцію <code>ye_parnym()</code>. </p>
+<p>Функція може викликати іншу функцію, ця остання може викликати ще одну і так далі (і стільки разів, скільки потрібно). Функція може навіть викликати сама себе — це називається рекурсивною функцією. </p>
+<p>У функції <code>ye_parnym()</code> ми перевіряємо, чи є число парним, і повертаємо <code>True</code>, інакше повертаємо <code>False</code>. Цю функцію можна написати компактніше:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">ye_parnym</span>(<span class="hljs-params">x</span>):
+     <span class="hljs-keyword">return</span> x % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>
+</code></pre>
+<p>Оскільки вираз <code>x % 2 == 0</code> повертає булеве значення безпосередньо, це те саме, що й <code>if/else</code> вище. Звичайно, саме цю останню, компактнішу нотацію ми вам рекомендуємо.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Створіть функцію <code>ye_kratnym(chyslo, dilnyk)</code>, яка перевіряє, чи число кратне дільнику (за допомогою <code>%</code>), а також функцію <code>pidrakhuvaty_kratni(pochatok, kinets, dilnyk)</code>, яка використовує <code>ye_kratnym()</code> усередині циклу, щоб порахувати, скільки чисел у діапазоні від <code>pochatok</code> до <code>kinets</code> (включно) кратні <code>dilnyk</code>. Перевірте функцію на діапазоні від 1 до 20 з дільником 3.
+</p></div>
+<h2 id="133-рекурсивні-функції">13.3 Рекурсивні функції</h2>
+<blockquote>
+<p><strong>Рекурсивна функція</strong> — це функція, яка викликає сама себе.</p>
+</blockquote>
+<p>Рекурсивні функції дозволяють досягти високої ефективності у розв'язанні деяких алгоритмів, таких як швидке сортування (англ. <em>quicksort</em>). Залишимо поки що пошук ефективності й зосередимося на прикладі математичної функції факторіал. Нагадуємо, що факторіал записується з <code>!</code> і визначається так:</p>
+<pre><code data-highlighted="yes" class="hljs language-python-repl">3! = 3 × 2 × 1 = 6
+4! = 4 × 3 × 2 × 1 = 24
+<span class="hljs-meta prompt_">...</span>
+n! = n × (n-1) × ... × 2 × 1
+</code></pre>
+<p>Ось код Python з рекурсивною функцією:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">obchyslyty_faktorial</span>(<span class="hljs-params">n</span>):
+    <span class="hljs-keyword">if</span> n == <span class="hljs-number">1</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> n * obchyslyty_faktorial(n - <span class="hljs-number">1</span>)
+
+<span class="hljs-comment"># Головна програма.</span>
+<span class="hljs-built_in">print</span>(obchyslyty_faktorial(<span class="hljs-number">4</span>))
+</code></pre>
+<p>У виклику <code>print(obchyslyty_faktorial(4))</code> ми викликаємо функцію <code>obchyslyty_faktorial()</code>, передаючи як аргумент ціле число 4. Локальна змінна, яка отримує цей аргумент, — <code>n</code>. Усередині функція викликає сама себе, але цього разу передає значення 3. При наступному виклику це буде значення 2, а потім, нарешті, 1. В останньому випадку тест <code>if n == 1<span class="hl-char">:</span></code> є істинним, і виконається інструкція <code>return 1</code>. У цю саму мить послідовні виклики утворюють своєрідний стек. Значення 1 буде повернено на рівень попереднього виклику, потім результат <code>2 × 1 = 2</code> (де 2 відповідає <code>n</code>, а 1 походить від <code>obchyslyty_faktorial(n - 1)</code>, тобто 1) буде повернено попередньому виклику, потім <code>3 × 2 = 6</code> (де 3 відповідає <code>n</code>, а 2 походить від <code>obchyslyty_faktorial(n - 1)</code>, тобто 2) буде повернено попередньому виклику, і нарешті <code>4 × 6 = 24</code> (де 4 відповідає <code>n</code>, а 6 походить від <code>obchyslyty_faktorial(n - 1)</code>, тобто 6), тобто значення 4!. Послідовні виклики таким чином «розгортаються зі стека», і ми повертаємося в головну програму. Навіть якщо рекурсивні функції можуть бути складними для розуміння, наша мета тут — проілюструвати, що функція, яка викликає іншу (тут — саму себе), залишається «замороженою» в тому самому стані, доки викликана функція не поверне їй значення.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Напишіть рекурсивну функцію <code>obchyslyty_sumu(n)</code>, яка обчислює суму цілих чисел від 1 до <code>n</code> (наприклад, <code>obchyslyty_sumu(4)</code> має повернути <code>1 + 2 + 3 + 4 = 10</code>). Порівняйте її з нерекурсивною версією, яка використовує цикл <code>for</code>.
+</p></div>
+<h2 id="134-область-видимості-змінних">13.4 Область видимості змінних</h2>
+<p>Дуже важливо при роботі з функціями знати область видимості змінних (<em>scope</em> англійською), тобто знати, де саме вони видимі. Ми вже бачили, що змінні, створені всередині функції, не видимі за її межами, оскільки вони локальні для функції. Подивіться на такий скрипт:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    x = <span class="hljs-number">2</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"x дорівнює <span class="hljs-subst">{x}</span> у функції"</span>)
+
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-perl"><span class="hljs-keyword">x</span> дорівнює <span class="hljs-number">2</span> у функції
+Traceback (most recent call <span class="hljs-keyword">last</span>):
+  File <span class="hljs-string">"script.py"</span>, line <span class="hljs-number">6</span>, in &lt;module&gt;
+    <span class="hljs-keyword">print</span>(<span class="hljs-keyword">x</span>)
+NameError: name <span class="hljs-string">'x'</span> is <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>
+</code></pre>
+<p>Коли Python виконує код функції, він знає вміст змінної <code>x</code>. Однак, повернувшись у головну програму, він більше її не знає, звідси й повідомлення про помилку. Так само змінна, передана як аргумент, вважається локальною, щойно ми потрапляємо у функцію:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>(<span class="hljs-params">x</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"x дорівнює <span class="hljs-subst">{x}</span> у функції"</span>)
+
+moya_funktsiya(<span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-perl"><span class="hljs-keyword">x</span> дорівнює <span class="hljs-number">2</span> у функції
+Traceback (most recent call <span class="hljs-keyword">last</span>):
+  File <span class="hljs-string">"script.py"</span>, line <span class="hljs-number">5</span>, in &lt;module&gt;
+    <span class="hljs-keyword">print</span>(<span class="hljs-keyword">x</span>)
+NameError: name <span class="hljs-string">'x'</span> is <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>
+</code></pre>
+<p>Коли ж змінна оголошена в головній програмі, вона видима в ній, а також у всіх функціях. У такому разі ми говоримо про глобальну змінну:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    <span class="hljs-built_in">print</span>(x)
+
+x = <span class="hljs-number">3</span>
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">3
+3
+</code></pre>
+<p>У цьому випадку змінна <code>x</code> видима в головному модулі та в усіх функціях модуля. Однак Python не дозволяє модифікувати глобальну змінну у функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    x = x + <span class="hljs-number">1</span>
+
+x = <span class="hljs-number">1</span>
+moya_funktsiya()
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "script.py", line <span class="hljs-number">5</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    moya_funktsiya()
+  File "script.py", line <span class="hljs-number">2</span>, <span class="hljs-keyword">in</span> moya_funktsiya
+    x <span class="hljs-operator">=</span> x <span class="hljs-operator">+</span> <span class="hljs-number">1</span>
+UnboundLocalError: cannot access <span class="hljs-keyword">local</span> variable <span class="hljs-string">'x'</span> <span class="hljs-keyword">where</span> it <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> associated <span class="hljs-keyword">with</span> a <span class="hljs-keyword">value</span>
+</code></pre>
+<p>Помилка, яку повертає Python, показує, що він вважає <code>x</code> локальною змінною, якій ще не присвоєно значення. Якщо ми справді хочемо модифікувати глобальну змінну у функції, потрібно використати ключове слово <code>global</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    <span class="hljs-keyword">global</span> x
+    x = x + <span class="hljs-number">1</span>
+
+x = <span class="hljs-number">1</span>
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">2
+</code></pre>
+<p>В останньому випадку ключове слово <code>global</code> змусило Python вважати змінну <code>x</code> глобальною, а не локальною всередині функції.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Передбачте, а потім перевірте, що виведе такий код:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    y = <span class="hljs-number">10</span>
+    <span class="hljs-built_in">print</span>(y)
+
+y = <span class="hljs-number">5</span>
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(y)
+</code></pre>
+<p>Потім змініть функцію так, щоб за допомогою <code>global</code> вона дійсно збільшувала <code>y</code> головної програми на 1.
+</p></div>
+<h2 id="135-область-видимості-списків">13.5 Область видимості списків</h2>
+<p>Будьте надзвичайно уважні з типами, які можна модифікувати (такими як списки), оскільки їх можна змінити всередині функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    spysok1[<span class="hljs-number">1</span>] = -<span class="hljs-number">127</span>
+
+spysok1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, -127, 3</span>]
+</code></pre>
+<p>Так само, якщо ви передаєте список як аргумент, його можна модифікувати всередині функції:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>(<span class="hljs-params">spysok_tmp</span>):
+    spysok_tmp[<span class="hljs-number">1</span>] = -<span class="hljs-number">15</span>
+
+spysok1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+moya_funktsiya(spysok1)
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, -15, 3</span>]
+</code></pre>
+<p>Якщо ви хочете уникнути проблем випадкової модифікації списку у функції, використовуйте кортежі (вони представлені в Розділі 8 «Словники та кортежі») — Python поверне помилку, оскільки вони незмінні. Інше рішення, щоб уникнути модифікації списку, коли він передається як аргумент функції, — це передати його явну копію (як ми робили для копіювання списку), щоб він залишився недоторканним у головній програмі:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>(<span class="hljs-params">spysok_tmp</span>):
+    spysok_tmp[<span class="hljs-number">1</span>] = -<span class="hljs-number">15</span>
+
+spysok1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+moya_funktsiya(spysok1[:])
+<span class="hljs-built_in">print</span>(spysok1)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1, 2, 3</span>]
+</code></pre>
+<p>У цьому прикладі копія <code>spysok1</code> створюється на льоту під час виклику функції, тож список <code>spysok1</code> головного модуля залишається недоторканним. </p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Маючи список <code>frukty = ["яблуко", "груша", "банан"]</code>, напишіть функцію <code>dodaty_frukt(spysok, frukt)</code>, яка додає новий фрукт до списку за допомогою <code>.append()</code>. Викличте цю функцію і перевірте, що <code>frukty</code> дійсно змінився в головній програмі. Потім напишіть варіант функції, який замість цього повертає копію списку з доданим фруктом, не змінюючи оригінал (підказка: <code>spysok[<span class="hl-char">:</span>]</code>).
+</p></div>
+<h2 id="136-правило-lgi">13.6 Правило LGI</h2>
+<p>Коли Python зустрічає змінну, він обробляє її ім'я з певними пріоритетами. Спочатку він перевіряє, чи є змінна локальною, потім, якщо її не існує локально, — чи є вона глобальною, і нарешті, якщо вона не глобальна, — чи є вона внутрішньою (наприклад, функція <code>len()</code> вважається внутрішньою функцією Python: вона існує щоразу, коли ви запускаєте Python). Це називається правилом LGI: локальна, глобальна, внутрішня. Ось приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">moya_funktsiya</span>():
+    x = <span class="hljs-number">4</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"У функції x дорівнює <span class="hljs-subst">{x}</span>"</span>)
+
+x = -<span class="hljs-number">15</span>
+moya_funktsiya()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"У головному модулі x дорівнює <span class="hljs-subst">{x}</span>"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css">У функції <span class="hljs-attribute">x</span> дорівнює <span class="hljs-number">4</span>
+У головному модулі <span class="hljs-attribute">x</span> дорівнює -<span class="hljs-number">15</span>
+</code></pre>
+<p>У функції <code>x</code> набув значення, яке було визначено для нього локально, з пріоритетом над значенням, визначеним у головному модулі.</p>
+<blockquote>
+<p>Навіть якщо Python дозволяє змінній мати те саме ім'я, що й його власні функції чи внутрішні змінні, уникайте таких імен, оскільки це зробить ваш код заплутаним!</p>
+</blockquote>
+<p>Загалом правило LGI випливає з того, як Python керує так званими «просторами імен». Саме це керування визначає область видимості (видимість) кожної змінної. </p>
+<h2 id="137-рекомендації">13.7 Рекомендації</h2>
+<h3 id="1371-уникайте-глобальних-змінних">13.7.1 Уникайте глобальних змінних</h3>
+<p>У цьому розділі ми гралися з функціями (та списками), щоб показати вам, як реагує Python. Однак зверніть увагу, що використання глобальних змінних варто остаточно виключити з вашої практики програмування. Іноді хочеться зробити щось швидко, і ви створюєте глобальну змінну, видиму всюди в програмі (отже, у всіх функціях), бо «так швидше, так простіше». Це дуже погана ідея, хоча б тому, що ваші функції не будуть придатні для повторного використання в іншому контексті, якщо вони спираються на глобальні змінні! А ще: чи зможете ви перечитати такий код через півроку? Чи зможе хтось інший зрозуміти вашу програму?</p>
+<blockquote>
+<p>Замість використання глобальних змінних явно передавайте свої змінні у функції як аргумент(и).</p>
+</blockquote>
+<h3 id="1372-модифікація-списку-у-функції">13.7.2 Модифікація списку у функції</h3>
+<p>Щодо функцій, які модифікують список, ми радимо вам чітко вказувати це у вашому коді. Для цього зробіть так, щоб функція повертала модифікований список, і отримайте цей повернутий список у змінну з тим самим ім'ям. Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">dodaty_odyn</span>(<span class="hljs-params">spysok</span>):
+    <span class="hljs-keyword">for</span> indeks <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(spysok)):
+        spysok[indeks] += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> spysok
+
+<span class="hljs-comment"># Головна програма.</span>
+spysok_otsinok = [<span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">16</span>, <span class="hljs-number">7</span>, <span class="hljs-number">15</span>]
+spysok_otsinok = dodaty_odyn(spysok_otsinok)
+<span class="hljs-built_in">print</span>(spysok_otsinok)
+</code></pre>
+<p>Рядок присвоєння <code>spysok_otsinok = dodaty_odyn(spysok_otsinok)</code> показує, що список <code>spysok_otsinok</code>, переданий функції, перезаписується списком, який ця функція повертає. Наступний код дасть той самий результат:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">dodaty_odyn</span>(<span class="hljs-params">spysok</span>):
+    <span class="hljs-keyword">for</span> indeks <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(spysok)):
+        spysok[indeks] += <span class="hljs-number">1</span>
+
+<span class="hljs-comment"># Головна програма.</span>
+spysok_otsinok = [<span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">16</span>, <span class="hljs-number">7</span>, <span class="hljs-number">15</span>]
+dodaty_odyn(spysok_otsinok)
+<span class="hljs-built_in">print</span>(spysok_otsinok)
+</code></pre>
+<p>Однак це менш інтуїтивно зрозуміло, оскільки, читаючи рядок з викликом <code>dodaty_odyn(spysok_otsinok)</code>, не очевидно, що список модифікується всередині функції. У такому разі важливо було б вказати в документації функції, що список модифікується «на місці» (<em>in place</em> англійською).</p>
+<p>З наведених вище причин ми радимо надавати перевагу першому варіанту:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">spysok_otsinok = dodaty_odyn(spysok_otsinok)
+</code></pre>
+<div class="exers">
+<h2 id="138-вправи">13.8 Вправи</h2>
+<h3 id="передбачити-виведення">Передбачити виведення</h3>
+<p>Передбачте поведінку наступних кодів, не переписуючи їх у скрипт.</p>
+<h4 id="код-1">Код 1</h4>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>(<span class="hljs-params">imya</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Привіт <span class="hljs-subst">{imya}</span>"</span>)
+
+
+<span class="hljs-comment"># Головна програма.</span>
+pryvitannya(<span class="hljs-string">"Олексій"</span>)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<h4 id="код-2">Код 2</h4>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>(<span class="hljs-params">imya</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Привіт <span class="hljs-subst">{imya}</span>"</span>)
+
+
+<span class="hljs-comment"># Головна програма.</span>
+x = <span class="hljs-number">10</span>
+pryvitannya(<span class="hljs-string">"Олексій"</span>)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<h4 id="код-3">Код 3</h4>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>(<span class="hljs-params">imya</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Привіт <span class="hljs-subst">{imya}</span>"</span>)
+    <span class="hljs-built_in">print</span>(x)
+
+
+<span class="hljs-comment"># Головна програма.</span>
+x = <span class="hljs-number">10</span>
+pryvitannya(<span class="hljs-string">"Олексій"</span>)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<h4 id="код-4">Код 4</h4>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pryvitannya</span>(<span class="hljs-params">imya</span>):
+    x = <span class="hljs-number">42</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Привіт <span class="hljs-subst">{imya}</span>"</span>)
+    <span class="hljs-built_in">print</span>(x)
+
+
+<span class="hljs-comment"># Головна програма.</span>
+x = <span class="hljs-number">10</span>
+pryvitannya(<span class="hljs-string">"Олексій"</span>)
+<span class="hljs-built_in">print</span>(x)
+</code></pre>
+<h3 id="передача-списку-функції">Передача списку функції</h3>
+<p>Створіть функцію <code>dodaty_vypadkove_chyslo()</code>, яка приймає як аргумент список і додає випадкове ціле число від -10 до 10 (включно) до кожного елемента. Функція виведе на екран цей новий, модифікований список. У головній програмі виконайте такі дії:</p>
+<ol>
+<li>Створіть змінну <code>mi_spysok = [7, 3, 8, 4, 5, 1, 9, 10, 2, 6]</code>.</li>
+<li>Виведіть <code>mi_spysok</code> на екран.</li>
+<li>Викличте функцію <code>dodaty_vypadkove_chyslo()</code>, передавши їй <code>mi_spysok</code> як аргумент.</li>
+<li>Знову виведіть <code>mi_spysok</code> на екран. Як ви поясните отриманий результат?</li>
+</ol>
+</div>
+<div class="read">
+<h2 id="примітки">Примітки</h2>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Quicksort">Wikipedia — Quicksort</a>.</li>
+<li><a href="http://wiki.c2.com/?GlobalVariablesAreBad">Global Variables Are Bad</a>.
+</li></ol></div><ol><li></li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

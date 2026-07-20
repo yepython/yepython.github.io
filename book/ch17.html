@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch17</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-17-малюємо-з-simplegraphics">РОЗДІЛ 17. Малюємо з SimpleGraphics</h1>
+<p><strong>SimpleGraphics</strong> — це спеціалізована графічна бібліотека для мови програмування Python, створена для спрощення роботи з двовимірною (2D) комп'ютерною графікою. Її створив <strong>Бен Стефенсон (Ben Stephenson)</strong>, викладач інформатики з Університеті Калгарі (University of Calgary, Канада), як навчальний інструмент для студентів перших курсів та початківців, які лише знайомляться з програмуванням.</p>
+<p>Пакет працює поверх стандартної графічної бібліотеки Python під назвою <code>tkinter</code>. Головна мета створення SimpleGraphics — усунути складність синтаксису професійних графічних інструментів: вона дозволяє малювати фігури, керувати кольорами та обробляти прості події миші й клавіатури за допомогою всього кількох рядків зрозумілого коду.</p>
+<p>Для тих, хто тільки починає свій шлях у програмуванні, ця бібліотека має низку ключових переваг:</p>
+<ul>
+<li><strong>Мінімальний поріг входження.</strong> На відміну від стандартних бібліотек, вам не потрібно розуміти концепції об'єктно-орієнтованого програмування (ООП), створення екземплярів класів (<code>Canvas</code>), «пакування» віджетів чи роботу з контекстом малювання. Ви просто викликаєте функції: <code>line()</code>, <code>rect()</code>, <code>setOutline()</code>.</li>
+<li><strong>Відсутність громіздкого шаблонного коду.</strong> Щоб відкрити вікно та намалювати коло у звичайних бібліотеках, часто потрібно написати 10–15 рядків налаштувань. У SimpleGraphics достатньо двох рядків, щоб почати малювати:</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">150</span>)
+</code></pre>
+<p><img src="./media/ch17/31ce8542f1e2a7a03283eb220086c2d6.png" alt="31ce8542f1e2a7a03283eb220086c2d6.png"></p>
+<ul>
+<li><strong>Миттєвий візуальний відгук.</strong> Початківцям важко довгий час працювати лише з текстовою консоллю. SimpleGraphics дозволяє одразу бачити результат своєї логіки (наприклад, роботу циклів чи умовних операторів) у вигляді візуальних паттернів, анімацій або простих ігор.</li>
+<li><strong>Прихована автоматизація.</strong> Бібліотека самостійно керує оновленням екрана (<em>screen refresh</em>) та утримує вікно відкритим, поки користувач його не закриє, що звільняє від необхідності вивчати складні системні цикли подій (<em>event loops</em>) на ранніх етапах.</li>
+</ul>
+<p>Вивчення графіки за допомогою SimpleGraphics закладає фундаментальні концепції, які використовуються у дорослих та професійних інструментах (таких як <strong>Pygame, Tkinter, Arcade, PyQt, Kivy</strong> або навіть <strong>HTML5 Canvas</strong> у веброзробці). Вона слугує ідеальною запорукою для подальшого навчання:</p>
+<p>Математична система координат (де центр у точці (0, 0), а вісь Y йде вгору) у комп'ютерній графіці майже не використовується. SimpleGraphics привчає розробника до <strong>екранної системи координат</strong>, де (0, 0) — це лівий верхній кут, а Y росте вниз. Цей принцип абсолютно ідентичний у Pygame, веброзробці (CSS/Canvas) та UI-фреймворках. Користувач, який зрозумів це в SimpleGraphics, не матиме просторової дезорієнтації в майбутньому.</p>
+<p>Вказівки керування кольором тла (<code>background()</code>), контуру (<code>setOutline()</code>) та заливки (<code>setFill()</code>) формують чітке розуміння того, як працює графічний конвеєр: спочатку ми обираємо «пензель», а вже потім малюємо фігуру. Цей «режим малювання» є базовим для низькорівневої графіки.</p>
+<p>SimpleGraphics має прості функції для організації анімації та зчитування натискань клавіш і позиції миші. Проектуючи анімацію (наприклад, коло, що рухається по екрану завдяки зміні координати X у циклі <code>while</code>), користувач вивчає фундаментальний алгоритм комп'ютерної графіки:</p>
+<ol>
+<li>Очистити екран.</li>
+<li>Перерахувати нові координати об'єктів.</li>
+<li>Намалювати об'єкти заново.</li>
+</ol>
+<p>Коли у майбутньому розробник перейде до <strong>Pygame</strong> чи <strong>Arcade</strong>, він побачить там абсолютно ті самі механізми (Game Loop, Event Handling, Blitting), але вже реалізовані за допомогою об'єктно-орієнтованого підходу. Перехід буде плавним, оскільки сама математична та алгоритмічна основа вже відпрацьована в SimpleGraphics.</p>
+<h2 id="171-встановлення-бібліотеки-simplegraphics">17.1. Встановлення бібліотеки SimpleGraphics</h2>
+<p>Якщо ви використовуєте онлайнове середовище програмування ЄPython, тоді встановлювати нічого не потрібно — вона є складовою частиною цього середовища. У більшості інших середовищ бібліотеку потрібно встановити. SimpleGraphics доступна у глобальному сховищі PyPI під назвою <code>simplegraphics-python</code>, тому процес її встановлення зводиться до стандартного використання пакетного менеджера <code>pip</code>. Проте, залежно від операційної системи та обраного середовища розробки (IDE), цей процес має свої нюанси.</p>
+<h5 id="thonny-ide">Thonny IDE</h5>
+<p>Thonny — це чудове середовище для початківців, яке має власний ізольований Python та графічний менеджер пакетів. Це найпростіший спосіб.</p>
+<ol>
+<li>Відкрийте Thonny.</li>
+<li>У верхньому меню оберіть: <strong>Інструменти (Tools)</strong> → <strong>Керування пакетами (Manage packages)</strong>.</li>
+<li>У полі пошуку введіть: <code>simplegraphics-python</code>.</li>
+<li>Натисніть кнопку <strong>Знайти на PyPI (Search on PyPI)</strong>.</li>
+<li>Клацніть на знайдений пакет у списку та натисніть кнопку <strong>Встановити (Install)</strong>.</li>
+<li>Дочекайтеся завершення встановлення. Готово!</li>
+</ol>
+<h5 id="idle-стандартне-середовище-python">IDLE (стандартне середовище Python)</h5>
+<p>IDLE використовує ту версію Python, яка встановлена безпосередньо у вашій операційній системі. Для встановлення бібліотеки потрібно скористатися терміналом/командним рядком вашої ОС.</p>
+<ol>
+<li>Закрийте IDLE (бажано).</li>
+<li>Відкрийте термінал вашої ОС (Командний рядок у Windows, Термінал у macOS/Linux).</li>
+<li>Введіть команду встановлення (команди для конкретних ОС наведено у п. 17.2.2).</li>
+<li>Після успішного встановлення запустіть IDLE — бібліотека буде доступна.</li>
+</ol>
+<h5 id="pycharm">PyCharm</h5>
+<p>PyCharm за замовчуванням створює окреме віртуальне середовище (<code>venv</code>) для кожного нового проєкту. Пакет потрібно встановлювати безпосередньо в проєкт.</p>
+<p><strong>Спосіб через графічний інтерфейс:</strong></p>
+<ol>
+<li>Відкрийте ваш проєкт у PyCharm.</li>
+<li>Перейдіть до <strong>Settings</strong> (Windows: <code>File → Settings</code>, macOS: <code>PyCharm → Settings</code>).</li>
+<li>Оберіть <strong>Project: [Назва проєкту]</strong> → <strong>Python Interpreter</strong>.</li>
+<li>Натисніть на значок <code>+</code> (або кнопку <strong>Install Sign</strong> у новіших версіях).</li>
+<li>У рядку пошуку введіть <code>simplegraphics-python</code>.</li>
+<li>Виберіть пакет та натисніть <strong>Install Package</strong> внизу вікна.</li>
+</ol>
+<p><strong>Спосіб через вбудований термінал:</strong></p>
+<ol>
+<li>Внизу екрана PyCharm відкрийте вкладку <strong>Terminal</strong>.</li>
+<li>Введіть команду <code>pip install simplegraphics-python</code> та натисніть Enter.</li>
+</ol>
+<h5 id="visual-studio-code-vs-code">Visual Studio Code (VS Code)</h5>
+<p>VS Code працює через термінал і вимагає, щоб ви переконалися, що пакет встановлюється саме в той інтерпретатор, який зараз обрано в редакторі.</p>
+<ol>
+<li>Відкрийте папку з вашим проєктом у VS Code.</li>
+<li>Переконайтеся, що інтерпретатор Python обрано (знизу праворуч або через комбінацію <code>Ctrl+Shift+P</code> / <code>Cmd+Shift+P</code> → <em>Python: Select Interpreter</em>).</li>
+<li>Відкрийте вбудований термінал (<code>Ctrl + ~</code> або <em>Terminal → New Terminal</em>).</li>
+<li>Якщо ви використовуєте віртуальне середовище, перевірте, чи воно активоване (на початку рядка термінала має бути щось на кшталт <code>(.venv)</code>).</li>
+<li>Запустіть команду встановлення:<ul>
+<li>Windows: <code>pip install simplegraphics-python</code></li>
+<li>macOS/Linux: <code>pip3 install simplegraphics-python</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="особливості-встановлення-в-різних-ос">Особливості встановлення в різних ОС</h4>
+<p>Якщо ви встановлюєте бібліотеку через глобальний термінал (для IDLE або VS Code без venv), команди відрізняються залежно від платформи.</p>
+<h5 id="windows">Windows</h5>
+<ol>
+<li><p>Натисніть клавіші <code>Win + R</code>, введіть <code>cmd</code> та натисніть Enter (відкриється Командний рядок).</p>
+</li>
+<li><p>Введіть таку команду:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">py -m pip install simplegraphics-python
+</code></pre>
+<p><em>(Використання утиліти <code>py</code> гарантує, що пакет встановиться для правильної версії Python, якщо їх у системі кілька.)</em></p>
+</li>
+</ol>
+<h5 id="macos">macOS</h5>
+<p>На комп'ютерах Mac стандартна команда <code>python</code> може викликати застарілі системні версії або видавати помилку, тому використовується <code>python3</code>.</p>
+<ol>
+<li><p>Відкрийте програму <strong>Термінал (Terminal)</strong> (через Spotlight або папку Програми → Утиліти).</p>
+</li>
+<li><p>Виконайте команду:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">python3 -m pip install simplegraphics-python
+</code></pre>
+</li>
+</ol>
+<blockquote>
+<p><strong>Важливо для macOS:</strong> оскільки бібліотека побудована на базі графічного рушія Tkinter, на деяких версіях macOS (особливо з чипами Apple Silicon M1/M2/M3) може виникнути помилка <code>ModuleNotFoundError<span class="hl-char">:</span> No module named '_tkinter'</code>. Якщо це сталося, потрібно встановити підтримку Tcl/Tk через менеджер пакетів Homebrew, виконавши в Терміналі: <code>brew install python-tk</code>.</p>
+</blockquote>
+<h5 id="linux-ubuntu-debian-fedora">Linux (Ubuntu / Debian / Fedora)</h5>
+<p>У деяких дистрибутивах Linux пакетний менеджер <code>pip</code> та модуль <code>tkinter</code> відключені від Python за замовчуванням з міркувань безпеки. Їх потрібно встановити через системний менеджер пакетів.</p>
+<ol>
+<li><p>Відкрийте Термінал.</p>
+</li>
+<li><p>Оновіть репозиторії та встановіть <code>pip</code> разом із <code>tkinter</code> (приклад для Ubuntu/Debian):</p>
+<pre><code class="language-bash hljs" data-highlighted="yes"><span class="hljs-built_in">sudo</span> apt update
+<span class="hljs-built_in">sudo</span> apt install python3-pip python3-tk
+</code></pre>
+</li>
+<li><p>Після цього встановіть саму бібліотеку графіки:</p>
+<pre><code class="language-bash hljs" data-highlighted="yes">python3 -m pip install simplegraphics-python
+</code></pre>
+</li>
+</ol>
+<blockquote>
+<p><strong>Примітка:</strong> якщо система Linux видає помилку про «externally-managed-environment», рекомендується встановлювати бібліотеку всередині віртуального середовища (<code>venv</code>), в Thonny IDE або скориставшись командою <code>python3 -m pip install simplegraphics-python --break-system-packages</code>.</p>
+</blockquote>
+<h4 id="як-перевірити-чи-все-працює">Як перевірити, чи все працює?</h4>
+<p>Після встановлення створіть новий файл Python (наприклад, <code>test_graphics.py</code>) та запустіть наступний мінімальний код:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Малюємо синє коло по центру</span>
+background(<span class="hljs-string">"white"</span>)
+setFill(<span class="hljs-string">"blue"</span>)
+circle(<span class="hljs-number">400</span>, <span class="hljs-number">300</span>, <span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Малюємо лінію</span>
+setOutline(<span class="hljs-string">"red"</span>)
+line(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">400</span>, <span class="hljs-number">300</span>)
+</code></pre>
+<p><img src="./media/ch17/726524c5556cdd25a670e19e3211fbbd.png" alt="726524c5556cdd25a670e19e3211fbbd.png">
+Якщо перед вами з'явилося вікно з синім колом та червоною лінією — вітаємо, бібліотека встановлена правильно і готова до роботи!</p>
+<h2 id="172-система-координат">17.2. Система координат</h2>
+<p>Система координат у графічній бібліотеці SimpleGraphics базується на стандартній <strong>екранній (комп'ютерній) системі координат</strong>. Вона суттєво відрізняється від традиційної декартової системи координат, яку вивчають у шкільному курсі математики.</p>
+<h4 id="головні-принципи-екранної-координатної-системи">Головні принципи екранної координатної системи</h4>
+<ul>
+<li><strong>Початок координат (0, 0)</strong> розташований у <strong>верхньому лівому кутку</strong> вікна програми.</li>
+<li><strong>Вісь X (горизонтальна вісь):</strong> спрямована зліва направо. Значення X зростають, коли ви рухаєтеся вправо, що збігається з математичною системою.</li>
+<li><strong>Вісь Y (вертикальна вісь):</strong> спрямована <strong>згори вниз</strong>. Це головна відмінність від математики: чим більшим є значення Y, тим нижче на екрані буде розташована точка.
+<img src="./media/ch17/079728932437009a2c4043d7b86916c6.png" alt="079728932437009a2c4043d7b86916c6.png"></li>
+</ul>
+<blockquote>
+<p><strong>Приклад:</strong> точка з координатами (0, 0) — це найверхніший лівий піксель вікна. Точка (100, 200) означає, що об'єкт зміщено на 100 пікселів вправо та на 200 пікселів вниз від верхнього лівого кутка.</p>
+</blockquote>
+<p><img src="./media/ch17/0f41136edb996c361e9eef023a6a88a7.png" alt="0f41136edb996c361e9eef023a6a88a7.png"></p>
+<h4 id="одиниці-виміру-та-межі">Одиниці виміру та межі</h4>
+<ul>
+<li><strong>Пікселі.</strong> Усі координати, відстані, ширина та висота у SimpleGraphics вимірюються в пікселях (точках екрана). На відміну від математичних графіків, тут немає абстрактних одиниць — кожен крок дорівнює одному фізичному пікселю вікна.</li>
+<li><strong>Розмір вікна за замовчуванням.</strong> При імпорті бібліотеки автоматично створюється вікно розміром <strong>800 × 600 пікселів</strong>; за потреби цей розмір можна змінити функцією <code>resize(width, height)</code>.</li>
+<li>Якщо розмір вікна становить, наприклад, 600 × 400, то правий нижній куток матиме координати (599, 399), оскільки відлік починається з нуля.</li>
+<li><strong>Від'ємні координати та координати за межами вікна.</strong> Ви можете використовувати від'ємні числа (наприклад, x = -50) або числа, що перевищують розмір вікна. Бібліотека не видасть помилки, але ці точки просто опиняться <strong>за межами видимої області</strong> екрана (за лівою/верхньою або правою/нижньою межами відповідно).</li>
+</ul>
+<h4 id="як-координати-застосовуються-до-фігур">Як координати застосовуються до фігур</h4>
+<p>Різні геометричні фігури використовують координати по-різному.</p>
+<p><strong>А. Лінії (<code>line</code>).</strong> Для малювання лінії потрібні дві пари координат — початкова точка (x1, y1) та кінцева точка (x2, y2):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">line(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">200</span>, <span class="hljs-number">150</span>)  <span class="hljs-comment"># Проводить лінію з точки (50, 50) до точки (200, 150)</span>
+</code></pre>
+<p><img src="./media/ch17/53ac875e15be3190d19a89f80cc4ba87.png" alt="53ac875e15be3190d19a89f80cc4ba87.png"></p>
+<p><strong>Б. Прямокутники (<code>rect</code>) та еліпси (<code>ellipse</code>).</strong> Для цих фігур початкові координати (x, y) задають <strong>верхній лівий кут</strong> уявної коробки (габаритного контейнера), в яку вписується фігура. Далі вказуються її ширина (<code>width</code>) та висота (<code>height</code>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">rect(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">200</span>, <span class="hljs-number">50</span>)  <span class="hljs-comment"># Малює прямокутник, верхній лівий кут якого в (100, 100)</span>
+</code></pre>
+<p><img src="./media/ch17/adac545e69f7c388a5754a245f94cacc.png" alt="adac545e69f7c388a5754a245f94cacc.png"></p>
+<p>Оскільки вісь Y напрямлена вниз, прямокутник буде рости від точки (100, 100) <strong>вниз та вправо</strong>. Нижній правий кут цього прямокутника матиме координати (100 + 200, 100 + 50) = (300, 150).
+<img src="./media/ch17/d7fa5b7282577ca06236bf9548767040.png" alt="d7fa5b7282577ca06236bf9548767040.png"></p>
+<p><strong>В. Текст (<code>text</code>).</strong> При виведенні тексту координати (x, y) за замовчуванням вказують на позицію розміщення тексту, проте SimpleGraphics дозволяє налаштовувати «якір» (<em>anchor</em>) відносно сторін світу (<code>"n"</code>, <code>"s"</code>, <code>"e"</code>, <code>"w"</code>), щоб чітко керувати тим, де саме текст опиниться відносно заданої координатної точки.</p>
+<h4 id="чому-система-саме-така">Чому система саме така?</h4>
+<p>Така логіка (нуль у верхньому лівому кутку) є історичним стандартом для більшості графічних систем (включаючи <code>tkinter</code>, на базі якого побудована SimpleGraphics, а також HTML Canvas, Java Swing тощо). Це пов'язано з тим, як старі ЕЛТ-монітори формували зображення — електронний промінь сканував екран рядок за рядком, починаючи саме з лівого верхнього кутка і рухаючись вниз.
+<img src="./media/ch17/b2c63fabd9ae7ed19a006de4d4d6a3e3.png" alt="b2c63fabd9ae7ed19a006de4d4d6a3e3.png"></p>
+<h2 id="173-малюємо-використовуючи-simplegraphics">17.3 Малюємо, використовуючи SimpleGraphics</h2>
+<p>Після імпорту бібліотеки за допомогою команди <code>from SimpleGraphics import *</code> автоматично створюється графічне вікно розміром <strong>800 × 600 пікселів</strong>.</p>
+<h4 id="перший-крок-малювання-кола">Перший крок: малювання кола</h4>
+<p>Малювання круглих фігур виконується за допомогою функції <code>circle()</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Малюємо коло</span>
+circle(<span class="hljs-number">400</span>, <span class="hljs-number">300</span>, <span class="hljs-number">100</span>)
+</code></pre>
+<p><img src="./media/ch17/df57bb96e7f6b271e482227e438db766.png" alt="df57bb96e7f6b271e482227e438db766.png"></p>
+<p>Пояснення аргументів <code>circle(x, y, diameter)</code>:</p>
+<ul>
+<li><strong><code>x</code></strong> (перший аргумент, тут <code>400</code>) — координата по горизонталі для лівого краю уявного квадрата, в який вписується коло.</li>
+<li><strong><code>y</code></strong> (другий аргумент, тут <code>300</code>) — координата по вертикалі для верхнього краю уявного квадрата.</li>
+<li><strong><code>diameter</code></strong> (третій аргумент, тут <code>100</code>) — діаметр кола в пікселях.</li>
+</ul>
+<h4 id="керування-кольором-та-лініями">Керування кольором та лініями</h4>
+<p>Перш ніж переходити до складніших фігур, важливо навчитися фарбувати їх та змінювати товщину контуру. За замовчуванням фігури малюються чорним контуром без заливки. Змінити це можна за допомогою таких вказівок:</p>
+<ul>
+<li><strong><code>background("колір")</code></strong> — повністю перефарбовує тло всього вікна.</li>
+<li><strong><code>setOutline("колір")</code></strong> — встановлює колір ліній та контурів для усіх фігур, які будуть малюватися <em>після</em> цієї команди.</li>
+<li><strong><code>setFill("колір")</code></strong> — встановлює колір заливки (внутрішньої частини) для всіх наступних фігур.</li>
+<li><strong><code>setWidth(пікселі)</code></strong> — змінює товщину ліній контуру.</li>
+<li><strong><code>setColor("колір")</code></strong> — швидкий спосіб встановити водночас і колір контуру, і колір заливки однією командою (якщо не потрібно, щоб контур і заливка відрізнялися кольором).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+background(<span class="hljs-string">"lightgray"</span>)  <span class="hljs-comment"># Робимо тло вікна сірим</span>
+setWidth(<span class="hljs-number">3</span>)               <span class="hljs-comment"># Збільшуємо товщину ліній контуру до 3 пікселів</span>
+setOutline(<span class="hljs-string">"red"</span>)         <span class="hljs-comment"># Наступні фігури матимуть червону межу</span>
+setFill(<span class="hljs-string">"blue"</span>)           <span class="hljs-comment"># Наступні фігури будуть синіми всередині</span>
+
+<span class="hljs-comment"># Тепер коло буде синім із товстим червоним контуром на сірому тлі</span>
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">80</span>)
+</code></pre>
+<p><img src="./media/ch17/b09261dcdaf5a21b51b56b734b77d90a.png" alt="b09261dcdaf5a21b51b56b734b77d90a.png"></p>
+<h4 id="малювання-прямокутників-та-інших-геометричних-фігур">Малювання прямокутників та інших геометричних фігур</h4>
+<p>Тепер, коли ми вміємо налаштовувати кольори, розглянемо інші базові вказівки побудови в логічному порядку — від простих ліній до складних багатокутників.</p>
+<p><strong>Прямокутник — <code>rect(x, y, width, height)</code>.</strong> Параметри <code>x</code> та <code>y</code> вказують на розташування <strong>верхнього лівого кута</strong> прямокутника, а <code>width</code> та <code>height</code> задають його ширину й висоту.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"yellow"</span>)
+<span class="hljs-comment"># Малюємо жовтий прямокутник</span>
+rect(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">200</span>, <span class="hljs-number">100</span>)  <span class="hljs-comment"># Початок у (50, 50), ширина 200, висота 100</span>
+</code></pre>
+<p><img src="./media/ch17/9256c1960c80d8ede0d60f1c688fa833.png" alt="9256c1960c80d8ede0d60f1c688fa833.png"></p>
+<p><strong>Лінія — <code>line(x1, y1, x2, y2)</code>.</strong> Проводить пряму лінію між двома точками на екрані. <code>(x1, y1)</code> — це координати початку лінії, а <code>(x2, y2)</code> — координати її кінця. Якщо більше, ніж одна пара координат — будується ламана:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Проводимо ламану</span>
+line(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">200</span>, <span class="hljs-number">10</span>, <span class="hljs-number">300</span>, <span class="hljs-number">100</span>, <span class="hljs-number">400</span>, <span class="hljs-number">10</span>)
+</code></pre>
+<p><img src="./media/ch17/2a3a5e4324fdaba48516ead320cbeaf1.png" alt="2a3a5e4324fdaba48516ead320cbeaf1.png"></p>
+<p><strong>Еліпс — <code>ellipse(x, y, width, height)</code>.</strong> Параметри <code>x</code> та <code>y</code> вказують на розташування <strong>верхнього лівого кута</strong> уявного прямокутника, що містить це еліпс, а <code>width</code> та <code>height</code> задають його ширину й висоту.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"yellow"</span>)
+<span class="hljs-comment"># Малюємо жовтий еліпс(овал)</span>
+ellipse(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">200</span>, <span class="hljs-number">100</span>)  <span class="hljs-comment"># Початок у (50, 50), ширина 200, висота 100</span>
+
+setFill(<span class="hljs-string">"pink"</span>)
+<span class="hljs-comment"># Малюємо рожевий еліпс</span>
+ellipse(<span class="hljs-number">350</span>, <span class="hljs-number">50</span>, <span class="hljs-number">100</span>, <span class="hljs-number">200</span>)  <span class="hljs-comment"># витягнутий вертикально</span>
+</code></pre>
+<p><img src="./media/ch17/242b00bacfb7b48b336f9db43aa33b98.png" alt="242b00bacfb7b48b336f9db43aa33b98.png"></p>
+<p><strong>Дуга та сектор — <code>arc()</code> і <code>pieSlice()</code>.</strong> Вони приймають параметри <code>(x, y, width, height, start_angle, extent)</code>. Спочатку визначається уявний прямокутник (як для еліпса), а потім вирізається потрібна частина за кутами. <code>start_angle</code> — початковий кут у градусах, <code>extent</code> — величина(розмах) дуги.</p>
+<ul>
+<li><strong><code>arc</code></strong> — малює лише дугу (частину кола).</li>
+<li><strong><code>pieSlice</code></strong> — малює заповнений сектор круга.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+background(<span class="hljs-string">"lightgray"</span>)
+setFill(<span class="hljs-string">"lightgray"</span>)
+<span class="hljs-comment"># Дуга з початковим кутом 45 градусів та розмахом 90 градусів</span>
+arc(<span class="hljs-number">200</span>, <span class="hljs-number">300</span>, <span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">45</span>, <span class="hljs-number">90</span>)
+setFill(<span class="hljs-string">"blue"</span>)
+<span class="hljs-comment"># Сектор із такими ж параметрами (буде зафарбований синім кольором)</span>
+pieSlice(<span class="hljs-number">350</span>, <span class="hljs-number">300</span>, <span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">45</span>, <span class="hljs-number">90</span>)
+</code></pre>
+<p><img src="./media/ch17/289819ac9dde57b4248baeda61ca662c.png" alt="289819ac9dde57b4248baeda61ca662c.png"></p>
+<p><strong>Багатокутник — <code>polygon(x1, y1, x2, y2, x3, y3, ...)</code>.</strong> Дозволяє будувати фігури з будь-якою кількістю кутів (трикутники, зірки, ромби). Ви просто по черзі перераховуєте пари координат усіх вершин, які будуть автоматично з'єднані між собою, а остання - точка з першою.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"green"</span>)
+<span class="hljs-comment"># Передаємо 3 пари координат, щоб отримати зелений трикутник</span>
+polygon(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, <span class="hljs-number">50</span>, <span class="hljs-number">250</span>, <span class="hljs-number">200</span>, <span class="hljs-number">100</span>)
+</code></pre>
+<p><img src="./media/ch17/818b88f7747ee8bdd0ffe21b926a521e.png" alt="818b88f7747ee8bdd0ffe21b926a521e.png"></p>
+<p><strong>Плавні криві — <code>curve()</code> та <code>blob()</code>.</strong> Ці функції створюють заокруглені, хвилясті лінії через задані точки.</p>
+<ul>
+<li><strong><code>curve</code></strong> — малює відкриту плавну лінію.</li>
+<li><strong><code>blob</code></strong> — автоматично замикає початкову і кінцеву точки кривої та заповнює фігуру зсередини.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Малювання звичайної кривої</span>
+curve(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">150</span>, <span class="hljs-number">150</span>, <span class="hljs-number">200</span>, <span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Малювання заповненої кривої</span>
+blob(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">300</span>, <span class="hljs-number">400</span>, <span class="hljs-number">400</span>, <span class="hljs-number">200</span>)
+</code></pre>
+<p><img src="./media/ch17/90a31dfbaf86b51c128380f20aac8e26.png" alt="90a31dfbaf86b51c128380f20aac8e26.png"></p>
+<p><strong>Текст — <code>text(x, y, "текст", align="center")</code>.</strong> Виводить напис на екран у вказаних координатах <code>(x, y)</code>. За допомогою параметра <code>align</code> можна вказати вирівнювання (наприклад, по центру).</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+text(<span class="hljs-number">400</span>, <span class="hljs-number">300</span>, <span class="hljs-string">"Привіт, SimpleGraphics!"</span>, align=<span class="hljs-string">"center"</span>)
+</code></pre>
+<p><img src="./media/ch17/026c546308f96f29bcb065d9670653f7.png" alt="026c546308f96f29bcb065d9670653f7.png"></p>
+<h4 id="більш-складніші-малюнки">Більш складніші малюнки</h4>
+<p>Щоб створити повноцінний малюнок, ми поєднуємо примітиви. </p>
+<p><strong>Важливе правило:</strong> фігури, які записані в коді нижче, будуть малюватися поверх тих, що записані вище.</p>
+<p><strong>Зразок 1. Побудова «Будиночка».</strong> Малюнок складається з прямокутної стіни, трикутного даху (через <code>polygon</code>), прямокутних дверей та круглого віконця.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+<span class="hljs-comment"># Вікно</span>
+resize(<span class="hljs-number">700</span>, <span class="hljs-number">500</span>)
+background(<span class="hljs-string">"skyblue"</span>)
+
+<span class="hljs-comment"># Земля</span>
+setColor(<span class="hljs-string">"green"</span>)
+rect(<span class="hljs-number">0</span>, <span class="hljs-number">280</span>, <span class="hljs-number">800</span>, <span class="hljs-number">260</span>)
+
+<span class="hljs-comment"># Сонце</span>
+setColor(<span class="hljs-string">"yellow"</span>)
+circle(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">60</span>)
+
+<span class="hljs-comment"># Будинок</span>
+setColor(<span class="hljs-string">"gold"</span>)
+rect(<span class="hljs-number">130</span>, <span class="hljs-number">190</span>, <span class="hljs-number">350</span>, <span class="hljs-number">180</span>)
+
+<span class="hljs-comment"># Дах</span>
+setFill(<span class="hljs-string">"brown"</span>)
+polygon(<span class="hljs-number">130</span>, <span class="hljs-number">190</span>,<span class="hljs-number">305</span>, <span class="hljs-number">80</span>,<span class="hljs-number">480</span>, <span class="hljs-number">190</span>)
+
+<span class="hljs-comment"># Двері</span>
+setColor(<span class="hljs-string">"chocolate"</span>)
+rect(<span class="hljs-number">260</span>, <span class="hljs-number">230</span>, <span class="hljs-number">90</span>, <span class="hljs-number">140</span>)
+
+setWidth(<span class="hljs-number">4</span>)
+<span class="hljs-comment"># Ліве вікно</span>
+setColor(<span class="hljs-string">"white"</span>)
+rect(<span class="hljs-number">150</span>, <span class="hljs-number">230</span>, <span class="hljs-number">90</span>, <span class="hljs-number">90</span>)
+setFill(<span class="hljs-string">"aqua"</span>)
+rect(<span class="hljs-number">150</span>, <span class="hljs-number">230</span>, <span class="hljs-number">90</span>, <span class="hljs-number">90</span>)
+setColor(<span class="hljs-string">"white"</span>)
+line(<span class="hljs-number">195</span>, <span class="hljs-number">230</span>, <span class="hljs-number">195</span>, <span class="hljs-number">320</span>)
+line(<span class="hljs-number">150</span>, <span class="hljs-number">275</span>, <span class="hljs-number">240</span>, <span class="hljs-number">275</span>)
+
+<span class="hljs-comment"># Праве вікно</span>
+setColor(<span class="hljs-string">"white"</span>)
+rect(<span class="hljs-number">370</span>, <span class="hljs-number">230</span>, <span class="hljs-number">90</span>, <span class="hljs-number">90</span>)
+setFill(<span class="hljs-string">"aqua"</span>)
+rect(<span class="hljs-number">370</span>, <span class="hljs-number">230</span>, <span class="hljs-number">90</span>, <span class="hljs-number">90</span>)
+setColor(<span class="hljs-string">"white"</span>)
+line(<span class="hljs-number">415</span>, <span class="hljs-number">230</span>, <span class="hljs-number">415</span>, <span class="hljs-number">320</span>)
+line(<span class="hljs-number">370</span>, <span class="hljs-number">275</span>, <span class="hljs-number">460</span>, <span class="hljs-number">275</span>)
+
+<span class="hljs-comment"># Дерево - стовбур</span>
+setColor(<span class="hljs-string">"brown"</span>)
+rect(<span class="hljs-number">600</span>, <span class="hljs-number">180</span>, <span class="hljs-number">25</span>, <span class="hljs-number">190</span>)
+<span class="hljs-comment"># Крона</span>
+setColor(<span class="hljs-string">"olivedrab"</span>)
+ellipse(<span class="hljs-number">550</span>, <span class="hljs-number">20</span>, <span class="hljs-number">120</span>, <span class="hljs-number">240</span>)
+</code></pre>
+<p><img src="./media/ch17/9ab1771c46f9ec369295094d2f83878a.png" alt="9ab1771c46f9ec369295094d2f83878a.png"></p>
+<p><strong>Зразок 2. Побудова «Кораблика».</strong> Тут ми використовуємо багатокутник (<code>polygon</code>) для створення форми трапеції (корпусу човна), лінію для щогли та заповнену криву (<code>blob</code>) для створення ефекту хвиль моря.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+background(<span class="hljs-string">"skyblue"</span>)
+
+<span class="hljs-comment"># Корпус корабля</span>
+setColor(<span class="hljs-string">"red"</span>)
+polygon(<span class="hljs-number">60</span>, <span class="hljs-number">260</span>,
+        <span class="hljs-number">340</span>, <span class="hljs-number">260</span>,
+        <span class="hljs-number">300</span>, <span class="hljs-number">300</span>,
+        <span class="hljs-number">100</span>, <span class="hljs-number">300</span>)
+
+<span class="hljs-comment"># Щогла</span>
+setColor(<span class="hljs-string">"black"</span>)
+setWidth(<span class="hljs-number">3</span>)
+line(<span class="hljs-number">180</span>, <span class="hljs-number">40</span>, <span class="hljs-number">180</span>, <span class="hljs-number">260</span>)
+
+<span class="hljs-comment"># Велике вітрило</span>
+setColor(<span class="hljs-string">"cyan"</span>)
+polygon(<span class="hljs-number">180</span>, <span class="hljs-number">80</span>,
+        <span class="hljs-number">180</span>, <span class="hljs-number">240</span>,
+        <span class="hljs-number">300</span>, <span class="hljs-number">240</span>)
+
+<span class="hljs-comment"># Маленьке вітрило</span>
+setColor(<span class="hljs-string">"blue"</span>)
+polygon(<span class="hljs-number">180</span>, <span class="hljs-number">120</span>,
+        <span class="hljs-number">180</span>, <span class="hljs-number">240</span>,
+        <span class="hljs-number">90</span>, <span class="hljs-number">240</span>)
+
+<span class="hljs-comment"># Прапорець</span>
+setColor(<span class="hljs-string">"yellow"</span>)
+rect(<span class="hljs-number">180</span>, <span class="hljs-number">45</span>, <span class="hljs-number">35</span>, <span class="hljs-number">10</span>)
+
+<span class="hljs-comment"># Море</span>
+setColor(<span class="hljs-string">"blue"</span>)
+rect(<span class="hljs-number">0</span>, <span class="hljs-number">300</span>, <span class="hljs-number">800</span>, <span class="hljs-number">300</span>)
+</code></pre>
+<p><img src="./media/ch17/074f89322380856252f2c28e59efe018.png" alt="074f89322380856252f2c28e59efe018.png"></p>
+<h2 id="174-додаткові-можливості">17.4. Додаткові можливості</h2>
+<p>Розглянемо ще кілька корисних прикладів, які доповнюють базовий набір функцій SimpleGraphics: стилізовані лінії, ламані та згладжені криві, складні фігури за списком координат, прямокутники, що перекриваються, еліпс і багатокутник-зірку.</p>
+<h4 id="лінії-різних-стилів">Лінії різних стилів</h4>
+<p>Три лінії, намальовані в різних стилях. Побачимо, як змінювати колір та товщину за допомогою <code>setColor()</code> та <code>setWidth()</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+<span class="hljs-comment"># Встановлюємо зелений фон для всього вікна</span>
+background(<span class="hljs-string">"springgreen"</span>)
+
+<span class="hljs-comment"># Лінія 1</span>
+setWidth(<span class="hljs-number">3</span>)
+setColor(<span class="hljs-string">"black"</span>)
+line(<span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">180</span>, <span class="hljs-number">20</span>)
+
+<span class="hljs-comment"># Лінія 2</span>
+setWidth(<span class="hljs-number">5</span>)
+setColor(<span class="hljs-string">"red"</span>)
+line(<span class="hljs-number">280</span>, <span class="hljs-number">20</span>, <span class="hljs-number">480</span>, <span class="hljs-number">270</span>)
+
+<span class="hljs-comment"># Лінія 3 (Товста лінія)</span>
+setWidth(<span class="hljs-number">15</span>)
+setColor(<span class="hljs-string">"darkblue"</span>)
+line(<span class="hljs-number">150</span>, <span class="hljs-number">170</span>, <span class="hljs-number">150</span>, <span class="hljs-number">370</span>)
+</code></pre>
+<p><img src="./media/ch17/07039ccff00606666e64d069531d009d.png" alt="07039ccff00606666e64d069531d009d.png"></p>
+<h4 id="ламана-та-згладжена-крива">Ламана та згладжена крива</h4>
+<p>Лінії не обов'язково мають бути прямими. Більш загальний тип лінії може складатися з багатьох прямих сегментів — а якщо замінити <code>line()</code> на <code>curve()</code>, ті самі точки утворять плавний, згладжений вигин.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setWidth(<span class="hljs-number">3</span>)
+setColor(<span class="hljs-string">"violet"</span>)
+
+<span class="hljs-comment"># Різкий згин (передаємо більше двох точок)</span>
+line(<span class="hljs-number">50</span>, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">80</span>, <span class="hljs-number">250</span>, <span class="hljs-number">160</span>)
+
+setColor(<span class="hljs-string">"green"</span>)
+<span class="hljs-comment"># Кривий згин (функція curve() будує згладжену криву)</span>
+curve(<span class="hljs-number">50</span>, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">80</span>, <span class="hljs-number">250</span>, <span class="hljs-number">160</span>)
+</code></pre>
+<p><img src="./media/ch17/26c2cd2ca77d41586056dd5774f0201f.png" alt="26c2cd2ca77d41586056dd5774f0201f.png"></p>
+<h4 id="складна-крива-за-списком-координат-виноградна-лоза">Складна крива за списком координат: виноградна лоза</h4>
+<p>Завдання полягає в тому, щоб намалювати складну фігуру, використовуючи списки координат, попередньо виміряні, наприклад, з ескізу на паперу.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Координати, виміряні з ескізу на папері</span>
+vine_x = [<span class="hljs-number">23</span>, <span class="hljs-number">20</span>, <span class="hljs-number">11</span>, <span class="hljs-number">9</span>, <span class="hljs-number">29</span>, <span class="hljs-number">52</span>, <span class="hljs-number">56</span>, <span class="hljs-number">39</span>, <span class="hljs-number">24</span>, <span class="hljs-number">32</span>, <span class="hljs-number">53</span>, <span class="hljs-number">69</span>, <span class="hljs-number">63</span>, <span class="hljs-number">47</span>, <span class="hljs-number">35</span>, <span class="hljs-number">35</span>, <span class="hljs-number">51</span>, <span class="hljs-number">82</span>, <span class="hljs-number">116</span>, <span class="hljs-number">130</span>, <span class="hljs-number">95</span>, <span class="hljs-number">67</span>, <span class="hljs-number">95</span>, <span class="hljs-number">114</span>, <span class="hljs-number">95</span>, <span class="hljs-number">78</span>, <span class="hljs-number">95</span>, <span class="hljs-number">103</span>, <span class="hljs-number">95</span>, <span class="hljs-number">85</span>, <span class="hljs-number">95</span>, <span class="hljs-number">94</span>]
+vine_y = [<span class="hljs-number">36</span>, <span class="hljs-number">44</span>, <span class="hljs-number">39</span>, <span class="hljs-number">22</span>, <span class="hljs-number">16</span>, <span class="hljs-number">32</span>, <span class="hljs-number">56</span>, <span class="hljs-number">72</span>, <span class="hljs-number">91</span>, <span class="hljs-number">117</span>, <span class="hljs-number">125</span>, <span class="hljs-number">138</span>, <span class="hljs-number">150</span>, <span class="hljs-number">151</span>, <span class="hljs-number">140</span>, <span class="hljs-number">123</span>, <span class="hljs-number">107</span>, <span class="hljs-number">92</span>, <span class="hljs-number">70</span>, <span class="hljs-number">41</span>, <span class="hljs-number">5</span>, <span class="hljs-number">41</span>, <span class="hljs-number">66</span>, <span class="hljs-number">41</span>, <span class="hljs-number">24</span>, <span class="hljs-number">41</span>, <span class="hljs-number">53</span>, <span class="hljs-number">41</span>, <span class="hljs-number">33</span>, <span class="hljs-number">41</span>, <span class="hljs-number">41</span>, <span class="hljs-number">39</span>]
+
+<span class="hljs-comment"># Об'єднуємо списки X та Y в один черговий список</span>
+pts = []
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vine_x)):
+    pts.append(vine_x[i])
+    pts.append(vine_y[i])
+
+<span class="hljs-comment"># Малюємо виноградну лозу як згладжену криву</span>
+curve(*pts)
+</code></pre>
+<p><img src="./media/ch17/b774507c6b069d4d8f3f8c4443e7064f.png" alt="b774507c6b069d4d8f3f8c4443e7064f.png"></p>
+<h4 id="перекривання-фігур">Перекривання фігур</h4>
+<p>Якщо намалювати кілька прямокутників зі зсувом один за одним, кожен наступний буде перекривати попередній.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Темно-синій прямокутник</span>
+setColor(<span class="hljs-string">"darkblue"</span>)
+rect(<span class="hljs-number">10</span>, <span class="hljs-number">30</span>, <span class="hljs-number">70</span>, <span class="hljs-number">90</span>)
+
+<span class="hljs-comment"># Темно-червоний прямокутник (зміщений, малюється другим)</span>
+setColor(<span class="hljs-string">"darkred"</span>)
+rect(<span class="hljs-number">30</span>, <span class="hljs-number">50</span>, <span class="hljs-number">70</span>, <span class="hljs-number">90</span>)
+
+<span class="hljs-comment"># Темно-зелений прямокутник (малюється останнім, тому "зверху")</span>
+setColor(<span class="hljs-string">"darkgreen"</span>)
+rect(<span class="hljs-number">50</span>, <span class="hljs-number">70</span>, <span class="hljs-number">70</span>, <span class="hljs-number">90</span>)
+</code></pre>
+<p><img src="./media/ch17/eec478e6d66fd8a91a0d1710fec2ee04.png" alt="eec478e6d66fd8a91a0d1710fec2ee04.png"></p>
+<h4 id="коло-овал-та-еліпс">Коло, овал та еліпс</h4>
+<p>Найкращий спосіб намалювати коло або еліпс — використати методи <code>ellipse(x, y, w, h)</code> або <code>circle(x, y, d)</code>. На відміну від кола, еліпс дозволяє окремо вказати ширину та висоту габаритного прямокутника.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># kolo.py</span>
+<span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setColor(<span class="hljs-string">"cyan"</span>)
+<span class="hljs-comment"># ellipse малює еліпс, вписаний у прямокутник (x, y, ширина, висота)</span>
+ellipse(<span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># circle малює коло за центром та діаметром</span>
+<span class="hljs-comment"># circle(70, 70, 100)</span>
+</code></pre>
+<h2 id="175-робота-з-текстом">17.5 Робота з текстом</h2>
+<p>Текст може бути різноманітним, тож  нам потрібно мати можливість керувати обраними шрифтами, розміром, кольором та розміщенням. SimpleGraphics спрощує це, надаючи функції <code>text()</code> та <code>setFont()</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># За замовчуванням текст малюється чорним кольором</span>
+text(<span class="hljs-number">150</span>, <span class="hljs-number">20</span>, <span class="hljs-string">"Розмір тексту за замовчуванням виглядає як 10 пунктів"</span>)
+</code></pre>
+<h4 id="тип-розмір-і-колір-шрифту">Тип, розмір і колір шрифту</h4>
+<p>Колір та стиль тексту керуються відповідними функціями <code>setColor()</code> та <code>setFont()</code>. 
+Функція <code>setFont()</code> приймає назву шрифту, розмір у пунктах і, за потреби, стиль (<code>"bold"</code>, <code>"italic"</code>).</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setColor(<span class="hljs-string">"red"</span>)
+setFont(<span class="hljs-string">"SansSerif"</span>, <span class="hljs-number">20</span>)
+text(<span class="hljs-number">200</span>, <span class="hljs-number">20</span>, <span class="hljs-string">"Звичайний текст SansSerif 20"</span>)
+
+setColor(<span class="hljs-string">"blue"</span>)
+setFont(<span class="hljs-string">"Arial"</span>, <span class="hljs-number">20</span>)
+text(<span class="hljs-number">200</span>, <span class="hljs-number">50</span>, <span class="hljs-string">"Звичайний текст Arial 20"</span>)
+
+setColor(<span class="hljs-string">"green"</span>)
+setFont(<span class="hljs-string">"Courier"</span>, <span class="hljs-number">20</span>, <span class="hljs-string">"bold"</span>)
+text(<span class="hljs-number">200</span>, <span class="hljs-number">80</span>, <span class="hljs-string">"Напівжирний текст Courier 20"</span>)
+
+setColor(<span class="hljs-string">"purple"</span>)
+setFont(<span class="hljs-string">"BookAntiqua"</span>, <span class="hljs-number">20</span>, <span class="hljs-string">"italic"</span>)
+text(<span class="hljs-number">200</span>, <span class="hljs-number">110</span>, <span class="hljs-string">"Курсив BookAntiqua 20"</span>)
+</code></pre>
+<p><img src="./media/ch17/8facd675648ccebe915b9ce4072ef53c.png" alt="8facd675648ccebe915b9ce4072ef53c.png"></p>
+<h4 id="розміщення-тексту">Розміщення тексту</h4>
+<p>Розмістити текст точно там, де ви хочете, може бути складно через висоту шрифту та міжсимвольний інтервал. Функція <code>text(x, y, what)</code> за замовчуванням центрує текст (<code>align="c"</code>) відносно точки <code>(x, y)</code>. Ви можете змінити вирівнювання, передавши параметр <code>align="w"</code> (ліворуч), <code>align="e"</code> (праворуч) тощо.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Довгий текст</span>
+jolly_text = <span class="hljs-string">"Книги – морська глибина: Хто в них пірне аж до дна,той, хоч і труду мав досить, дивнії перли виносить"</span>
+
+setColor(<span class="hljs-string">"blue"</span>)
+setFont(<span class="hljs-string">"Arial"</span>, <span class="hljs-number">12</span>)
+
+<span class="hljs-comment"># Вирівнювання по лівому краю відносно точки (120, 40)</span>
+text(<span class="hljs-number">220</span>, <span class="hljs-number">40</span>, jolly_text, align=<span class="hljs-string">"w"</span>)
+</code></pre>
+<p><img src="./media/ch17/67ad9d3b61d3b5e5915cf3b17e4667c9.png" alt="67ad9d3b61d3b5e5915cf3b17e4667c9.png"></p>
+<h4 id="перегляд-доступних-шрифтів">Перегляд доступних шрифтів</h4>
+<p>Дізнаємося, які шрифти доступні, та виведемо їхній зразок, перебираючи список у циклі.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Список поширених шрифтів</span>
+shryfty = [<span class="hljs-string">"Arial"</span>, <span class="hljs-string">"Courier"</span>, <span class="hljs-string">"Times New Roman"</span>, <span class="hljs-string">"Verdana"</span>, <span class="hljs-string">"Georgia"</span>]
+zrazok = <span class="hljs-string">": abcdefghij_HIJK_12340"</span>
+
+y_pozyciia = <span class="hljs-number">30</span>
+setColor(<span class="hljs-string">"black"</span>)
+
+<span class="hljs-keyword">for</span> shryft <span class="hljs-keyword">in</span> shryfty:
+    setFont(shryft, <span class="hljs-number">24</span>)
+    <span class="hljs-comment"># Вирівнюємо по лівому краю, щоб текст йшов рівними стовпчиками</span>
+    text(<span class="hljs-number">50</span>, y_pozyciia, <span class="hljs-string">f"<span class="hljs-subst">{shryft}</span> <span class="hljs-subst">{zrazok}</span>"</span>, align=<span class="hljs-string">"w"</span>)
+    y_pozyciia += <span class="hljs-number">50</span>
+</code></pre>
+<p><img src="./media/ch17/13199d675ec2693a83f152d20c63d805.png" alt="13199d675ec2693a83f152d20c63d805.png"></p>
+<h2 id="176-основні-функції-бібліотеки-simplegraphics">17.6 Основні <strong>функції бібліотеки SimpleGraphics</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>Категорія</strong></th>
+<th><strong>Функції / методи</strong></th>
+<th><strong>Призначення</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Малювання примітивів</strong></td>
+<td><code>line()</code>, <code>curve()</code>, <code>blob()</code>, <code>rect()</code>, <code>ellipse()</code>, <code>circle()</code>, <code>polygon()</code>, <code>arc()</code>, <code>pieSlice()</code>, <code>text()</code>, <code>drawImage()</code></td>
+<td>Малювання геометричних фігур, тексту та зображень</td>
+</tr>
+<tr>
+<td><strong>2. Налаштування малювання</strong></td>
+<td><code>setColor()</code>, <code>setOutline()</code>, <code>setFill()</code>, <code>setWidth()</code>, <code>setArrow()</code>, <code>setArrowShape()</code>, <code>setCapStyle()</code>, <code>setJoinStyle()</code>, <code>setFont()</code></td>
+<td>Зміна кольорів, товщини ліній, шрифтів та інших параметрів</td>
+</tr>
+<tr>
+<td><strong>3. Робота з полотном (Canvas)</strong></td>
+<td><code>background()</code>, <code>clear()</code>, <code>resize()</code>, <code>getWidth()</code>, <code>getHeight()</code>, <code>update()</code>, <code>setAutoUpdate()</code></td>
+<td>Керування вікном та полотном для малювання</td>
+</tr>
+<tr>
+<td><strong>4. Керування об'єктами</strong></td>
+<td><code>move()</code>, <code>delete()</code>, <code>scale()</code>, <code>putUp()</code>, <code>putDown()</code>, <code>itemConfig()</code>, <code>checkCollision()</code></td>
+<td>Переміщення, масштабування, зміна властивостей та перевірка зіткнень</td>
+</tr>
+<tr>
+<td><strong>5. Робота із зображеннями</strong></td>
+<td><code>createImage()</code>, <code>loadImage()</code>, <code>putPixel()</code>, <code>drawImage()</code></td>
+<td>Створення, завантаження та відображення зображень</td>
+</tr>
+<tr>
+<td><strong>6. Робота з мишею</strong></td>
+<td><code>mousePos()</code>, <code>mouseX()</code>, <code>mouseY()</code>, <code>leftButtonPressed()</code>, <code>middleButtonPressed()</code>, <code>rightButtonPressed()</code>, <code>getMouseEvent()</code>, <code>peekMouseEvent()</code>, <code>clearMouseEvents()</code></td>
+<td>Отримання координат миші, стану кнопок та подій</td>
+</tr>
+<tr>
+<td><strong>7. Робота з клавіатурою</strong></td>
+<td><code>getTyped()</code>, <code>peekTyped()</code>, <code>getTypedLine()</code>, <code>peekTypedLine()</code>, <code>getKeys()</code>, <code>peekKeys()</code>, <code>getHeldKeys()</code></td>
+<td>Отримання введеного тексту та натиснутих клавіш</td>
+</tr>
+<tr>
+<td><strong>8. Анімація</strong></td>
+<td><code>doAnimate()</code>, <code>noAnimate()</code>, <code>isAnimate()</code>, <code>animationTime()</code></td>
+<td>Створення та керування анімацією</td>
+</tr>
+<tr>
+<td><strong>9. Керування вікном</strong></td>
+<td><code>setWindowTitle()</code>, <code>close()</code>, <code>closed()</code></td>
+<td>Зміна заголовка, закриття вікна та перевірка його стану</td>
+</tr>
+<tr>
+<td><strong>10. Інформаційні функції</strong></td>
+<td><code>version()</code>, <code>lineSpace()</code>, <code>textWidth()</code></td>
+<td>Отримання версії бібліотеки та інформації про текст</td>
+</tr>
+</tbody></table>
+<h2 id="177-вправи">17.7 Вправи</h2>
+<ol>
+<li><strong>Світлофор.</strong> Намалюйте прямокутний корпус світлофора та три кола всередині нього (червоне, жовте, зелене), використовуючи <code>rect()</code>, <code>circle()</code>, <code>setFill()</code> та <code>setOutline()</code>.</li>
+</ol>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># 1. Малюємо корпус світлофора</span>
+setFill(<span class="hljs-string">"darkgray"</span>)
+rect(<span class="hljs-number">120</span>, <span class="hljs-number">50</span>, <span class="hljs-number">160</span>, <span class="hljs-number">440</span>)
+
+<span class="hljs-comment"># ДІАМЕТР для всіх кіл буде 100 пікселів</span>
+diameter = <span class="hljs-number">100</span>
+
+<span class="hljs-comment"># 2. Червоне світло (верхнє)</span>
+setFill(<span class="hljs-string">"red"</span>)
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">130</span>, diameter)
+
+<span class="hljs-comment"># 3. Жовте світло (середнє)</span>
+setFill(<span class="hljs-string">"yellow"</span>)
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">270</span>, diameter)
+
+<span class="hljs-comment"># 4. Зелене світло (нижнє)</span>
+setFill(<span class="hljs-string">"green"</span>)
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">410</span>, diameter)
+</code></pre>
+<p><img src="./media/ch17/fd5b4ff81390ee7df7567d76945be7f4.png" alt="fd5b4ff81390ee7df7567d76945be7f4.png"></p>
+<ol start="2">
+<li><strong>Прапор України.</strong> За допомогою <code>rect()</code> намалюйте прямокутник, поділений на дві горизонтальні смуги — синю зверху та жовту знизу.</li>
+</ol>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Розміри прапора (пропорція 2:3)</span>
+flag_width = <span class="hljs-number">450</span>
+flag_height = <span class="hljs-number">300</span>
+
+<span class="hljs-comment"># Початкова точка малювання</span>
+start_x = <span class="hljs-number">75</span>
+start_y = <span class="hljs-number">75</span>
+
+<span class="hljs-comment"># Вираховуємо висоту однієї смуги (половина від загальної висоти)</span>
+stripe_height = flag_height / <span class="hljs-number">2</span>
+
+<span class="hljs-comment"># 1. Малюємо верхню синю смугу</span>
+setColor(<span class="hljs-string">"blue"</span>)
+rect(start_x, start_y, flag_width, stripe_height)
+
+<span class="hljs-comment"># 2. Малюємо нижню жовту смугу</span>
+setColor(<span class="hljs-string">"yellow"</span>)
+rect(start_x, start_y + stripe_height, flag_width, stripe_height)
+</code></pre>
+<p><img src="./media/ch17/f2d5c5de3b7a816528009f3516c3f4b0.png" alt="f2d5c5de3b7a816528009f3516c3f4b0.png"></p>
+<ol start="3">
+<li><strong>Зоряне небо.</strong> Використовуючи цикл <code>for</code> та функцію <code>random</code> (модуль <code>random</code>), намалюйте на темному тлі 50 маленьких «зірок» у випадкових місцях вікна.</li>
+</ol>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+<span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Створюємо функцію для малювання однієї зірки</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">star</span>(<span class="hljs-params">x, y, size</span>):
+    setFill(<span class="hljs-string">"white"</span>)
+    circle(x, y, size)
+
+<span class="hljs-comment"># --- Основна програма ---</span>
+background(<span class="hljs-string">"darkblue"</span>)
+
+<span class="hljs-comment"># Цикл для малювання 150 випадкових зірок</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">150</span>):
+    <span class="hljs-comment"># Генеруємо випадкові координати у межах нашого вікна</span>
+    random_x = random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">800</span>)
+    random_y = random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">600</span>)
+    
+    <span class="hljs-comment"># Генеруємо випадковий розмір (діаметр від 2 до 6 пікселів)</span>
+    random_size = random.randint(<span class="hljs-number">2</span>, <span class="hljs-number">6</span>)
+    
+    <span class="hljs-comment"># Викликаємо нашу функцію для малювання зірки</span>
+    star(random_x, random_y, random_size)
+</code></pre>
+<p><img src="./media/ch17/0fd89d8f9a9db1fb98bb9e700fe8583c.png" alt="0fd89d8f9a9db1fb98bb9e700fe8583c.png"></p>
+<div class="project">
+<h2 id="178-творча-майстерня-більш-складніші-малюнки">17.8 Творча майстерня: Більш складніші малюнки.</h2>
+<p>Намалюйте власну складніші малюнки (наприклад, машину, дерево чи обличчя смайлика), використовуючи функції малювання.</p>
+<p>Іграшковий автомобіль:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># Корпус автомобіля</span>
+setColor(<span class="hljs-string">"blue"</span>)
+rect(<span class="hljs-number">80</span>, <span class="hljs-number">180</span>, <span class="hljs-number">562</span>, <span class="hljs-number">150</span>)
+
+<span class="hljs-comment"># Передня частина</span>
+polygon(<span class="hljs-number">640</span>, <span class="hljs-number">180</span>,
+        <span class="hljs-number">700</span>, <span class="hljs-number">210</span>,
+        <span class="hljs-number">730</span>, <span class="hljs-number">330</span>,
+        <span class="hljs-number">640</span>, <span class="hljs-number">330</span>)
+
+<span class="hljs-comment"># Дах</span>
+polygon(<span class="hljs-number">180</span>, <span class="hljs-number">180</span>,
+        <span class="hljs-number">240</span>, <span class="hljs-number">70</span>,
+        <span class="hljs-number">480</span>, <span class="hljs-number">70</span>,
+        <span class="hljs-number">560</span>, <span class="hljs-number">180</span>)
+
+<span class="hljs-comment"># Ліве вікно</span>
+setColor(<span class="hljs-string">"lightcyan"</span>)
+polygon(<span class="hljs-number">215</span>, <span class="hljs-number">180</span>,
+        <span class="hljs-number">245</span>, <span class="hljs-number">90</span>,
+        <span class="hljs-number">360</span>, <span class="hljs-number">90</span>,
+        <span class="hljs-number">360</span>, <span class="hljs-number">180</span>)
+
+<span class="hljs-comment"># Праве вікно</span>
+polygon(<span class="hljs-number">390</span>, <span class="hljs-number">180</span>,
+        <span class="hljs-number">390</span>, <span class="hljs-number">90</span>,
+        <span class="hljs-number">490</span>, <span class="hljs-number">90</span>,
+        <span class="hljs-number">555</span>, <span class="hljs-number">180</span>)
+
+<span class="hljs-comment"># Колеса</span>
+setColor(<span class="hljs-string">"black"</span>)
+ellipse(<span class="hljs-number">120</span>, <span class="hljs-number">260</span>, <span class="hljs-number">140</span>, <span class="hljs-number">140</span>)
+ellipse(<span class="hljs-number">520</span>, <span class="hljs-number">260</span>, <span class="hljs-number">140</span>, <span class="hljs-number">140</span>)
+
+<span class="hljs-comment"># Диски</span>
+setColor(<span class="hljs-string">"lightgray"</span>)
+ellipse(<span class="hljs-number">160</span>, <span class="hljs-number">300</span>, <span class="hljs-number">60</span>, <span class="hljs-number">60</span>)
+ellipse(<span class="hljs-number">560</span>, <span class="hljs-number">300</span>, <span class="hljs-number">60</span>, <span class="hljs-number">60</span>)
+
+<span class="hljs-comment"># Фара</span>
+setColor(<span class="hljs-string">"khaki"</span>)
+pieSlice(<span class="hljs-number">670</span>, <span class="hljs-number">210</span>, <span class="hljs-number">40</span>, <span class="hljs-number">60</span>, <span class="hljs-number">300</span>, <span class="hljs-number">120</span>)
+
+<span class="hljs-comment"># Задній ліхтар</span>
+setColor(<span class="hljs-string">"orangered"</span>)
+rect(<span class="hljs-number">80</span>, <span class="hljs-number">245</span>, <span class="hljs-number">20</span>, <span class="hljs-number">35</span>)
+</code></pre>
+<p><img src="./media/ch17/fa93f436d37baa8313d9cb377f10bf52.png" alt="fa93f436d37baa8313d9cb377f10bf52.png"></p>
+<p>Дерево:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># 1. Налаштовуємо тло</span>
+background(<span class="hljs-string">"lightblue"</span>) <span class="hljs-comment"># блакитне небо</span>
+
+<span class="hljs-comment"># 2. Малюємо стовбур дерева (полігон)</span>
+<span class="hljs-comment"># Задаємо коричневий колір</span>
+setColor(<span class="hljs-string">"saddlebrown"</span>)
+
+<span class="hljs-comment"># Координати точок для основи стовбура (розширюється донизу)</span>
+polygon(<span class="hljs-number">370</span>, <span class="hljs-number">600</span>,  <span class="hljs-number">430</span>, <span class="hljs-number">600</span>,  <span class="hljs-number">420</span>, <span class="hljs-number">400</span>,  <span class="hljs-number">380</span>, <span class="hljs-number">400</span>)
+
+<span class="hljs-comment"># 3. Малюємо великі гілки</span>
+<span class="hljs-comment"># Ліва гілка</span>
+polygon(<span class="hljs-number">385</span>, <span class="hljs-number">430</span>,  <span class="hljs-number">340</span>, <span class="hljs-number">370</span>,  <span class="hljs-number">355</span>, <span class="hljs-number">360</span>,  <span class="hljs-number">390</span>, <span class="hljs-number">410</span>)
+<span class="hljs-comment"># Права гілка</span>
+polygon(<span class="hljs-number">415</span>, <span class="hljs-number">440</span>,  <span class="hljs-number">460</span>, <span class="hljs-number">380</span>,  <span class="hljs-number">475</span>, <span class="hljs-number">390</span>,  <span class="hljs-number">410</span>, <span class="hljs-number">420</span>)
+
+<span class="hljs-comment"># 4. Малюємо крону дерева</span>
+<span class="hljs-comment"># Використовуємо темно-зелений колір</span>
+setColor(<span class="hljs-string">"forestgreen"</span>)
+
+<span class="hljs-comment"># Крона</span>
+circle(<span class="hljs-number">400</span>, <span class="hljs-number">310</span>, <span class="hljs-number">220</span>)
+circle(<span class="hljs-number">310</span>, <span class="hljs-number">290</span>, <span class="hljs-number">160</span>)
+circle(<span class="hljs-number">490</span>, <span class="hljs-number">300</span>, <span class="hljs-number">170</span>)
+circle(<span class="hljs-number">400</span>, <span class="hljs-number">220</span>, <span class="hljs-number">150</span>)
+circle(<span class="hljs-number">290</span>, <span class="hljs-number">370</span>, <span class="hljs-number">110</span>)
+circle(<span class="hljs-number">500</span>, <span class="hljs-number">380</span>, <span class="hljs-number">120</span>)
+</code></pre>
+<p><img src="./media/ch17/a68fac820df005713d6b63b98128ae8b.png" alt="a68fac820df005713d6b63b98128ae8b.png"></p>
+<p>Смайлик:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+setFill(<span class="hljs-string">"yellow"</span>)
+setWidth(<span class="hljs-number">2</span>)
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>, <span class="hljs-number">170</span>)
+
+<span class="hljs-comment"># --- Посмішка ---</span>
+arc(<span class="hljs-number">150</span>, <span class="hljs-number">150</span>, <span class="hljs-number">102</span>, <span class="hljs-number">102</span>, <span class="hljs-number">180</span>, <span class="hljs-number">180</span>)
+
+<span class="hljs-comment"># --- Очі ---</span>
+setFill(<span class="hljs-string">"black"</span>)
+circle(<span class="hljs-number">166</span>, <span class="hljs-number">166</span>, <span class="hljs-number">17</span>)
+circle(<span class="hljs-number">234</span>, <span class="hljs-number">166</span>, <span class="hljs-number">17</span>)
+</code></pre>
+<p><img src="./media/ch17/441b64efabd5c19b287aa886bd1a4ffe.png" alt="441b64efabd5c19b287aa886bd1a4ffe.png"></p>
+<ol start="7">
+<li><strong>Напис на малюнку.</strong> Намалюйте новорічну ялинку, додавши текстовий напис за допомогою <code>text()</code> та <code>setFont()</code>.</li>
+</ol>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">from</span> SimpleGraphics <span class="hljs-keyword">import</span> *
+
+<span class="hljs-comment"># 1. Налаштовуємо темно-синє нічне небо</span>
+background(<span class="hljs-string">"midnightblue"</span>)
+
+<span class="hljs-comment"># 2. Малюємо стовбур ялинки</span>
+setColor(<span class="hljs-string">"saddlebrown"</span>)
+rect(<span class="hljs-number">280</span>, <span class="hljs-number">500</span>, <span class="hljs-number">40</span>, <span class="hljs-number">80</span>) <span class="hljs-comment"># x, y, ширина, висота</span>
+
+<span class="hljs-comment"># 3. Малюємо крону ялинки (три яруси трикутників за допомогою polygon)</span>
+setColor(<span class="hljs-string">"forestgreen"</span>)
+
+<span class="hljs-comment"># Нижній великий ярус (ліва, верхня, права точки)</span>
+polygon(<span class="hljs-number">150</span>, <span class="hljs-number">500</span>,  <span class="hljs-number">300</span>, <span class="hljs-number">350</span>,  <span class="hljs-number">450</span>, <span class="hljs-number">500</span>)
+<span class="hljs-comment"># Середній ярус</span>
+polygon(<span class="hljs-number">180</span>, <span class="hljs-number">380</span>,  <span class="hljs-number">300</span>, <span class="hljs-number">250</span>,  <span class="hljs-number">420</span>, <span class="hljs-number">380</span>)
+<span class="hljs-comment"># Верхній ярус</span>
+polygon(<span class="hljs-number">210</span>, <span class="hljs-number">270</span>,  <span class="hljs-number">300</span>, <span class="hljs-number">150</span>,  <span class="hljs-number">390</span>, <span class="hljs-number">270</span>)
+
+<span class="hljs-comment"># 4. Прикрашаємо ялинку іграшками </span>
+<span class="hljs-comment"># Червоні кульки</span>
+setFill(<span class="hljs-string">"red"</span>)
+circle(<span class="hljs-number">300</span>, <span class="hljs-number">180</span>, <span class="hljs-number">16</span>)
+circle(<span class="hljs-number">220</span>, <span class="hljs-number">480</span>, <span class="hljs-number">18</span>)
+circle(<span class="hljs-number">350</span>, <span class="hljs-number">360</span>, <span class="hljs-number">16</span>)
+
+<span class="hljs-comment"># Жовті кульки</span>
+setFill(<span class="hljs-string">"gold"</span>)
+circle(<span class="hljs-number">260</span>, <span class="hljs-number">260</span>, <span class="hljs-number">16</span>)
+circle(<span class="hljs-number">380</span>, <span class="hljs-number">470</span>, <span class="hljs-number">18</span>)
+circle(<span class="hljs-number">250</span>, <span class="hljs-number">370</span>, <span class="hljs-number">16</span>)
+
+<span class="hljs-comment"># Сині кульки</span>
+setFill(<span class="hljs-string">"deepskyblue"</span>)
+circle(<span class="hljs-number">340</span>, <span class="hljs-number">250</span>, <span class="hljs-number">16</span>)
+circle(<span class="hljs-number">300</span>, <span class="hljs-number">450</span>, <span class="hljs-number">18</span>)
+circle(<span class="hljs-number">200</span>, <span class="hljs-number">375</span>, <span class="hljs-number">16</span>)
+
+<span class="hljs-comment"># Верхівка —  зробимо велику золоту кулю на верхівці</span>
+setFill(<span class="hljs-string">"orange"</span>)
+circle(<span class="hljs-number">300</span>, <span class="hljs-number">145</span>, <span class="hljs-number">24</span>)
+
+<span class="hljs-comment"># 5. Додаємо напис</span>
+setColor(<span class="hljs-string">"white"</span>)
+setFont(<span class="hljs-string">"Arial"</span>,<span class="hljs-number">28</span>)
+<span class="hljs-comment"># text(x, y, string) — виводимо напис вгорі</span>
+text(<span class="hljs-number">300</span>, <span class="hljs-number">40</span>,<span class="hljs-string">"Вітаємо з Новим Роком!"</span>)
+</code></pre>
+<p> <img src="./media/ch17/a3f21526b274c9ae3f1af239c1207cc7.png" alt="a3f21526b274c9ae3f1af239c1207cc7.png"><br></p></div>
+<div class="read">
+<h2 id="основні-ресурси-по-бібліотеці-simplegraphics">Основні ресурси по бібліотеці SimpleGraphics</h2>
+<h3 id="офіційні-посібники-від-автора">Офіційні посібники (від автора)</h3>
+<ol>
+<li><p><strong>Tutorial 1: Drawing with the SimpleGraphics Library</strong> (SG_tutorial.pdf)  </p>
+<ul>
+<li>Основний посібник: як почати, координати, примітиви (лінії, прямокутники, еліпси, полігони, криві, текст тощо), робота з кольорами.  </li>
+<li>Посилання: <a href="https://cspages.ucalgary.ca/~bdstephe/SG_tutorial.pdf">https://cspages.ucalgary.ca/~bdstephe/SG_tutorial.pdf</a> (або шукайте на сторінках курсів автора).</li>
+</ul>
+</li>
+<li><p><strong>Tutorial 2: Using Images with the SimpleGraphics Library</strong> (image_tutorial.pdf)  </p>
+<ul>
+<li>Робота з зображеннями (GIF, PPM, PGM): завантаження, відображення, маніпуляція пікселями, створення нових зображень, ефекти (grayscale, mirror тощо).  </li>
+<li>Посилання: <a href="https://cspages.ucalgary.ca/~bdstephe/217_W14/image_tutorial.pdf">https://cspages.ucalgary.ca/~bdstephe/217_W14/image_tutorial.pdf</a>.</li>
+</ul>
+</li>
+</ol>
+<h3 id="сторінка-simplegraphics-python-на-pypi">Сторінка simplegraphics-python на PyPI</h3>
+<ul>
+<li>Пакет: <code>simplegraphics-python</code> на PyPI.  </li>
+<li>Встановлення: <code>pip install simplegraphics-python</code>.  </li>
+<li>Документація/приклади зазвичай йдуть разом з бібліотекою або в PDF-посібниках вище.</li>
+</ul>
+</div>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

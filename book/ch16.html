@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch16</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-16-працюємо-з-pandas">РОЗДІЛ 16. Працюємо з Pandas</h1>
+<p>Досі для роботи з інформацією ми використовували списки Python, словники та масиви NumPy. Вони чудово підходять для числових розрахунків, але в реальному житті дані рідко бувають суто числовими. Найчастіше ми бачимо їх у вигляді великих таблиць, де в одному стовпчику записано ім'я, в іншому — дата народження, а в третьому — оцінка чи вартість товару.</p>
+<p>Працювати з такими змішаними даними за допомогою NumPy незручно. Саме тому для аналізу даних використовують найпопулярнішу бібліотеку Python — <strong>Pandas</strong> (назва походить від <em>Panel Data</em> — панельні дані).</p>
+<h2 id="161-навіщо-потрібна-pandas">16.1. Навіщо потрібна Pandas?</h2>
+<p>Коли обсяги інформації стають завеликими для ручного аналізу в Excel, або коли нам потрібно автоматизувати обробку сотень файлів, на допомогу приходить Pandas. Вона дозволяє за допомогою коротких команд робити те, на що в Excel пішли б години роботи.</p>
+<p>Сфери застосування Pandas:</p>
+<ul>
+<li><strong>Обробка документів.</strong> Миттєве зчитування та запис файлів у форматах CSV та Excel.</li>
+<li><strong>Шкільна аналітика.</strong> Ведення електронних журналів, де поєднуються прізвища (текст) та бали (числа).</li>
+<li><strong>Бізнес-статистика.</strong> Аналіз щоденних продажів тисяч магазинів, фільтрація за містами чи датами.</li>
+<li><strong>Очищення даних.</strong> Автоматичне виявлення помилок, заповнення пропусків, перейменування колонок.</li>
+</ul>
+<h2 id="162-підключення-бібліотеки">16.2. Підключення бібліотеки</h2>
+<p>Загальноприйнятим світовим стандартом є імпорт бібліотеки Pandas із коротким псевдонімом <code>pd</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+<span class="hljs-comment"># Тепер усі інструменти бібліотеки доступні через "pd."</span>
+</code></pre>
+<h2 id="163-основні-обєкти-dataframe-та-series">16.3. Основні об'єкти: DataFrame та Series</h2>
+<p>Головний секрет Pandas полягає в тому, що вона пропонує абсолютно новий спосіб мислення — роботу не з окремими змінними, а з усією таблицею одразу.</p>
+<h3 id="1631-dataframe-це-таблиця">16.3.1 DataFrame — це таблиця</h3>
+<p>Основною структурою в Pandas є <code>DataFrame</code> (датафрейм).</p>
+<blockquote>
+<p><strong><code>DataFrame</code></strong> — це програмна аналогія звичайної електронної таблиці, яку ви неодноразово бачили в Excel або Google Таблицях. По суті, це те саме, що класний журнал: рядки — це учні, стовпці — предмети, а на перетині — оцінка.</p>
+</blockquote>
+<p>Як і будь-яка таблиця, <code>DataFrame</code> складається з:</p>
+<ol>
+<li><strong>Назв стовпців (Columns)</strong> — заголовків угорі таблиці.</li>
+<li><strong>Рядків (Rows)</strong> — безпосередньо записів із даними.</li>
+<li><strong>Індексу (Index)</strong> — номерів рядків (за замовчуванням від 0 до N).</li>
+</ol>
+<p>Найпростіший спосіб створити таблицю самостійно в коді — змайструвати її зі звичайного словника Python, де ключами будуть майбутні заголовки стовпців, а значеннями — списки з даними:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+<span class="hljs-comment"># Готуємо словник із даними учнів</span>
+data_dictionary = {
+    <span class="hljs-string">"Ім'я"</span>: [<span class="hljs-string">"Оля"</span>, <span class="hljs-string">"Іван"</span>, <span class="hljs-string">"Марія"</span>],
+    <span class="hljs-string">"Оцінка"</span>: [<span class="hljs-number">12</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>],
+    <span class="hljs-string">"Місто"</span>: [<span class="hljs-string">"Київ"</span>, <span class="hljs-string">"Нечаївка"</span>, <span class="hljs-string">"Львів"</span>]
+}
+
+<span class="hljs-comment"># Перетворюємо словник на таблицю Pandas</span>
+df = pd.DataFrame(data_dictionary)
+</code></pre>
+<p>Значеннями в DataFrame можуть бути не тільки числа, а й текст. Наприклад, класний керівник міг лишити коментарі:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">pd.DataFrame({
+    <span class="hljs-string">'Оля'</span>: [<span class="hljs-string">'Чудова робота!'</span>, <span class="hljs-string">'Треба ще попрацювати'</span>],
+    <span class="hljs-string">'Максим'</span>: [<span class="hljs-string">'Непогано'</span>, <span class="hljs-string">'Відмінно'</span>]
+})
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Оля</th>
+<th>Максим</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0</strong></td>
+<td>Чудова робота!</td>
+<td>Непогано</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>Треба ще попрацювати</td>
+<td>Відмінно</td>
+</tr>
+</tbody></table>
+<p>Ключі словника стають <strong>назвами стовпців</strong>, а списки — значеннями у стовпцях. За замовчуванням рядки нумеруються від 0, але часто зручніше дати їм власні імена. Список підписів рядків називається <strong>індексом (Index)</strong>, і його можна задати параметром <code>index</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">pd.DataFrame({
+    <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>],
+    <span class="hljs-string">'Історія'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>]},
+    index=[<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>])
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Математика</th>
+<th>Історія</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Оля</strong></td>
+<td>10</td>
+<td>9</td>
+</tr>
+<tr>
+<td><strong>Максим</strong></td>
+<td>7</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<p>Тепер зрозуміло без пояснень, чия це оцінка.</p>
+<h3 id="1632-виведення-та-базові-властивості-таблиці">16.3.2 Виведення та базові властивості таблиці</h3>
+<p>Якщо вивести таблицю на екран через <code>print(df)</code>, Pandas надрукує її в  структурованому вигляді:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(df)
+<span class="hljs-comment"># Виведе:</span>
+<span class="hljs-comment">#     Ім'я  Оцінка     Місто</span>
+<span class="hljs-comment"># 0    Оля      12      Київ</span>
+<span class="hljs-comment"># 1   Іван      10  Нечаївка</span>
+<span class="hljs-comment"># 2  Марія      11     Львів</span>
+</code></pre>
+<p>У великих таблиць ми завжди можемо запитати їхні технічні параметри (без дужок <code>()</code> наприкінці):</p>
+<ul>
+<li><strong><code>df.shape</code></strong> — повертає кортеж із розмірами <code>(кількість_рядків, кількість_стовпців)</code>.</li>
+<li><strong><code>df.columns</code></strong> — показує список усіх заголовків стовпців.</li>
+<li><strong><code>df.index</code></strong> — надає інформацію про нумерацію рядків.</li>
+</ul>
+<h3 id="33-series-це-один-стовпець">3.3 Series — це один стовпець</h3>
+<p>Коли ми видобуваємо з <code>DataFrame</code> тільки один стовпець (наприклад, <code>df["Оцінка"]</code>), Pandas повертає об'єкт типу <code>Series</code>.</p>
+<blockquote>
+<p><strong><code>Series</code></strong> (серія) — це одновимірний масив даних, який має мітки-індекси. Можна сказати, що <code>DataFrame</code> — це просто велика родина, зібрана з кількох об'єктів <code>Series</code>, які стоять поруч і мають спільний індекс.</p>
+</blockquote>
+<p>Series можна створювати і окремо від таблиці, просто зі списку значень:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">pd.Series([<span class="hljs-number">10</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>, <span class="hljs-number">6</span>])
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">0    10
+1     7
+2     9
+3     8
+4     6
+dtype: int64
+</code></pre>
+<p>Так само, як і в DataFrame, тут можна задати підписи рядків через <code>index</code>, а ще Series має власну <strong>назву (name)</strong>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">pd.Series([<span class="hljs-number">10</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>, <span class="hljs-number">6</span>],
+          index=[<span class="hljs-string">'Контрольна 1'</span>, <span class="hljs-string">'Контрольна 2'</span>, <span class="hljs-string">'Контрольна 3'</span>, <span class="hljs-string">'Контрольна 4'</span>, <span class="hljs-string">'Контрольна 5'</span>],
+          name=<span class="hljs-string">'Оля, математика'</span>)
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">Контрольна 1    10
+Контрольна 2     7
+Контрольна 3     9
+Контрольна 4     8
+Контрольна 5     6
+Name: Оля, математика, dtype: int64
+</code></pre>
+<p>DataFrame зручно розглядати як кілька  "склеєних" разом Series.</p>
+<h3 id="1634-швидкий-перегляд-head-та-tail">16.3.4 Швидкий перегляд: head() та tail()</h3>
+<p>Коли в таблиці тисячі рядків, виводити її повністю на екран немає сенсу. Щоб швидко зрозуміти, з якими даними ми маємо справу, використовують дві команди:</p>
+<ul>
+<li><strong><code>df.head(n)</code></strong> — показує перші <em>n</em> рядків таблиці (якщо не вказати число, виведе 5).</li>
+<li><strong><code>df.tail(n)</code></strong> — показує останні <em>n</em> рядків таблиці.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Перегляд перших двох рядків таблиці</span>
+<span class="hljs-built_in">print</span>(df.head(<span class="hljs-number">2</span>))
+</code></pre>
+<h2 id="164-читання-та-запис-даних-csv-excel-json">16.4. Читання та запис даних (CSV, Excel, JSON)</h2>
+<p>У реальному житті програмісти не записують великі обсяги даних вручну в коді -  вони зчитують готові звіти та бази даних з файлів комп'ютера. Найпоширеніший формат — <strong>CSV-файл</strong> (Comma-Separated Values, значення, розділені комами). Виглядає він так:</p>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">Учень,Математика,Історія,Українська
+Оля,10,9,8
+Максим,7,8,9
+Ігор,9,9,10
+</code></pre>
+<h3 id="1641-читання-даних">16.4.1 Читання даних</h3>
+<p>Якщо класний керівник вивантажив весь журнал у файл <code>journal.csv</code>, прочитати його в pandas можна функцією <code>pd.read_csv()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Зчитування файлу CSV (значення, розділені комами)</span>
+journal = pd.read_csv(<span class="hljs-string">"journal.csv"</span>)
+
+<span class="hljs-comment"># Зчитування файлу Excel</span>
+df_excel = pd.read_excel(<span class="hljs-string">"report.xlsx"</span>)
+
+<span class="hljs-comment"># Зчитування файлу JSON</span>
+journal_json = pd.read_json(<span class="hljs-string">"journal.json"</span>)
+</code></pre>
+<p>Перевірити розмір таблиці можна атрибутом <code>shape</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.shape
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">(30, 6)
+</code></pre>
+<p>Тобто в журналі 30 учнів (рядків) і 6 стовпців (наприклад: ім'я, і п'ять предметів).</p>
+<p>Якщо у файлі вже є свій стовпець-ідентифікатор (наприклад, номер учня в журналі), і ми не хочемо, щоб pandas створював ще один індекс поверх нього, можна вказати, який стовпець використати як індекс:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal = pd.read_csv(<span class="hljs-string">"journal.csv"</span>, index_col=<span class="hljs-number">0</span>)
+</code></pre>
+<h3 id="1642-збереження-результатів">16.4.2 Збереження результатів</h3>
+<p>Коли таблиця готова — наприклад, після підрахунків чи фільтрації — її можна зберегти назад у файл, щоб відкрити пізніше або надіслати комусь:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Зберегти у CSV (параметр index=False відключає запис технічних номерів рядків 0, 1, 2)</span>
+df.to_csv(<span class="hljs-string">"clean_data.csv"</span>, index=<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># Зберегти у файл Excel</span>
+df.to_excel(<span class="hljs-string">"final_report.xlsx"</span>, index=<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># Зберегти у файл JSON</span>
+journal.to_json(<span class="hljs-string">"journal_готовий.json"</span>)
+</code></pre>
+<p>Параметр <code>index=False</code> означає, що номери рядків не потрібно записувати у файл окремим стовпцем — часто це зайве.</p>
+<h3 id="-спробуйте">🚀 Спробуйте</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+<span class="hljs-comment"># Створюємо класний журнал вручну</span>
+journal = pd.DataFrame({
+    <span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>, <span class="hljs-string">'Ігор'</span>],
+    <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>],
+    <span class="hljs-string">'Історія'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>]
+})
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Журнал:"</span>)
+<span class="hljs-built_in">print</span>(journal)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Розмір таблиці:"</span>, journal.shape)
+
+<span class="hljs-comment"># Зберігаємо журнал у CSV-файл</span>
+journal.to_csv(<span class="hljs-string">"journal.csv"</span>, index=<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># Читаємо його назад</span>
+journal_з_файлу = pd.read_csv(<span class="hljs-string">"journal.csv"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nПрочитано з файлу:"</span>)
+<span class="hljs-built_in">print</span>(journal_з_файлу.head())
+</code></pre>
+<h2 id="165-робота-зі-стовпцями-та-рядками">16.5. Робота зі стовпцями та рядками</h2>
+<p>Уміння швидко знайти потрібне значення в таблиці — одна з найважливіших навичок роботи з даними. Розглянемо таблицю фруктового магазину:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop = pd.DataFrame({
+    <span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'банани'</span>, <span class="hljs-string">'апельсини'</span>, <span class="hljs-string">'груші'</span>],
+    <span class="hljs-string">'ціна_за_кг'</span>: [<span class="hljs-number">35</span>, <span class="hljs-number">42</span>, <span class="hljs-number">55</span>, <span class="hljs-number">38</span>],
+    <span class="hljs-string">'кількість_кг'</span>: [<span class="hljs-number">120</span>, <span class="hljs-number">80</span>, <span class="hljs-number">60</span>, <span class="hljs-number">95</span>],
+    <span class="hljs-string">'постачальник'</span>: [<span class="hljs-string">'Сад "Ранок"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'Сад "Ранок"'</span>]
+})
+shop
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>фрукт</th>
+<th>ціна_за_кг</th>
+<th>кількість_кг</th>
+<th>постачальник</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0</strong></td>
+<td>яблука</td>
+<td>35</td>
+<td>120</td>
+<td>Сад "Ранок"</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>банани</td>
+<td>42</td>
+<td>80</td>
+<td>ТОВ "Тропік"</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>апельсини</td>
+<td>55</td>
+<td>60</td>
+<td>ТОВ "Тропік"</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>груші</td>
+<td>38</td>
+<td>95</td>
+<td>Сад "Ранок"</td>
+</tr>
+</tbody></table>
+<h3 id="1651-вибір-стовпців">16.5.1 Вибір стовпців</h3>
+<p>Щоб видобути вміст одного стовпця із таблиці, достатньо вказати його назву у квадратних дужках:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(df[<span class="hljs-string">"фрукт"</span>])
+</code></pre>
+<p>Стовпець також можна отримати як атрибут об'єкта:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.фрукт
+</code></pre>
+<p>Обидва варіанти рівноправні, але <code>[]</code> надійніший — він працює навіть із назвами стовпців, що містять пробіли чи спецсимволи (наприклад, <code>shop['ціна за кг']</code> спрацює, а <code>shop.ціна за кг</code> — ні).</p>
+<p>Щоб дістатись одного конкретного значення, індексацію можна застосувати ще раз:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop[<span class="hljs-string">'фрукт'</span>][<span class="hljs-number">0</span>]
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">'яблука'
+</code></pre>
+<p>Якщо потрібно взяти кілька стовпців одночасно, всередину квадратних дужок передають список із назвами (виходять подвійні квадратні дужки <code>[[...]]</code>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">sub_table = df[[<span class="hljs-string">"Ім'я"</span>, <span class="hljs-string">"Місто"</span>]]
+<span class="hljs-built_in">print</span>(sub_table)
+</code></pre>
+<h3 id="1652-додавання-та-видалення-стовпців">16.5.2 Додавання та видалення стовпців</h3>
+<p>Створити новий стовпець в таблиці так само просто, як створити новий елемент у словнику:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Додаємо стовпець із балами за поведінку</span>
+df[<span class="hljs-string">"Поведінка"</span>] = [<span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">10</span>]
+
+<span class="hljs-comment"># Можна створити стовпець на основі математичних розрахунків з іншим стовпцем</span>
+df[<span class="hljs-string">"Подвійний_бал"</span>] = df[<span class="hljs-string">"Оцінка"</span>] * <span class="hljs-number">2</span>
+</code></pre>
+<p>Так само легко додати стовпець з одним і тим самим значенням для всіх рядків або зі списком-послідовністю:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop[<span class="hljs-string">'знижка'</span>] = <span class="hljs-string">'немає'</span>
+journal[<span class="hljs-string">'місце_в_рейтингу'</span>] = <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(journal), <span class="hljs-number">0</span>, -<span class="hljs-number">1</span>)
+</code></pre>
+<p>Щоб видалити непотрібний стовпець, використовують метод <code>.drop()</code>. Обов'язково потрібно вказати параметр <code>axis=1</code> (це означає, що ми шукаємо і видаляємо саме вертикальний стовпець, а не горизонтальний рядок):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Видаляємо стовпець "Подвійний_бал"</span>
+df = df.drop(<span class="hljs-string">"Подвійний_бал"</span>, axis=<span class="hljs-number">1</span>)
+</code></pre>
+<h3 id="1653-вибір-рядків-iloc-та-loc">16.5.3 Вибір рядків: iloc та loc</h3>
+<p>Для доступу до конкретних рядків таблиці Pandas використовує два спеціальні інструменти:</p>
+<ul>
+<li><strong><code>df.iloc[номер]</code></strong> — шукає рядок суворо за його порядковим номером (індексом-числом від 0, незалежно від того, як рядок підписаний).</li>
+<li><strong><code>df.loc[мітка]</code></strong> — шукає рядок за його текстовою назвою чи міткою (якщо замість чисел рядкам дали текстові імена).</li>
+</ul>
+<p>Перший рядок таблиці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.iloc[<span class="hljs-number">0</span>]
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">фрукт             яблука
+ціна_за_кг            35
+кількість_кг         120
+постачальник    Сад "Ранок"
+Name: 0, dtype: object
+</code></pre>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Отримуємо перший рядок таблиці</span>
+first_row = df.iloc[<span class="hljs-number">0</span>]
+<span class="hljs-built_in">print</span>(first_row)
+</code></pre>
+<p>І <code>loc</code>, і <code>iloc</code> спочатку вказують рядок, потім стовпець — це протилежно тому, як ми звикли в Python (спочатку стовпець, потім рядок).</p>
+<p>Що видобути  стовпець за позицією, використовується двокрапка <code><span class="hl-char">:</span></code>, яка означає "усі рядки":</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.iloc[:, <span class="hljs-number">0</span>]
+</code></pre>
+<p>Вибрати лише перші три рядки стовпця "фрукт":</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.iloc[:<span class="hljs-number">3</span>, <span class="hljs-number">0</span>]
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">0       яблука
+1       банани
+2    апельсини
+Name: фрукт, dtype: object
+</code></pre>
+<p>Можна використовувати й від'ємні номери — відлік почнеться з кінця. Останні два фрукти в списку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.iloc[-<span class="hljs-number">2</span>:]
+</code></pre>
+<p><strong><code>loc</code> — вибір за міткою (назвою) індексу</strong>, а не за номером позиції. Індекс таблиці не є чимось незмінним — його можна поміняти методом <code>set_index()</code>. Якщо в журналі індексом є ім'я учня:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal = journal.set_index(<span class="hljs-string">'Учень'</span>)
+journal.loc[<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Математика'</span>]
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">10
+</code></pre>
+<p><code>iloc</code> простіший, бо ігнорує сенс індексу й дивиться на таблицю просто як на матрицю. <code>loc</code> натомість "розуміє" підписи, тому зручніший, коли індекс має сенс — наприклад, імена учнів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.loc[:, [<span class="hljs-string">'Математика'</span>, <span class="hljs-string">'Історія'</span>]]
+</code></pre>
+<p><strong>Важлива відмінність:</strong> у <code>iloc</code> останнє число діапазону не включається (як завжди в Python), а у <code>loc</code> — включається. Тобто <code>iloc[0<span class="hl-char">:</span>10]</code> дасть 10 рядків (0–9), а <code>loc[0<span class="hl-char">:</span>10]</code> — 11 рядків (0–10).</p>
+<h3 id="1654-фільтрація-даних-за-умовою">16.5.4 Фільтрація даних за умовою</h3>
+<p>Найцікавіше починається тоді, коли ми хочемо відібрати рядки за умовою - це одна з найпотужніших можливостей Pandas, яка замінює складні фільтри Excel. Ми вказуємо умову у квадратних дужках таблиці, і Pandas залишає лише ті рядки, які їй відповідають. Наприклад: які товари магазину постачає "Сад Ранок"?</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.постачальник == <span class="hljs-string">'Сад "Ранок"'</span>
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">0     True
+1    False
+2    False
+3     True
+Name: постачальник, dtype: bool
+</code></pre>
+<p>Це Series із True/False. Такий результат можна підставити в <code>loc</code>, щоб отримати сам відфільтрований рядок:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Вибираємо лише тих учнів, у кого оцінка більше або дорівнює 11</span>
+smart_students = df[df[<span class="hljs-string">"Оцінка"</span>] &gt;= <span class="hljs-number">11</span>]
+<span class="hljs-built_in">print</span>(smart_students)
+</code></pre>
+<p>Умова сама по собі повертає Series із True/False:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.постачальник == <span class="hljs-string">'Сад "Ранок"'</span>
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">0     True
+1    False
+2    False
+3     True
+Name: постачальник, dtype: bool
+</code></pre>
+<p>Такий результат можна підставити в <code>loc</code>, щоб отримати сам відфільтрований рядок:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.loc[shop.постачальник == <span class="hljs-string">'Сад "Ранок"'</span>]
+journal.loc[journal.Математика &gt; <span class="hljs-number">11</span>]
+</code></pre>
+<p>Умови можна комбінувати. Амперсанд <code>&amp;</code> означає "і":</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.loc[(shop.постачальник == <span class="hljs-string">'ТОВ "Тропік"'</span>) &amp; (shop.ціна_за_кг &gt; <span class="hljs-number">45</span>)]
+</code></pre>
+<p>Вертикальна риска <code>|</code> означає "або":</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.loc[(journal.Математика &gt; <span class="hljs-number">8</span>) | (journal.Історія &gt; <span class="hljs-number">8</span>)]
+</code></pre>
+<p>Корисні готові фільтри:</p>
+<ul>
+<li><code>isin()</code> — перевіряє, чи значення входить у список:</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.loc[shop.фрукт.isin([<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'груші'</span>])]
+</code></pre>
+<ul>
+<li><code>isnull()</code> / <code>notnull()</code> — знаходить пропущені (або непропущені) значення. Наприклад, товари без вказаного постачальника:</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.loc[shop.постачальник.isnull()]
+</code></pre>
+<h3 id="1655-сортування-таблиці-sortvalues">16.5.5 Сортування таблиці (sort_values)</h3>
+<p>Впорядкувати рядки таблиці за якимось показником можна за допомогою методу <code>.sort_values()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Сортуємо учнів за оцінками від найменшої до найбільшої</span>
+sorted_df = df.sort_values(by=<span class="hljs-string">"Оцінка"</span>)
+
+<span class="hljs-comment"># Якщо потрібно відсортувати за спаданням (від рекорду вниз):</span>
+top_df = df.sort_values(by=<span class="hljs-string">"Оцінка"</span>, ascending=<span class="hljs-literal">False</span>)
+</code></pre>
+<p>Більш просунуті варіанти сортування (за декількома стовпцями, за самим індексом) розглянуто в розділі 7, разом із групуванням.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+shop = pd.DataFrame({
+    <span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'банани'</span>, <span class="hljs-string">'апельсини'</span>, <span class="hljs-string">'груші'</span>],
+    <span class="hljs-string">'ціна_за_кг'</span>: [<span class="hljs-number">35</span>, <span class="hljs-number">42</span>, <span class="hljs-number">55</span>, <span class="hljs-number">38</span>],
+    <span class="hljs-string">'кількість_кг'</span>: [<span class="hljs-number">120</span>, <span class="hljs-number">80</span>, <span class="hljs-number">60</span>, <span class="hljs-number">95</span>],
+    <span class="hljs-string">'постачальник'</span>: [<span class="hljs-string">'Сад "Ранок"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'Сад "Ранок"'</span>]
+})
+
+<span class="hljs-comment"># Перший рядок за позицією</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Перший товар:"</span>)
+<span class="hljs-built_in">print</span>(shop.iloc[<span class="hljs-number">0</span>])
+
+<span class="hljs-comment"># Фрукти дорожчі за 40 грн/кг</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nДорогі фрукти:"</span>)
+<span class="hljs-built_in">print</span>(shop.loc[shop.ціна_за_кг &gt; <span class="hljs-number">40</span>])
+
+<span class="hljs-comment"># Фрукти від "Саду Ранок", яких більше 90 кг</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nФрукти від Саду Ранок, яких багато:"</span>)
+<span class="hljs-built_in">print</span>(shop.loc[(shop.постачальник == <span class="hljs-string">'Сад "Ранок"'</span>) &amp; (shop.кількість_кг &gt; <span class="hljs-number">90</span>)])
+</code></pre>
+</div>
+<h2 id="166-аналіз-даних-та-статистика">16.6. Аналіз даних та статистика</h2>
+<p>Коли ми завантажили велику таблицю, Pandas може миттєво порахувати математичні показники для всіх числових стовпців разом.</p>
+<h3 id="1661-основні-статистичні-функції-та-describe">16.6.1 Основні статистичні функції та describe()</h3>
+<ul>
+<li><strong><code>df.describe()</code></strong> — видає повний статистичний звіт: загальну кількість заповнених рядків, середнє значення, мінімум, максимум, медіану. Це перша команда, яку запускають дата-аналітики під час дослідження нової таблиці.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.Математика.describe()
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">count    30.000000
+mean      8.100000
+  ...
+75%       9.000000
+max      10.000000
+Name: Математика, dtype: float64
+</code></pre>
+<p>Для текстового стовпця <code>describe()</code> покаже інше — наприклад, скільки разів зустрічається кожен постачальник:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.постачальник.describe()
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">count             4
+unique            2
+top     Сад "Ранок"
+freq              2
+Name: постачальник, dtype: object
+</code></pre>
+<p>Ви також можете викликати окремі функції для конкретної колонки:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-string">"Середня оцінка класу:"</span>, df[<span class="hljs-string">"Оцінка"</span>].mean())
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Найвищий бал:"</span>, df[<span class="hljs-string">"Оцінка"</span>].<span class="hljs-built_in">max</span>())
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Загальна сума балів:"</span>, df[<span class="hljs-string">"Оцінка"</span>].<span class="hljs-built_in">sum</span>())
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Кількість записів:"</span>, df[<span class="hljs-string">"Оцінка"</span>].count())
+</code></pre>
+<h3 id="1662-підрахунок-частоти-значень-valuecounts-та-unique">16.6.2 Підрахунок частоти значень: value_counts() та unique()</h3>
+<p>Якщо у стовпчику записані текстові категорії (наприклад, назви міст), функція <code>.value_counts()</code> підрахує, скільки разів зустрічається кожне місто:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(df[<span class="hljs-string">"Місто"</span>].value_counts())
+<span class="hljs-comment"># Виведе, скільки учнів з якого міста навчається</span>
+</code></pre>
+<p>Отримати список усіх унікальних значень без повторів допомагає <code>.unique()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.постачальник.unique()       <span class="hljs-comment"># список усіх постачальників без повторів</span>
+shop.постачальник.value_counts() <span class="hljs-comment"># скільки товарів у кожного постачальника</span>
+</code></pre>
+<h3 id="1663-map-та-apply-перетворення-значень">16.6.3 Map та Apply — перетворення значень</h3>
+<p><strong>Map (відображення)</strong> — це функція, яка бере кожне значення стовпця і перетворює його на нове. Наприклад, потрібно побачити, наскільки оцінка кожного учня з математики відхиляється від середнього бала класу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">середній_бал = journal.Математика.mean()
+journal.Математика.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> x: x - середній_бал)
+</code></pre>
+<p>Функція всередині <code>map()</code> приймає одне значення і повертає одне нове значення — так перетворюється весь стовпець.</p>
+<p>Якщо потрібно змінити цілий рядок (наприклад, перерахувати одразу кілька оцінок учня), використовують <code>apply()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">def</span> <span class="hljs-title function_">нормалізувати</span>(<span class="hljs-params">рядок</span>):
+    рядок.Математика = рядок.Математика - середній_бал
+    <span class="hljs-keyword">return</span> рядок
+
+journal.apply(нормалізувати, axis=<span class="hljs-string">'columns'</span>)
+</code></pre>
+<p>І <code>map()</code>, і <code>apply()</code> не змінюють оригінальну таблицю, а повертають нову.</p>
+<p>Багато операцій pandas виконує ще простіше — напряму через математичні оператори, і це швидше за <code>map()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.Математика - середній_бал
+</code></pre>
+<p>Це працює і між двома стовпцями однакової довжини. Наприклад, порахувати виручку від продажу кожного фрукта:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop[<span class="hljs-string">'виручка'</span>] = shop.ціна_за_кг * shop.кількість_кг
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+journal = pd.DataFrame({
+    <span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>, <span class="hljs-string">'Ігор'</span>],
+    <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>]
+})
+
+shop = pd.DataFrame({
+    <span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'банани'</span>, <span class="hljs-string">'апельсини'</span>],
+    <span class="hljs-string">'ціна_за_кг'</span>: [<span class="hljs-number">35</span>, <span class="hljs-number">42</span>, <span class="hljs-number">55</span>],
+    <span class="hljs-string">'кількість_кг'</span>: [<span class="hljs-number">120</span>, <span class="hljs-number">80</span>, <span class="hljs-number">60</span>]
+})
+
+середній_бал = journal.Математика.mean()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Середній бал класу:"</span>, середній_бал)
+
+journal[<span class="hljs-string">'відхилення'</span>] = journal.Математика.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> x: x - середній_бал)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nЖурнал з відхиленням від середнього:"</span>)
+<span class="hljs-built_in">print</span>(journal)
+
+shop[<span class="hljs-string">'виручка'</span>] = shop.ціна_за_кг * shop.кількість_кг
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nВиручка магазину по фруктах:"</span>)
+<span class="hljs-built_in">print</span>(shop)
+</code></pre>
+</div>
+<h2 id="167-групування-та-сортування-groupby">16.7. Групування та сортування (groupby)</h2>
+<h3 id="1671-групування">16.7.1 Групування</h3>
+<p>Часто потрібно не просто порахувати статистику по всій таблиці, а зробити це окремо для кожної групи. Наприклад, скільки товарів постачає кожен постачальник:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.groupby(<span class="hljs-string">'постачальник'</span>).фрукт.count()
+</code></pre>
+<p>Це той самий результат, що дає <code>value_counts()</code>, але <code>groupby()</code> набагато гнучкіший. Наприклад, знайти найдешевший фрукт від кожного постачальника:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.groupby(<span class="hljs-string">'постачальник'</span>).ціна_за_кг.<span class="hljs-built_in">min</span>()
+</code></pre>
+<p>Або, у журналі — середній бал з математики за кожним класом (якщо є стовпець "клас"):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.groupby(<span class="hljs-string">'клас'</span>).Математика.mean()
+</code></pre>
+<p>Кожну групу можна розглядати як окрему міні-таблицю, і до неї можна застосувати <code>apply()</code>. Наприклад, знайти назву найдорожчого товару від кожного постачальника:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.groupby(<span class="hljs-string">'постачальник'</span>).apply(<span class="hljs-keyword">lambda</span> df: df.фрукт[df.ціна_за_кг.idxmax()])
+</code></pre>
+<p>Групувати можна одразу за кількома стовпцями:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.groupby([<span class="hljs-string">'клас'</span>, <span class="hljs-string">'предмет'</span>]).Математика.mean()
+</code></pre>
+<p>Метод <code>agg()</code> дозволяє порахувати одразу кілька статистик:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.groupby(<span class="hljs-string">'постачальник'</span>).ціна_за_кг.agg([<span class="hljs-string">'count'</span>, <span class="hljs-string">'min'</span>, <span class="hljs-string">'max'</span>])
+</code></pre>
+<h3 id="1672-мультиіндекс">16.7.2 Мультиіндекс</h3>
+<p>Якщо групувати за кількома стовпцями одразу, результат отримує <strong>мультиіндекс</strong> — індекс з кількох рівнів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">за_класом_і_предметом = journal.groupby([<span class="hljs-string">'клас'</span>, <span class="hljs-string">'предмет'</span>]).Математика.agg([<span class="hljs-string">'mean'</span>])
+</code></pre>
+<p>Щоб повернутись до звичайного, "плоского" індексу, використовують <code>reset_index()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">за_класом_і_предметом.reset_index()
+</code></pre>
+<h3 id="1673-сортування-результатів-групування">16.7.3 Сортування результатів групування</h3>
+<p>Результат <code>groupby()</code> за замовчуванням упорядкований за індексом, а не за значенням. Щоб відсортувати за значенням, є <code>sort_values()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">рейтинг = shop.groupby(<span class="hljs-string">'постачальник'</span>).ціна_за_кг.mean().reset_index()
+рейтинг.sort_values(by=<span class="hljs-string">'ціна_за_кг'</span>)
+</code></pre>
+<p>За замовчуванням сортування йде за зростанням. Для спадання додається <code>ascending=False</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">рейтинг.sort_values(by=<span class="hljs-string">'ціна_за_кг'</span>, ascending=<span class="hljs-literal">False</span>)
+</code></pre>
+<p>Для сортування за самим індексом є <code>sort_index()</code>. А сортувати можна й одразу за кількома стовпцями:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">рейтинг.sort_values(by=[<span class="hljs-string">'постачальник'</span>, <span class="hljs-string">'ціна_за_кг'</span>])
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+shop = pd.DataFrame({
+    <span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'банани'</span>, <span class="hljs-string">'апельсини'</span>, <span class="hljs-string">'груші'</span>],
+    <span class="hljs-string">'ціна_за_кг'</span>: [<span class="hljs-number">35</span>, <span class="hljs-number">42</span>, <span class="hljs-number">55</span>, <span class="hljs-number">38</span>],
+    <span class="hljs-string">'постачальник'</span>: [<span class="hljs-string">'Сад "Ранок"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, <span class="hljs-string">'Сад "Ранок"'</span>]
+})
+
+<span class="hljs-comment"># Скільки фруктів постачає кожен постачальник і яка в них середня ціна</span>
+статистика = shop.groupby(<span class="hljs-string">'постачальник'</span>).ціна_за_кг.agg([<span class="hljs-string">'count'</span>, <span class="hljs-string">'mean'</span>, <span class="hljs-string">'max'</span>])
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Статистика по постачальниках:"</span>)
+<span class="hljs-built_in">print</span>(статистика)
+
+<span class="hljs-comment"># Сортуємо постачальників за середньою ціною, від найдорожчого</span>
+статистика = статистика.reset_index()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nВідсортовано за середньою ціною (спадання):"</span>)
+<span class="hljs-built_in">print</span>(статистика.sort_values(by=<span class="hljs-string">'mean'</span>, ascending=<span class="hljs-literal">False</span>))
+</code></pre>
+</div>
+<h2 id="168-типи-даних-та-пропущені-значення">16.8. Типи даних та пропущені значення</h2>
+<h3 id="1681-типи-даних-dtype">16.8.1 Типи даних (dtype)</h3>
+<p>Кожен стовпець має свій тип даних — <strong>dtype</strong>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.ціна_за_кг.dtype
+</code></pre>
+<pre><code class="language-text hljs language-plaintext" data-highlighted="yes">dtype('int64')
+</code></pre>
+<p><code>int64</code> — ціле число, <code>float64</code> — число з крапкою (дробове), <code>object</code> — зазвичай текст. Подивитись типи всіх стовпців одразу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.dtypes
+</code></pre>
+<p>Змінити тип стовпця можна методом <code>astype()</code>. Наприклад, зробити ціну дробовим числом:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.ціна_за_кг.astype(<span class="hljs-string">'float64'</span>)
+</code></pre>
+<h3 id="1682-обробка-пропущених-значень-nan">16.8.2 Обробка пропущених значень (NaN)</h3>
+<p>Часто файли з даними містять помилки, друкарські огріхи або порожні комірки. Якщо в таблиці немає даних, pandas ставить туди <code>NaN</code> ("Not a Number" — не число). Наприклад, учень не здав контрольну, або магазин не вказав постачальника для якогось товару.</p>
+<ul>
+<li><strong><code>df.isna()</code></strong> (або <code>pd.isnull(...)</code>) — перевіряє кожну клітинку і показує <code>True</code>, якщо там порожньо.</li>
+<li><strong><code>df.fillna(значення)</code></strong> — автоматично заповнює всі порожні клітинки вказаним числом або текстом (наприклад, словом «Невідомо» або нулем).</li>
+<li><strong><code>df.dropna()</code></strong> — повністю видаляє з таблиці всі рядки, де є хоча б одна порожня клітинка.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-comment"># Заповнюємо пропущені оцінки нулями</span>
+df[<span class="hljs-string">"Оцінка"</span>] = df[<span class="hljs-string">"Оцінка"</span>].fillna(<span class="hljs-number">0</span>)
+</code></pre>
+<p>Знайти всі рядки з пропущеним значенням:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop[pd.isnull(shop.постачальник)]
+</code></pre>
+<p>Заповнити пропуски можна й текстом. Наприклад, якщо учень не здав контрольну, можна тимчасово поставити «н/з» (не здав):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.Математика.fillna(<span class="hljs-string">"н/з"</span>)
+</code></pre>
+<p>Замінити конкретне значення на інше можна методом <code>replace()</code>. Наприклад, магазин перейменував постачальника:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">shop.постачальник.replace(<span class="hljs-string">'Сад "Ранок"'</span>, <span class="hljs-string">'Агрофірма "Світанок"'</span>)
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+shop = pd.DataFrame({
+    <span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>, <span class="hljs-string">'банани'</span>, <span class="hljs-string">'апельсини'</span>, <span class="hljs-string">'груші'</span>],
+    <span class="hljs-string">'ціна_за_кг'</span>: [<span class="hljs-number">35</span>, <span class="hljs-number">42</span>, <span class="hljs-number">55</span>, <span class="hljs-number">38</span>],
+    <span class="hljs-string">'постачальник'</span>: [<span class="hljs-string">'Сад "Ранок"'</span>, <span class="hljs-string">'ТОВ "Тропік"'</span>, np.nan, <span class="hljs-string">'Сад "Ранок"'</span>]
+})
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Типи стовпців:"</span>)
+<span class="hljs-built_in">print</span>(shop.dtypes)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nТовари без постачальника:"</span>)
+<span class="hljs-built_in">print</span>(shop[pd.isnull(shop.постачальник)])
+
+shop[<span class="hljs-string">'постачальник'</span>] = shop[<span class="hljs-string">'постачальник'</span>].fillna(<span class="hljs-string">"Постачальник не вказаний"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nПісля заповнення пропусків:"</span>)
+<span class="hljs-built_in">print</span>(shop)
+</code></pre>
+</div>
+<h2 id="169-перейменування-стовпців-та-індексів">16.9. Перейменування стовпців та індексів</h2>
+<p>Якщо назви колонок написані з помилками або незручною мовою, їх легко змінити за допомогою словника «стара назва : нова назва»:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">df = df.rename(columns={<span class="hljs-string">"Місто"</span>: <span class="hljs-string">"Рідне_Місто"</span>, <span class="hljs-string">"Оцінка"</span>: <span class="hljs-string">"Бал"</span>})
+</code></pre>
+<p>Так само можна перейменувати й окремі значення індексу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.rename(index={<span class="hljs-number">0</span>: <span class="hljs-string">'Перший учень'</span>, <span class="hljs-number">1</span>: <span class="hljs-string">'Другий учень'</span>})
+</code></pre>
+<p>А методом <code>rename_axis()</code> можна дати назву самому індексу і стовпцям:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">journal.rename_axis(<span class="hljs-string">"учні"</span>, axis=<span class="hljs-string">'rows'</span>).rename_axis(<span class="hljs-string">"предмети"</span>, axis=<span class="hljs-string">'columns'</span>)
+</code></pre>
+<h2 id="1610-обєднання-таблиць-concat-join">16.10. Об'єднання таблиць: concat, join</h2>
+<p>Часто дані про один і той самий клас чи магазин розкидані по кількох файлах, і їх потрібно з'єднати разом. У pandas є три способи, від найпростішого до найгнучкішого: <code>concat()</code>, <code>join()</code> та <code>merge()</code>.</p>
+<p><strong><code>concat()</code></strong> просто "склеює" таблиці одна під одною, якщо в них однакові стовпці. Наприклад, є окремий журнал за перший семестр і за другий:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">семестр_1 = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>]})
+семестр_2 = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Ігор'</span>, <span class="hljs-string">'Настя'</span>], <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>]})
+pd.concat([семестр_1, семестр_2])
+</code></pre>
+<p>Так само можна об'єднати накладні фруктового магазину за різні місяці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">травень = pd.DataFrame({<span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>], <span class="hljs-string">'кількість_кг'</span>: [<span class="hljs-number">120</span>]})
+червень = pd.DataFrame({<span class="hljs-string">'фрукт'</span>: [<span class="hljs-string">'яблука'</span>], <span class="hljs-string">'кількість_кг'</span>: [<span class="hljs-number">95</span>]})
+pd.concat([травень, червень])
+</code></pre>
+<p><strong><code>join()</code></strong> об'єднує таблиці за спільним індексом — навіть якщо в них різні набори стовпців. Наприклад, потрібно об'єднати оцінки з математики та з фізики для одних і тих самих учнів:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">math_scores = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Оцінка'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>]}).set_index(<span class="hljs-string">'Учень'</span>)
+phys_scores = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Оцінка'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>]}).set_index(<span class="hljs-string">'Учень'</span>)
+math_scores.join(phys_scores, lsuffix=<span class="hljs-string">'_матем'</span>, rsuffix=<span class="hljs-string">'_фізика'</span>)
+</code></pre>
+<p>Параметри <code>lsuffix</code> і <code>rsuffix</code> потрібні, якщо в обох таблицях є стовпці з однаковою назвою (наприклад, "Оцінка") — щоб pandas міг їх розрізнити.</p>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+<span class="hljs-comment"># Об'єднуємо два семестри одного журналу</span>
+семестр_1 = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>]})
+семестр_2 = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Ігор'</span>, <span class="hljs-string">'Настя'</span>], <span class="hljs-string">'Математика'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>]})
+рік = pd.concat([семестр_1, семестр_2])
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Журнал за рік:"</span>)
+<span class="hljs-built_in">print</span>(рік)
+
+<span class="hljs-comment"># Об'єднуємо оцінки з двох предметів за учнем</span>
+математика = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Оцінка'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">7</span>]}).set_index(<span class="hljs-string">'Учень'</span>)
+фізика = pd.DataFrame({<span class="hljs-string">'Учень'</span>: [<span class="hljs-string">'Оля'</span>, <span class="hljs-string">'Максим'</span>], <span class="hljs-string">'Оцінка'</span>: [<span class="hljs-number">9</span>, <span class="hljs-number">8</span>]}).set_index(<span class="hljs-string">'Учень'</span>)
+разом = математика.join(фізика, lsuffix=<span class="hljs-string">'_матем'</span>, rsuffix=<span class="hljs-string">'_фізика'</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nОцінки з двох предметів разом:"</span>)
+<span class="hljs-built_in">print</span>(разом.rename_axis(<span class="hljs-string">"учні"</span>, axis=<span class="hljs-string">'rows'</span>))
+</code></pre>
+</div>
+<h2 id="1611-взаємодія-pandas-та-numpy">16.11. Взаємодія Pandas та NumPy</h2>
+<p>Ви можете легко конвертувати дані між цими двома бібліотеками.</p>
+<p>Перетворення таблиці в масив NumPy — якщо вам потрібні чисті числа без заголовків для передачі в складні математичні алгоритми, використовуйте метод <code>.to_numpy()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">raw_numbers = df[<span class="hljs-string">"Оцінка"</span>].to_numpy()  <span class="hljs-comment"># Отримуємо швидкий масив NumPy</span>
+</code></pre>
+<p>Створення таблиці з масиву NumPy — так само легко відбувається і в зворотному напрямку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">matrix = np.random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, size=(<span class="hljs-number">3</span>, <span class="hljs-number">2</span>))
+new_df = pd.DataFrame(matrix, columns=[<span class="hljs-string">"Показник_1"</span>, <span class="hljs-string">"Показник_2"</span>])
+</code></pre>
+<h2 id="1612-взаємодія-pandas-та-matplotlib">16.12. Взаємодія Pandas та Matplotlib</h2>
+<p>Pandas має дивовижну властивість — вона вміє викликати малювальник графіків Matplotlib прямо із самої таблиці за допомогою всього однієї команди <code>.plot()</code></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># Створюємо таблицю продажів за 3 місяці</span>
+sales_df = pd.DataFrame({
+    <span class="hljs-string">"Місяць"</span>: [<span class="hljs-string">"Січень"</span>, <span class="hljs-string">"Лютий"</span>, <span class="hljs-string">"Березень"</span>],
+    <span class="hljs-string">"Прибуток"</span>: [<span class="hljs-number">45000</span>, <span class="hljs-number">52000</span>, <span class="hljs-number">49000</span>]
+})
+
+<span class="hljs-comment"># Будуємо стовпчасту діаграму прямо з DataFrame</span>
+<span class="hljs-comment"># Параметр kind вказує тип діаграми: 'bar', 'line', 'pie', 'hist'</span>
+sales_df.plot(x=<span class="hljs-string">"Місяць"</span>, y=<span class="hljs-string">"Прибуток"</span>, kind=<span class="hljs-string">"bar"</span>, color=<span class="hljs-string">"green"</span>)
+
+plt.title(<span class="hljs-string">"Звіт магазину"</span>)
+plt.show()  <span class="hljs-comment"># Вікно відображення все одно викликається через plt.show()</span>
+</code></pre>
+<p><img src="./media/ch16/b72d1dbe19c008b7195cbec6c7920213.png" alt="b72d1dbe19c008b7195cbec6c7920213.png"></p>
+<h2 id="1613-типові-помилки">16.13. Типові помилки</h2>
+<ol>
+<li><p><strong><code>KeyError</code> (неправильна назва стовпця):</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">df[<span class="hljs-string">"оцінка"</span>]  <span class="hljs-comment"># Помилка, якщо в таблиці стовпець написаний з великої літери "Оцінка"!</span>
+</code></pre>
+<p><em>Порада:</em> перевіряйте точний регістр літер та наявність випадкових пробілів у заголовках.</p>
+</li>
+<li><p><strong>Плутанина між <code>loc</code> та <code>iloc</code>.</strong> Спроба написати <code>df.iloc["Перший"]</code> замість використання порядкового числа <code>df.iloc[0]</code> призведе до аварійної зупинки програми. Пам'ятайте: <code>iloc</code> шукає за позицією-числом, а <code>loc</code> — за міткою/назвою, і в них по-різному працюють діапазони (див. розділ 5.3).</p>
+</li>
+<li><p><strong>Файл не знайдено (<code>FileNotFoundError</code>).</strong> Виникає під час виклику <code>read_csv("data.csv")</code>, якщо файл лежить в іншій папці або його ім'я написано з помилкою.</p>
+</li>
+</ol>
+<h2 id="1614-можливості-pandas-для-skulpt-єpython">16.14. Можливості <strong>pandas</strong> для Skulpt (ЄPython)</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Категорія</strong></th>
+<th><strong>Функція / метод / клас</strong></th>
+<th><strong>Призначення</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Класи</strong></td>
+<td><code>DataFrame</code></td>
+<td>Двовимірна таблиця даних</td>
+</tr>
+<tr>
+<td></td>
+<td><code>Series</code></td>
+<td>Одновимірний масив даних</td>
+</tr>
+<tr>
+<td></td>
+<td><code>Index</code></td>
+<td>Індекс таблиці</td>
+</tr>
+<tr>
+<td></td>
+<td><code>RangeIndex</code></td>
+<td>Діапазонний індекс</td>
+</tr>
+<tr>
+<td><strong>Зчитування даних</strong></td>
+<td><code>read_csv()</code></td>
+<td>Завантаження CSV-файлу</td>
+</tr>
+<tr>
+<td></td>
+<td><code>read_excel()</code></td>
+<td>Завантаження Excel-файлу</td>
+</tr>
+<tr>
+<td></td>
+<td><code>read_json()</code></td>
+<td>Завантаження JSON-файлу</td>
+</tr>
+<tr>
+<td><strong>Об'єднання та перетворення</strong></td>
+<td><code>concat()</code></td>
+<td>Об'єднання таблиць</td>
+</tr>
+<tr>
+<td></td>
+<td><code>merge()</code></td>
+<td>Об'єднання за ключами</td>
+</tr>
+<tr>
+<td></td>
+<td><code>pivot_table()</code></td>
+<td>Побудова зведеної таблиці</td>
+</tr>
+<tr>
+<td></td>
+<td><code>get_dummies()</code></td>
+<td>Перетворення категоріальних змінних у dummy-змінні</td>
+</tr>
+<tr>
+<td><strong>Робота з датами</strong></td>
+<td><code>to_datetime()</code></td>
+<td>Перетворення у формат дати</td>
+</tr>
+<tr>
+<td><strong>Дискретизація</strong></td>
+<td><code>cut()</code></td>
+<td>Розбиття значень на інтервали</td>
+</tr>
+<tr>
+<td></td>
+<td><code>qcut()</code></td>
+<td>Розбиття за квантилями</td>
+</tr>
+<tr>
+<td><strong>Перевірка пропусків</strong></td>
+<td><code>isna()</code></td>
+<td>Перевірка на пропущені значення</td>
+</tr>
+<tr>
+<td></td>
+<td><code>isnull()</code></td>
+<td>Аналог <code>isna()</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>notna()</code></td>
+<td>Перевірка на непропущені значення</td>
+</tr>
+<tr>
+<td></td>
+<td><code>notnull()</code></td>
+<td>Аналог <code>notna()</code></td>
+</tr>
+<tr>
+<td><strong>Порівняння</strong></td>
+<td><code>equal()</code></td>
+<td>Рівність</td>
+</tr>
+<tr>
+<td></td>
+<td><code>not_equal()</code></td>
+<td>Нерівність</td>
+</tr>
+<tr>
+<td></td>
+<td><code>greater()</code></td>
+<td>Більше</td>
+</tr>
+<tr>
+<td></td>
+<td><code>greater_equal()</code></td>
+<td>Більше або дорівнює</td>
+</tr>
+<tr>
+<td></td>
+<td><code>less()</code></td>
+<td>Менше</td>
+</tr>
+<tr>
+<td></td>
+<td><code>less_equal()</code></td>
+<td>Менше або дорівнює</td>
+</tr>
+<tr>
+<td><strong>Константи та типи</strong></td>
+<td><code>NA</code></td>
+<td>Відсутнє значення</td>
+</tr>
+<tr>
+<td></td>
+<td><code>NaN</code></td>
+<td>Значення «не число»</td>
+</tr>
+<tr>
+<td></td>
+<td><code>NaT</code></td>
+<td>Відсутня дата</td>
+</tr>
+<tr>
+<td></td>
+<td><code>Int64</code></td>
+<td>Тип цілих чисел</td>
+</tr>
+<tr>
+<td></td>
+<td><code>Float64</code></td>
+<td>Тип дійсних чисел</td>
+</tr>
+</tbody></table>
+<p>[!exers]</p>
+<h2 id="1615-вправи">16.15. Вправи</h2>
+<h3 id="короткі-вправи">Короткі вправи</h3>
+<ol>
+<li><strong>Шкільний журнал.</strong> Створіть вручну <code>DataFrame</code> для 4 учнів із колонками «Прізвище», «Математика», «Фізика». Обчисліть середній бал кожного учня з математики.</li>
+<li><strong>Фільтр погоди.</strong> Завантажте уявний масив температур за тиждень. За допомогою логічної маски відфільтруйте та виведіть на екран лише ті дні, де температура перевищувала +20 градусів.</li>
+<li><strong>Сортування цін.</strong> Створіть таблицю з 5 товарів та їхніх цін. Відсортуйте таблицю за спаданням ціни та перейменуйте колонку «Ціна» на «Вартість_грн».</li>
+</ol>
+<h3 id="завдання-за-темами">Завдання за темами</h3>
+<p><strong>Створення, читання та запис</strong></p>
+<ol>
+<li>Створи DataFrame <code>клас</code> із трьома учнями та двома предметами на вибір.</li>
+<li>Збережи цей DataFrame у файл <code>клас.csv</code> без стовпця з номерами рядків.</li>
+<li>Прочитай файл <code>клас.csv</code> назад у нову змінну і виведи <code>shape</code> результату.</li>
+</ol>
+<p><strong>Індексація</strong></p>
+<ol>
+<li>Створи DataFrame <code>магазин</code> із щонайменше п'ятьма фруктами, ціною і кількістю.</li>
+<li>Виведи назву фрукта з найбільшою кількістю кілограмів, використовуючи <code>iloc</code>.</li>
+<li>Зроби стовпець "фрукт" індексом і за допомогою <code>loc</code> виведи ціну "бананів".</li>
+<li>Виведи всі фрукти, ціна яких менша за 40 грн/кг.</li>
+</ol>
+<p><strong>Підсумовування та Map</strong></p>
+<ol>
+<li>Порахуй середню, мінімальну і максимальну ціну у своєму <code>магазин</code>.</li>
+<li>Додай новий стовпець "ціна_зі_знижкою", що дорівнює ціні, зменшеній на 10% (використай або математичну операцію, або <code>map()</code>).</li>
+<li>Виведи, наскільки ціна кожного фрукта відрізняється від середньої по магазину.</li>
+</ol>
+<p><strong>Групування та сортування</strong></p>
+<ol>
+<li>Додай до <code>магазин</code> стовпець "постачальник" із двома-трьома різними значеннями.</li>
+<li>Згрупуй дані за постачальником і порахуй, скільки фруктів і на яку суму постачає кожен.</li>
+<li>Відсортуй результат за спаданням суми.</li>
+</ol>
+<p><strong>Типи даних та пропущені значення</strong></p>
+<ol>
+<li>Виведи <code>dtypes</code> для <code>магазин</code>.</li>
+<li>Заміни значення одного постачальника на <code>NaN</code> (наприклад, через <code>np.nan</code>), а потім знайди цей рядок за допомогою <code>isnull()</code>.</li>
+<li>Заповни пропуск текстом "Постачальник невідомий".</li>
+</ol>
+<p><strong>Перейменування та об'єднання</strong></p>
+<ol>
+<li>Перейменуй стовпець "кількість_кг" на "залишок_кг" у <code>магазин</code>.</li>
+<li>Створи ще один DataFrame з накладною за наступний тиждень (ті самі фрукти, нові кількості) і об'єднай його з першим через <code>concat()</code>.</li>
+<li>Створи окрему таблицю з рейтингом смаку кожного фрукта (від 1 до 5) і об'єднай її з <code>магазин</code> через <code>join()</code>, використовуючи назву фрукта як індекс.</li>
+</ol>
+<p>[!exers]</p>
+<div class="project">
+<h2 id="1616-творча-майстерня">16.16. Творча майстерня</h2>
+<h3 id="повний-цикл-збору-аналізу-та-візуалізації-даних-книгарня">Повний цикл збору, аналізу та візуалізації даних (книгарня)</h3>
+<p>Об'єднаємо Pandas, NumPy та Matplotlib для вирішення реальної задачі автоматизації бізнесу.</p>
+<p><strong>Сценарій.</strong> Ви працюєте аналітиком мережі книгарень. У вас є файл звіту <code>book_sales.csv</code>. Нам потрібно очистити дані від помилок, знайти фінансові рекорди, побудувати графік для директора та зберегти чистий звіт.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+<span class="hljs-comment"># --- КРОК 1: Автоматичне створення тестового файлу CSV (для запуску проекту) ---</span>
+raw_data = {
+    <span class="hljs-string">"Назва_Книги"</span>: [<span class="hljs-string">"Гаррі Поттер"</span>, <span class="hljs-string">"Кобзар"</span>, <span class="hljs-string">"Шерлок Холмс"</span>, <span class="hljs-string">"Алхімік"</span>, <span class="hljs-string">"Маленький Принц"</span>],
+    <span class="hljs-string">"Продано_Штук"</span>: [<span class="hljs-number">150</span>, np.nan, <span class="hljs-number">200</span>, <span class="hljs-number">80</span>, <span class="hljs-number">120</span>],  <span class="hljs-comment"># Ого, у нас є пропущене значення (NaN)</span>
+    <span class="hljs-string">"Ціна_Грн"</span>: [<span class="hljs-number">350</span>, <span class="hljs-number">250</span>, <span class="hljs-number">300</span>, <span class="hljs-number">200</span>, <span class="hljs-number">180</span>]
+}
+pd.DataFrame(raw_data).to_csv(<span class="hljs-string">"book_sales.csv"</span>, index=<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># --- КРОК 2: Зчитування та очищення даних за допомогою Pandas ---</span>
+df = pd.read_csv(<span class="hljs-string">"book_sales.csv"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"--- Початкові дані з файлу ---"</span>)
+<span class="hljs-built_in">print</span>(df)
+
+<span class="hljs-comment"># Виправляємо помилку: заповнюємо порожнє значення кількості продажів середнім показником</span>
+average_count = np.<span class="hljs-built_in">round</span>(df[<span class="hljs-string">"Продано_Штук"</span>].mean())  <span class="hljs-comment"># Використовуємо округлення NumPy</span>
+df[<span class="hljs-string">"Продано_Штук"</span>] = df[<span class="hljs-string">"Продано_Штук"</span>].fillna(average_count)
+
+<span class="hljs-comment"># --- КРОК 3: Обчислення та аналіз ---</span>
+<span class="hljs-comment"># Створюємо новий стовпець загального прибутку (Перемножуємо два стовпці)</span>
+df[<span class="hljs-string">"Загальний_Прибуток"</span>] = df[<span class="hljs-string">"Продано_Штук"</span>] * df[<span class="hljs-string">"Ціна_Грн"</span>]
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\n--- Очищені дані з розрахованим прибутком ---"</span>)
+<span class="hljs-built_in">print</span>(df)
+
+<span class="hljs-comment"># Знаходимо лідера продажів</span>
+top_book = df.sort_values(by=<span class="hljs-string">"Загальний_Прибуток"</span>, ascending=<span class="hljs-literal">False</span>).iloc[<span class="hljs-number">0</span>]
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"\nБестселер: книга '<span class="hljs-subst">{top_book[<span class="hljs-string">'Назва_Книги'</span>]}</span>' з прибутком <span class="hljs-subst">{top_book[<span class="hljs-string">'Загальний_Прибуток'</span>]}</span> грн!"</span>)
+
+<span class="hljs-comment"># --- КРОК 4: Візуалізація результатів через Matplotlib ---</span>
+df.plot(x=<span class="hljs-string">"Назва_Книги"</span>, y=<span class="hljs-string">"Загальний_Прибуток"</span>, kind=<span class="hljs-string">"bar"</span>, color=<span class="hljs-string">"coral"</span>, edgecolor=<span class="hljs-string">"black"</span>)
+plt.title(<span class="hljs-string">"Аналіз прибутковості книгарень"</span>, fontsize=<span class="hljs-number">14</span>)
+plt.xlabel(<span class="hljs-string">"Назва літературного твору"</span>)
+plt.ylabel(<span class="hljs-string">"Сума прибутку (грн)"</span>)
+plt.grid(axis=<span class="hljs-string">'y'</span>, linestyle=<span class="hljs-string">'--'</span>)
+plt.tight_layout()  <span class="hljs-comment"># Автоматично підганяє розміри підписів, щоб вони не влазили за межі екрана</span>
+
+<span class="hljs-comment"># Зберігаємо графік на диск</span>
+plt.savefig(<span class="hljs-string">"financial_report.png"</span>, dpi=<span class="hljs-number">300</span>)
+<span class="hljs-comment"># Зберігаємо нову чисту таблицю у файл Excel для керівництва</span>
+df.to_excel(<span class="hljs-string">"final_book_report.xlsx"</span>, index=<span class="hljs-literal">False</span>)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"\nРозрахунки завершено. Звіти 'final_book_report.xlsx' та 'financial_report.png' успішно створено!"</span>)
+plt.show()
+</code></pre>
+<h3 id="класний-журнал">Класний журнал</h3>
+<p>Дані: DataFrame або CSV-файл із щонайменше 15 учнями, 4 предметами та стовпцем "клас" (наприклад, "10-А", "10-Б").</p>
+<p>Завдання:</p>
+<ol>
+<li>Знайди учня з найвищим середнім балом.</li>
+<li>Порахуй середній бал по кожному класу і по кожному предмету.</li>
+<li>Знайди предмет, з якого найбільше пропущених оцінок (<code>NaN</code>), якщо такі є.</li>
+<li>Створи новий стовпець "статус" зі значеннями "відмінник" (середній бал ≥ 9), "хорошист" (від 7 до 9) та "потребує допомоги" (менше 7), використовуючи <code>apply()</code>.</li>
+<li>Збережи готовий журнал у файл <code>журнал_підсумок.csv</code>.</li>
+</ol>
+<h3 id="фруктовий-магазин">Фруктовий магазин</h3>
+<p>Дані: DataFrame або CSV-файл з накладними за кілька тижнів — фрукт, ціна, кількість, постачальник, тиждень.</p>
+<p>Завдання:</p>
+<ol>
+<li>Об'єднай накладні за всі тижні в одну таблицю через <code>concat()</code>.</li>
+<li>Порахуй загальну виручку по кожному фрукту і по кожному постачальнику.</li>
+<li>Знайди тиждень із найбільшою виручкою.</li>
+<li>Визнач постачальника, чиї товари в середньому найдорожчі.</li>
+<li>Побудуй рейтинг фруктів за виручкою, від найбільшої до найменшої, і збережи його в <code>рейтинг_фруктів.xlsx</code>.
+</li></ol></div><ol><li></li>
+</ol>
+<div class="read">
+<h3 id="офіційна-документація-pandas">Офіційна документація Pandas</h3>
+<ol>
+<li><p><strong>10 minutes to pandas</strong> — офіційний швидкий вступ  </p>
+<ul>
+<li>Ідеально для початківців: Series, DataFrame, базові операції, індексація, фільтрація тощо.  </li>
+<li>Посилання: <a href="https://pandas.pydata.org/docs/user_guide/10min.html">https://pandas.pydata.org/docs/user_guide/10min.html</a></li>
+</ul>
+</li>
+<li><p><strong>Getting Started з документації Pandas</strong>  </p>
+<ul>
+<li>Включає 10min tutorial, cheat sheet та посилання на інші матеріали.  </li>
+<li>Посилання: <a href="https://pandas.pydata.org/docs/getting_started/index.html">https://pandas.pydata.org/docs/getting_started/index.html</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="інтерактивні-курси">Інтерактивні курси</h3>
+<ol start="3">
+<li><strong>Kaggle — Learn Pandas</strong>  <ul>
+<li>Безкоштовний інтерактивний курс з практичними завданнями.  </li>
+<li>Дуже рекомендую для початківців.  </li>
+<li>Посилання: <a href="https://www.kaggle.com/learn/pandas">https://www.kaggle.com/learn/pandas</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="текстові-посібники-та-гайди">Текстові посібники та гайди</h3>
+<ol start="4">
+<li><p><strong>W3Schools Pandas Tutorial</strong>  </p>
+<ul>
+<li>Простий, структурований посібник з прикладами (вступ, Series, DataFrame, читання CSV, очищення даних тощо).  </li>
+<li>Посилання: <a href="https://www.w3schools.com/python/pandas/">https://www.w3schools.com/python/pandas/</a></li>
+</ul>
+</li>
+<li><p><strong>freeCodeCamp — The Ultimate Guide to the Pandas Library</strong>  </p>
+<ul>
+<li>Детальний текстовий гайд для початківців.  </li>
+<li>Посилання: <a href="https://www.freecodecamp.org/news/the-ultimate-guide-to-the-pandas-library-for-data-science-in-python/">freeCodeCamp</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="cheat-sheet-швидка-довідка">Cheat Sheet (швидка довідка)</h3>
+<ul>
+<li><strong>Офіційний Pandas Cheat Sheet</strong> (PDF) — чудово для повторення основ.<br>Посилання: <a href="https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf">pandas.pydata.org/Pandas_Cheat_Sheet.pdf</a></li>
+</ul>
+</div>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

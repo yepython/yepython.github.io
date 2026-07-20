@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch14</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-14-основи-роботи-з-numpy">РОЗДІЛ 14. Основи роботи з NumPy</h1>
+<p>Усі програми, які ми писали досі, працювали з невеликою кількістю інформації. Але для практичних застосувань нам часто потрібно опрацьовувати велику кількість даних  — результати щохвилинного вимірювання температури за рік, проаналізувати бали ЗНО тисяч учнів або створити систему розпізнавання облич, де кожна картинка складається з мільйонів кольорових пікселів. Якщо обробляти такі гігантські обсяги числових даних за допомогою звичайних списків та циклів <code>for</code> , програма працюватиме надто повільно. Для швидкої, зручної та професійної роботи з числами у Python існує спеціальна бібліотека — <strong>NumPy</strong> (скорочення від *Numerical Python).</p>
+<h2 id="141-навіщо-потрібен-numpy">14.1 Навіщо потрібен NumPy?</h2>
+<p>Звичайні списки Python (<code>list</code>) достатньо потужні та гнучкі: всередині одного списку можна одночасно зберігати числа, текст, словники та інші списки. Проте за цю гнучкість доводиться платити швидкістю, оскільки елементи списку можуть мати будь-який тип, Python змушений перевіряти тип кожного окремого елемента під час обчислень, а це коштує часу.</p>
+<p>NumPy працює зовсім інакше. Він зберігає дані у вигляді спеціальних структур даних — <strong>масивів</strong>.</p>
+<blockquote>
+<p><strong>Масив NumPy</strong> — сукупність однорідних значень, які обов'язково мають <strong>однаковий тип даних</strong> (наприклад, лише цілі числа або лише дробові) та розміщуються в пам'яті комп'ютера суцільним блоком, що дозволяє процесору обробляти їх у десятки й сотні разів швидше, ніж звичайні списки.</p>
+</blockquote>
+<h3 id="де-використовують-numpy">Де використовують NumPy?</h3>
+<ul>
+<li><strong>Аналіз даних та статистика</strong>  —  швидке обчислення середніх балів, відхилень, пошук рекордів у великих наборах даних.</li>
+<li><strong>Штучний інтелект та нейромережі</strong>  —  усі вагові коефіцієнти нейронних мереж зберігаються саме в масивах NumPy.</li>
+<li><strong>Комп'ютерна графіка та ігри</strong>  —  будь-яке цифрове зображення чи 3D-модель є великою матрицею(масивом) з чисел.</li>
+</ul>
+<h2 id="142-підключення-бібліотеки">14.2 Підключення бібліотеки</h2>
+<p>Оскільки NumPy — це стороння бібліотека, її спочатку потрібно імпортувати (як ми вже робили для інших модулів). Загальноприйнятим  стандартом є імпорт NumPy під коротким псевдонімом <code>np</code>. Усі приклади в цьому розділі оформлені як звичайні скрипти — саме так, як ви й будете писати та запускати їх на практиці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+</code></pre>
+<p>Після цього рядка всі команди бібліотеки ми викликатимемо через коротке <code>np.</code>.</p>
+<blockquote>
+<p>Псевдонім <code>np</code> — це лише домовленість, а не обов'язкова вимога Python. Але майже весь код на NumPy, який ви зустрінете (документація, форуми, підручники), використовує саме <code>np</code>.</p>
+</blockquote>
+<h2 id="143-масиви-numpy">14.3 Масиви NumPy</h2>
+<p>Основний інструмент бібліотеки — це об'єкт <code>ndarray</code> (N-мірний масив). Створити його найпростіше на основі звичайного списку за допомогою команди <code>np.array()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+my_list = [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">8</span>]
+numbers = np.array(my_list)
+<span class="hljs-built_in">print</span>(numbers)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">2 4 6 8</span>]
+</code></pre>
+<p>Зверніть увагу на невелику, але важливу деталь: на відміну від виведення звичайного списку, між числами масиву NumPy немає ком.</p>
+<blockquote>
+<p><strong>N-мірний масив</strong>  —  структура даних, у якій для доступу до конкретного елемента потрібно вказати $N$ індексів (координат, $N$ — це кількість вимірів чи осей) .</p>
+</blockquote>
+<p>У NumPy такі масиви представлені об'єктом класу <code>ndarray</code> (що буквально розшифровується як <em>N-dimensional array</em>). Кількість вимірів масиву в NumPy називають <strong>осями (axes)</strong>, а їх кількість — <strong>рангом (rank)</strong> або властивістю <code>.ndim</code>.</p>
+<p><img src="./media/ch14/8f1875548944b02d1920b90e86c13663.png" alt="8f1875548944b02d1920b90e86c13663.png"></p>
+<h2 id="144-одновимірні-масиви">14.4 Одновимірні масиви</h2>
+<p>Одновимірний масив (або <em>вектор</em>) — це простий рядок чисел. Кожне число має свій індекс, який починається з 0, точно як у звичайному списку.</p>
+<p>Робота з елементами одновимірного масиву дуже схожа на роботу зі списками:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+temps = np.array([<span class="hljs-number">18.5</span>, <span class="hljs-number">20.1</span>, <span class="hljs-number">19.0</span>, <span class="hljs-number">22.4</span>])
+<span class="hljs-built_in">print</span>(temps[<span class="hljs-number">0</span>])
+
+temps[<span class="hljs-number">2</span>] = <span class="hljs-number">19.5</span>
+<span class="hljs-built_in">print</span>(temps)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp"><span class="hljs-number">18.5</span>
+[<span class="hljs-meta">18.5 20.1 19.5 22.4</span>]
+</code></pre>
+<h2 id="145-двовимірні-масиви">14.5 Двовимірні масиви</h2>
+<p>Якщо об'єднати кілька рядків чисел разом, ми отримаємо <strong>двовимірний масив</strong>  —  це звичайна математична матриця або таблиця, яка має рядки та стовпці. Щоб створити двовимірний масив, ми передаємо в <code>np.array()</code> список, який складається з інших списків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+matrix = np.array([
+    [<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>],  <span class="hljs-comment"># Рядок 0</span>
+    [<span class="hljs-number">8</span>,  <span class="hljs-number">9</span>,  <span class="hljs-number">10</span>]   <span class="hljs-comment"># Рядок 1</span>
+])
+<span class="hljs-built_in">print</span>(matrix)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-lua"><span class="hljs-string">[[10 11 12]
+ [ 8  9 10]]</span>
+</code></pre>
+<h3 id="доступ-до-елементів-таблиці">Доступ до елементів таблиці</h3>
+<p>Щоб дістати конкретне число, у квадратних дужках вказують спочатку номер рядка, а потім через кому — номер стовпця: <code>[номер_рядка, номер_стовпця]</code>.</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+matrix = np.array([
+    [<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>],
+    [<span class="hljs-number">8</span>,  <span class="hljs-number">9</span>,  <span class="hljs-number">10</span>]
+])
+
+<span class="hljs-built_in">print</span>(matrix[<span class="hljs-number">0</span>, <span class="hljs-number">2</span>])
+<span class="hljs-built_in">print</span>(matrix[<span class="hljs-number">1</span>, :])
+<span class="hljs-built_in">print</span>(matrix[:, <span class="hljs-number">1</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-number">12</span>
+<span class="hljs-selector-attr">[ 8  9 10]</span>
+<span class="hljs-selector-attr">[11  9]</span>
+</code></pre>
+<p>Символ <code><span class="hl-char">:</span></code> без чисел навколо означає «усі елементи цього виміру». Так, <code>matrix[1, <span class="hl-char">:</span>]</code> повертає весь рядок 1, а <code>matrix[<span class="hl-char">:</span>, 1]</code> — увесь стовпець 1 (тут, наприклад, оцінки всіх учнів за другий предмет).</p>
+<h2 id="146-створення-масивів-заготовок">14.6 Створення масивів-заготовок</h2>
+<p>Окрім ручного введення чисел через <code>np.array()</code>, NumPy має команди для автоматичного створення заготовок:</p>
+<ul>
+<li><code>np.zeros(кількість)</code> — створює масив, заповнений нулями;</li>
+<li><code>np.ones(кількість)</code> — створює масив, заповнений одиницями;</li>
+<li><code>np.full(кількість, число)</code> — заповнює масив вказаним числом;</li>
+<li><code>np.eye(розмір)</code> — створює одиничну матрицю (одиниці по діагоналі, решта нулі).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+<span class="hljs-built_in">print</span>(np.zeros(<span class="hljs-number">5</span>))
+<span class="hljs-built_in">print</span>(np.full((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-number">7</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-lua">[<span class="hljs-number">0.</span> <span class="hljs-number">0.</span> <span class="hljs-number">0.</span> <span class="hljs-number">0.</span> <span class="hljs-number">0.</span>]
+<span class="hljs-string">[[7 7 7]
+ [7 7 7]]</span>
+</code></pre>
+<h3 id="автоматичні-послідовності-чисел">Автоматичні послідовності чисел</h3>
+<p>Дві інші дуже вживані команди дозволяють генерувати послідовності чисел без ручного їх переліку:</p>
+<ul>
+<li><code>np.arange(від, до, крок)</code> — генерує послідовність (як вбудована функція <code>range()</code>, розглянута в Розділі 6 «Цикли», але вміє працювати з дробовими кроками);</li>
+<li><code>np.linspace(від, до, скільки_чисел)</code> — рівномірно розрізає вказаний проміжок на потрібну кількість точок. Це особливо зручно для побудови майбутніх графіків.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+<span class="hljs-built_in">print</span>(np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0.2</span>))
+<span class="hljs-built_in">print</span>(np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>, <span class="hljs-number">5</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[0.  0.2 0.4 0.6 0.8]</span>
+<span class="hljs-selector-attr">[ 0.   2.5  5.   7.5 10. ]</span>
+</code></pre>
+<blockquote>
+<p><strong>Увага.</strong> У <code>np.arange()</code>, як і в <code>range()</code>, верхня межа не включається до результату. У <code>np.linspace()</code>, навпаки, обидві межі (від і до) включаються — саме тому в прикладі вище останнє число дорівнює рівно <code>10.</code>, а не якомусь наближеному значенню.</p>
+</blockquote>
+<h2 id="147-векторизовані-обчислення">14.7 Векторизовані обчислення</h2>
+<p>Уявіть, що у вас є список цін у гривнях і ви хочете збільшити кожну ціну на 5 гривень. У звичайному Python вам довелося б написати цикл <code>for</code>. У NumPy арифметичні операції виконуються <strong>миттєво над усім масивом одразу</strong>, без жодних явних циклів. Це називається <em>векторизацією</em>.</p>
+<h3 id="операції-масиву-з-числом">Операції масиву з числом</h3>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+prices = np.array([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>])
+<span class="hljs-built_in">print</span>(prices + <span class="hljs-number">5</span>)
+<span class="hljs-built_in">print</span>(prices * <span class="hljs-number">3</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[15 25 35 45]</span>
+<span class="hljs-selector-attr">[ 30  60  90 120]</span>
+</code></pre>
+<h3 id="операції-між-двома-масивами">Операції між двома масивами</h3>
+<p>Якщо два масиви мають однаковий розмір, обчислення відбуваються попарно — елемент з елементом на однакових позиціях:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+a = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])
+b = np.array([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-built_in">print</span>(a + b)
+<span class="hljs-built_in">print</span>(a * b)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">11 22 33</span>]
+[<span class="hljs-meta">10 40 90</span>]
+</code></pre>
+<h3 id="математичні-функції">Математичні функції</h3>
+<p>Бібліотека містить власні швидкі версії математичних функцій, які так само застосовуються одразу до кожної комірки масиву:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+numbers = np.array([<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">16</span>])
+<span class="hljs-built_in">print</span>(np.sqrt(numbers))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">2. 3. 4.</span>]
+</code></pre>
+<p>Так само доступні <code>np.sin()</code>, <code>np.cos()</code>, <code>np.log()</code> та багато інших.</p>
+<h2 id="148-отримання-підсумкових-результатів-статистика">14.8 Отримання підсумкових результатів (статистика)</h2>
+<p>Після проведення розрахунків нам зазвичай потрібні не всі окремі числа, а підсумкові показники. Для цього існують вбудовані статистичні функції:</p>
+<ul>
+<li><code>np.sum()</code> — рахує загальну суму всіх чисел;</li>
+<li><code>np.mean()</code> — обчислює середнє арифметичне значення;</li>
+<li><code>np.max()</code> / <code>np.min()</code> — знаходять найбільше та найменше число;</li>
+<li><code>np.std()</code> — обчислює стандартне відхилення (показує, наскільки сильно числа відрізняються від середнього значення, тобто чи є результати стабільними).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+grades = np.array([<span class="hljs-number">10</span>, <span class="hljs-number">12</span>, <span class="hljs-number">9</span>, <span class="hljs-number">11</span>, <span class="hljs-number">8</span>, <span class="hljs-number">12</span>])
+<span class="hljs-built_in">print</span>(np.mean(grades))
+<span class="hljs-built_in">print</span>(np.<span class="hljs-built_in">max</span>(grades))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">10.333333333333334
+12
+</code></pre>
+<div class="exers">
+<h3 id="вправа">Вправа</h3>
+<p>Створіть масив температур за тиждень <code>[15, 17, 19, 22, 20, 18, 16]</code>, потім перетворіть їх усі за один крок у шкалу Фаренгейта за формулою $F = C \cdot 1{,}8 + 32$ і знайдіть середню температуру тижня у градусах Фаренгейта за допомогою <code>np.mean()</code>.
+</p></div>
+<h2 id="149-властивості-масивів">14.9 Властивості масивів</h2>
+<p>Кожен масив NumPy має кілька важливих характеристик, які можна дізнатися в будь-який момент. Зверніть увагу: після них дужки <code>()</code> не ставляться, оскільки це не методи, а атрибути об'єкта:</p>
+<ul>
+<li><code>.shape</code> — форма масиву. Повертає кортеж із розмірами: <code>(кількість,)</code> для одновимірного масиву, <code>(рядків, стовпців)</code> для двовимірного;</li>
+<li><code>.dtype</code> — тип даних, які зберігаються всередині (наприклад, <code>int64</code> — цілі числа, <code>float64</code> — дробові);</li>
+<li><code>.size</code> — загальна кількість усіх елементів масиву;</li>
+<li><code>.ndim</code> — кількість вимірів (1 для лінійного масиву, 2 для таблиці).</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+matrix = np.array([[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]])
+<span class="hljs-built_in">print</span>(matrix.shape)
+<span class="hljs-built_in">print</span>(matrix.dtype)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-go">(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-type">int64</span>
+</code></pre>
+<h2 id="1410-зміна-форми-масиву-reshape">14.10 Зміна форми масиву: <code>.reshape()</code></h2>
+<p>Ви можете легко перегрупувати елементи масиву, змінивши його «зовнішній вигляд» — наприклад, перетворити довгий одновимірний рядок із 6 чисел на таблицю з 2 рядків та 3 стовпців. За це відповідає метод <code>.reshape()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+flat_array = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>])
+grid = flat_array.reshape(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+<span class="hljs-built_in">print</span>(grid)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-lua"><span class="hljs-string">[[1 2 3]
+ [4 5 6]]</span>
+</code></pre>
+<div class="warn">
+Загальна кількість елементів повинна залишатися незмінною: масив із 6 елементів не можна перетворити на таблицю 3×3, оскільки для неї потрібно 9 чисел.
+</div>
+<h2 id="1411-обєднання-та-розділення-масивів">14.11 Об'єднання та розділення масивів</h2>
+<ul>
+<li><code>np.concatenate((масив1, масив2))</code> — з'єднує два або більше масивів в один;</li>
+<li><code>np.split(масив, кількість)</code> — розрізає масив на кілька рівних частин.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+a = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>])
+b = np.array([<span class="hljs-number">3</span>, <span class="hljs-number">4</span>])
+<span class="hljs-built_in">print</span>(np.concatenate((a, b)))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">1 2 3 4</span>]
+</code></pre>
+<h2 id="1412-зрізи-масивів-slicing">14.12 Зрізи масивів (<em>slicing</em>)</h2>
+<p>Зрізи дозволяють взяти потрібний шматочок із великого масиву за тим самим правилом <code>[початок<span class="hl-char">:</span>кінець]</code>, яке ми вже бачили для списків та рядків (Розділ 11 «Більше про рядки»).</p>
+<p>В одновимірних масивах зрізи працюють так само, як у списках:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+numbers = np.array([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>, <span class="hljs-number">50</span>])
+<span class="hljs-built_in">print</span>(numbers[<span class="hljs-number">1</span>:<span class="hljs-number">4</span>])
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">20 30 40</span>]
+</code></pre>
+<p>У двовимірних масивах ми можемо вирізати цілі підтаблиці, вказуючи зріз для рядків та стовпців через кому:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+matrix = np.array([[<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>], [<span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>]])
+sub_matrix = matrix[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>, <span class="hljs-number">1</span>:<span class="hljs-number">3</span>]
+<span class="hljs-built_in">print</span>(sub_matrix)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-lua"><span class="hljs-string">[[11 12]
+ [ 9 10]]</span>
+</code></pre>
+<h2 id="1413-логічні-маски-фільтрація-даних">14.13 Логічні маски (фільтрація даних)</h2>
+<p>Уявіть, що з масиву оцінок класу нам потрібно вибрати лише ті, які є високими (більше або дорівнюють 10). NumPy дозволяє зробити це елегантно за допомогою <strong>логічних масок</strong>.</p>
+<p>Якщо застосувати умову порівняння до всього масиву, NumPy поверне новий масив, повністю заповнений логічними значеннями <code>True</code> або <code>False</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+grades = np.array([<span class="hljs-number">9</span>, <span class="hljs-number">12</span>, <span class="hljs-number">8</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>])
+mask = grades &gt;= <span class="hljs-number">10</span>
+<span class="hljs-built_in">print</span>(mask)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-punctuation">[</span><span class="hljs-literal">False</span>  <span class="hljs-literal">True</span> <span class="hljs-literal">False</span>  <span class="hljs-literal">True</span>  <span class="hljs-literal">True</span><span class="hljs-punctuation">]</span>
+</code></pre>
+<p>Тепер, якщо передати цю маску всередину квадратних дужок нашого масиву, NumPy залишить лише ті числа, для яких відповідне значення маски дорівнює <code>True</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">high_grades = grades[grades &gt;= <span class="hljs-number">10</span>]
+<span class="hljs-built_in">print</span>(high_grades)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">12 10 11</span>]
+</code></pre>
+<blockquote>
+<p>Логічну маску можна записувати і напряму, без проміжної змінної: <code>grades[grades &gt;= 10]</code>. Ми показали вам запис через змінну <code>mask</code> вище лише для того, щоб продемонструвати, як саме вона виглядає зсередини.</p>
+</blockquote>
+<h2 id="1414-випадкові-числа-у-numpy">14.14 Випадкові числа у NumPy</h2>
+<p>Модуль <code>random</code> бібліотеки NumPy (не плутати зі стандартним модулем <code>random</code> з Розділу 9 «Модулі», хоч вони і схожі за призначенням) уміє миттєво генерувати цілі масиви випадкових даних:</p>
+<ul>
+<li><code>np.random.randint(від, до, size=розмір)</code> — створює масив випадкових цілих чисел заданого розміру;</li>
+<li><code>np.random.random(розмір)</code> — створює масив випадкових дробових чисел від 0.0 до 1.0.</li>
+</ul>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+<span class="hljs-built_in">print</span>(np.random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">13</span>, size=<span class="hljs-number">5</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-css"><span class="hljs-selector-attr">[ 7 12  3  9  1]</span>
+</code></pre>
+<blockquote>
+<p>Оскільки числа випадкові, у вас на екрані з великою ймовірністю з'являться зовсім інші значення — це нормально.</p>
+</blockquote>
+<h2 id="1415-збереження-та-завантаження-масивів">14.15 Збереження та завантаження масивів</h2>
+<p>Щоб результати складних обчислень не зникли після завершення програми, NumPy має власний надшвидкий бінарний формат для збереження масивів на диск:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+data = np.array([<span class="hljs-number">1.5</span>, <span class="hljs-number">2.3</span>, <span class="hljs-number">4.8</span>])
+
+<span class="hljs-comment"># Зберегти у файл з розширенням .npy</span>
+np.save(<span class="hljs-string">"my_data.npy"</span>, data)
+
+<span class="hljs-comment"># Завантажити назад у програму під час наступного запуску</span>
+loaded_data = np.load(<span class="hljs-string">"my_data.npy"</span>)
+<span class="hljs-built_in">print</span>(loaded_data)
+</code></pre>
+<h2 id="1416-numpy-та-текстові-файли">14.16 NumPy та текстові файли</h2>
+<p>Якщо дані потрібно передати в іншу програму (наприклад, відкрити таблицю в Excel), масиви можна зберігати у звичайні текстові файли, де числа розділені комами або пробілами, за допомогою функцій <code>np.savetxt()</code> та <code>np.loadtxt()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+matrix = np.array([[<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>], [<span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>]])
+
+<span class="hljs-comment"># Збереження у текстовий файл</span>
+np.savetxt(<span class="hljs-string">"matrix.txt"</span>, matrix)
+
+<span class="hljs-comment"># Зчитування числових даних із текстового файлу прямо в масив NumPy</span>
+new_matrix = np.loadtxt(<span class="hljs-string">"matrix.txt"</span>)
+<span class="hljs-built_in">print</span>(new_matrix)
+</code></pre>
+<h2 id="1417-numpy-та-matplotlib">14.17 NumPy та Matplotlib</h2>
+<p>Головна цінність масивів NumPy полягає в тому, що вони можуть бути використані для побудови графіків у бібліотеці <strong>Matplotlib</strong>, яку ми розглянемо в одному з наступних розділів. Подивіться, як за допомогою <code>linspace()</code> та синуса NumPy можна підготувати ідеальні координати точок для малювання математичного графіка:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt  <span class="hljs-comment"># Підключаємо малювальник графіків</span>
+
+<span class="hljs-comment"># Крок 1: створюємо 100 точок на осі X від 0 до 10.</span>
+x = np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>, <span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Крок 2: обчислюємо синус для кожної точки (вісь Y).</span>
+y = np.sin(x)
+
+<span class="hljs-comment"># Крок 3: передаємо масиви NumPy малювальнику.</span>
+plt.plot(x, y)
+plt.show()  <span class="hljs-comment"># На екрані з'явиться плавна синусоїда!</span>
+</code></pre>
+<h2 id="1418-типові-помилки">14.18 Типові помилки</h2>
+<p><strong>1. Спроба обчислити масиви різної форми.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+a = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])
+b = np.array([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-built_in">print</span>(a + b)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "script.py", line <span class="hljs-number">5</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    print(a <span class="hljs-operator">+</span> b)
+ValueError: operands could <span class="hljs-keyword">not</span> be broadcast together <span class="hljs-keyword">with</span> shapes (<span class="hljs-number">3</span>,) (<span class="hljs-number">2</span>,)
+</code></pre>
+<p>Причина: комп'ютер не знає, з яким елементом масиву <code>b</code> додавати третій елемент масиву <code>a</code>. Додавати та множити масиви можна лише тоді, коли їхні розміри повністю збігаються (або сумісні за правилами <em>broadcasting</em>[^2], які виходять за межі цього розділу).</p>
+<p>Як виправити: переконайтеся, що обидва масиви мають однакову форму (<code>.shape</code>), перш ніж виконувати операцію.</p>
+<p><strong>2. Забути передати список у квадратних дужках.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+arr = np.array(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-sql">Traceback (most recent <span class="hljs-keyword">call</span> <span class="hljs-keyword">last</span>):
+  File "script.py", line <span class="hljs-number">3</span>, <span class="hljs-keyword">in</span> <span class="hljs-operator">&lt;</span><span class="hljs-keyword">module</span><span class="hljs-operator">&gt;</span>
+    arr <span class="hljs-operator">=</span> np.array(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+TypeError: <span class="hljs-keyword">array</span>() takes <span class="hljs-keyword">from</span> <span class="hljs-number">1</span> <span class="hljs-keyword">to</span> <span class="hljs-number">2</span> positional arguments but <span class="hljs-number">4</span> were given
+</code></pre>
+<p>Як виправити: числа обов'язково мають бути оформлені як єдиний список усередині дужок: <code>np.array([1, 2, 3, 4])</code>.</p>
+<p><strong>3. Забути, що більшість функцій NumPy повертають новий масив, а не змінюють початковий.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+temps = np.array([<span class="hljs-number">18.5</span>, <span class="hljs-number">20.1</span>, <span class="hljs-number">19.0</span>])
+<span class="hljs-built_in">print</span>(temps + <span class="hljs-number">1</span>)
+<span class="hljs-built_in">print</span>(temps)  <span class="hljs-comment"># temps залишився незмінним!</span>
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">19.5 21.1 20. </span>]
+[<span class="hljs-meta">18.5 20.1 19. </span>]
+</code></pre>
+<p>Як виправити: якщо результат потрібен надалі, збережіть його у змінній: <code>temps = temps + 1</code>.</p>
+<div class="exers">
+<h2 id="1420-вправи">14.20 Вправи</h2>
+<h3 id="1-аналітик-шкільних-оцінок">1. Аналітик шкільних оцінок</h3>
+<p>Ви отримали масив оцінок учнів класу за контрольну роботу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">grades = np.array([<span class="hljs-number">8</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">9</span>, <span class="hljs-number">6</span>, <span class="hljs-number">11</span>, <span class="hljs-number">10</span>, <span class="hljs-number">12</span>])
+</code></pre>
+<p>Напишіть програму, яка обчислює та виводить:</p>
+<ol>
+<li>середній бал класу (<code>np.mean()</code>);</li>
+<li>найвищу та найнижчу оцінку;</li>
+<li>кількість учнів, які написали роботу на відмінно (оцінка <code>&gt;= 10</code>), за допомогою логічної маски та функції <code>len()</code> або атрибута <code>.size</code>.</li>
+</ol>
+<h3 id="2-температурний-моніторинг-місяця">2. Температурний моніторинг місяця</h3>
+<p>Згенеруйте за допомогою функції <code>np.random.randint()</code> масив із 30 чисел, які відображають денну температуру у травні (у діапазоні від 15 до 28 градусів).</p>
+<ol>
+<li>Знайдіть день (або дні) з максимальною температурою.</li>
+<li>Порахуйте стандартне відхилення (<code>np.std()</code>), щоб зрозуміти, чи були різкі стрибки погоди.</li>
+<li>Перетворіть цей масив за допомогою <code>.reshape(5, 6)</code> у п'ять робочих тижнів місяця (таблицю) і виведіть на екран перший тиждень (рядок 0).</li>
+</ol>
+<h3 id="3-спортивний-трекер">3. Спортивний трекер</h3>
+<p>Спортсмен бігає 4 дні на тиждень і фіксує дистанцію, яку він пробіг, у кілометрах. Маємо таблицю (двовимірний масив 3×4) для трьох тижнів тренувань:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">dist = np.array([
+    [<span class="hljs-number">5.1</span>, <span class="hljs-number">4.8</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">5.5</span>],  <span class="hljs-comment"># Тиждень 1</span>
+    [<span class="hljs-number">5.5</span>, <span class="hljs-number">6.2</span>, <span class="hljs-number">5.8</span>, <span class="hljs-number">6.5</span>],  <span class="hljs-comment"># Тиждень 2</span>
+    [<span class="hljs-number">6.0</span>, <span class="hljs-number">6.5</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">7.2</span>]   <span class="hljs-comment"># Тиждень 3</span>
+])
+</code></pre>
+<p>Напишіть код, який:</p>
+<ol>
+<li>виводить, скільки всього кілометрів пробіг спортсмен за весь час (сума всіх елементів);</li>
+<li>вирізає та виводить результати тільки другого тижня тренувань;</li>
+<li>використовує умову <code>dist &gt; 6.0</code>, щоб дізнатися і вивести всі успішні забіги, де дистанція була більшою за 6 кілометрів.</li>
+</ol>
+</div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<p><a href="https://numpy.org/doc/">NumPy — офіційна документація</a>.
+<a href="https://numpy.org/doc/stable/user/basics.broadcasting.html">NumPy Docs — Broadcasting</a>.
+</p></div>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>

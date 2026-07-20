@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>ch6</title>
+<style>
+:root {
+    --navy: #1e3041;
+    --code-text: #d8dee9;
+    --green: #4caf50;
+    --green-dark: #2e7d32;
+    --green-bg: #eef7ee;
+    --blue: #64b5f6;
+    --red: #ff5555;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.7;
+    color: #222;
+}
+.md-preview img {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    border-radius: 6px;
+}
+.md-preview code {
+    background: var(--navy);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95em;
+}
+.md-preview code .hl-char {
+    color: var(--red);
+    font-weight: bold;
+}
+.md-preview blockquote:not([class]) {
+    margin: 1.2em 0;
+    padding: 12px 18px;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    background: var(--green-bg);
+    color: var(--green-dark);
+}
+.md-preview blockquote p { margin: 0.4em 0; }
+.md-preview pre {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.md-preview pre code {
+    background: transparent;
+    color: var(--code-text);
+    padding: 0;
+    border-radius: 0;
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.md-preview table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+.md-preview table, .md-preview th, .md-preview td { border: 1px solid #999; }
+.md-preview th { background: #f3f3f3; }
+.md-preview th, .md-preview td { padding: 8px 12px; }
+.md-preview ul, .md-preview ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+.md-preview ul li, .md-preview ol li {
+    position: relative;
+    padding-left: 34px;
+    margin: 0.45em 0;
+}
+.md-preview ul li::before, .md-preview ol li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--blue);
+    color: var(--green-dark);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+}
+.md-preview ul li::before { content: "✓"; font-size: 16px; }
+.md-preview ol { counter-reset: ol-counter; }
+.md-preview ol li { counter-increment: ol-counter; }
+.md-preview ol li::before { content: counter(ol-counter); }
+.md-preview .hljs-comment, .md-preview .hljs-quote { color: #8aa899; font-style: italic; }
+.md-preview .hljs-keyword, .md-preview .hljs-selector-tag, .md-preview .hljs-literal,
+.md-preview .hljs-doctag { color: #f2a765; font-weight: bold; }
+.md-preview .hljs-string, .md-preview .hljs-addition, .md-preview .hljs-attribute,
+.md-preview .hljs-meta-string { color: #a8d98a; }
+.md-preview .hljs-number, .md-preview .hljs-symbol { color: #c9a0e0; }
+.md-preview .hljs-title, .md-preview .hljs-title.function_, .md-preview .hljs-built_in { color: #7ecbe8; }
+.md-preview .hljs-variable, .md-preview .hljs-template-variable,
+.md-preview .hljs-attr, .md-preview .hljs-params { color: var(--code-text); }
+.md-preview .hljs-meta, .md-preview .hljs-link { color: #7ecbe8; }
+.md-preview .hljs-deletion { color: #e06c75; }
+.md-preview .hljs-emphasis { font-style: italic; }
+.md-preview .hljs-strong { font-weight: bold; }
+.md-preview .hljs-error, .md-preview .err { color: inherit; background: transparent; border: none; }
+.md-preview .preview {
+    position: relative;
+    margin: 1.5em 0;
+    padding: 18px 16px 14px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+
+.md-preview .preview-toggle {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    background: white;
+
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.md-preview .preview-content {
+    display: none;
+}
+
+.md-preview .preview.open .preview-content {
+    display: block;
+}
+.exers {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #7b3fc6;
+    border-radius: 12px;
+    background: #f4eeff;
+}
+.exers::after {
+    content: "💻";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #7b3fc6;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.warn {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #ee6b08;
+    border-radius: 12px;
+    background: #f4dfd8;
+}
+.warn::after {
+    content: "❗️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #ee6b08;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.project {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #e4c514;
+    border-radius: 12px;
+    background: #faf2c6;
+}
+.project::after {
+    content: "🌟️";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #e4c514;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+.read {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px;
+    border: 2px solid #2f9e6a;
+    border-radius: 12px;
+    background: #e3f5ec;
+}
+.read::after {
+    content: "📖";
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #2f9e6a;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<div class="md-preview">
+<h1 id="розділ-6-умовні-конструкції">РОЗДІЛ 6. Умовні конструкції</h1>
+<h2 id="61-умови-порівняння-та-виконання-за-умовою">6.1 Умови, порівняння та виконання за умовою</h2>
+<p>Досі наші програми були схожі на пряму дорогу: комп'ютер слухняно виконував один рядок коду за іншим від початку до кінця. Але в реальному житті так буває рідко — щомиті ми опиняємося на роздоріжжі й приймаємо рішення залежно від обставин: якщо надворі дощ, візьмемо парасольку, інакше — залишаємо її вдома; якщо оцінка учня висока, вчитель його хвалить. Комп'ютерні програми працюють так само: якщо на банківському рахунку достатньо коштів, банкомат видає готівку, інакше — показує помилку; якщо введений пароль правильний, сайт відкриває особисту сторінку користувача. Як бачимо, наші дії залежать від обставин, які ми називатимемо <strong>умовами</strong>. Ось Ось кілька прикладів:</p>
+<ul>
+<li><strong>якщо</strong> будильник дзвонить вранці, <strong>то</strong>   ___</li>
+<li><strong>якщо</strong> холодно, <strong>то</strong> одягни ___</li>
+<li><strong>якщо</strong> йде дощ, <strong>то</strong> візьми ___</li>
+<li><strong>якщо</strong> світлофор горить червоним,<strong>то</strong> ___</li>
+<li><strong>якщо</strong> сьогодні п’ятниця, <strong>то</strong> ___</li>
+<li><strong>якщо</strong> заряд батареї мобільного телефону близький до 0,<strong>то</strong> ___</li>
+<li><strong>якщо</strong> мікрохвильовка досягає часу, встановленого для приготування,<strong>то</strong> ___</li>
+<li><strong>якщо</strong> під час введення літери натиснута клавіша SHIFT, <strong>то</strong> ___</li>
+<li><strong>якщо</strong> ліміт часу гри досягнуто, <strong>то</strong> ___</li>
+<li><strong>якщо</strong> гонщик перетне фініш першим, <strong>то</strong> ___</li>
+<li><strong>якщо</strong> пальне в автомобілі закінчується, <strong>то</strong> ___</li>
+</ul>
+<p><img src="./media/ch6/005bc6a4c788280cfc0921967eeaee56.png" alt="005bc6a4c788280cfc0921967eeaee56.png"></p>
+<p>Зверніть увагу, що кожне речення ми починали зі слова “<strong>якщо</strong>”, після якого йшло певне висловлювання(умова), за результатом якого має виконуватись дія, яка має бути записана після слова <strong>“то</strong>”.</p>
+<h3 id="умови">Умови</h3>
+<blockquote>
+<p><strong>Умова (логічний вираз)</strong>— висловлювання, на яке можна дати одну відповідь з двох можливих — <strong>так</strong> або <strong>ні</strong>.</p>
+</blockquote>
+<p>У програмуванні умова — це вираз, який реалізує порівняння певної змінної з деяким числом або з іншою змінною, результат порівняння може бути істинним(<code>True</code>, умова виконується) чи хибним(<code>False</code>, умова не виконується) <strong>.</strong></p>
+<blockquote>
+<p><strong>Умова</strong> — вираз, який містить оператори порівняння, які порівнюють дві величини, визначаючи яка з ниx  <strong><em>менше, менше або дорівнює, дорівнює, не дорівнює, більше, більше або дорівнює</em></strong> іншій.
+Умова може бути <strong>простою</strong> або <strong>складеною</strong>.</p>
+</blockquote>
+<p>Умовою може бути:</p>
+<ul>
+<li>якщо об’єкт торкається іншого об’єкту</li>
+<li>якщо вказівник миші торкається об’єкта</li>
+<li>якщо об’єкт досягає меж області побудови</li>
+<li>якщо об’єкт торкається кольору</li>
+<li>якщо натиснуто клавішу клавіатури</li>
+<li>якщо кнопку миші натиснути</li>
+<li>якщо значення змінної (не)дорівнює числу/змінній</li>
+<li>якщо значення змінної менше(рівне) числа/змінної</li>
+<li>якщо значення змінної більше(рівне) за число/змінної</li>
+</ul>
+<p>Умови використовуються в умовній вказівці (інструкція розгалуження,<code>if .. else</code>), у вказівці повторення та в інших випадках, про які мова буде далі.</p>
+<blockquote>
+<p><strong>Розгалуження</strong> — перехід до іншої послідовності інструкцій, який здійснюється у залежності від виконання певної умови.</p>
+</blockquote>
+<p>Насправді комп’ютери не можуть думати самостійно, і всі їх дії — лише результат сліпого виконання наших вказівок, записаних у програмі.</p>
+<p><strong>Умовна вказівка</strong> використовує результат перевірки умови для зміни порядку виконання програми, записати умовну вказівку у Python досить просто (особливо якщо знайомий з англійською мовою, але це необов’язково):</p>
+<p><img src="./media/ch6/53a32d99074823376c5a080163a35726.png" alt="53a32d99074823376c5a080163a35726.png"></p>
+<p>Якщо необхідно виконувати певні дії у випадку, коли умова не справджується використовується так звана “повна форма” умовної вказівки:
+<img src="./media/ch6/1a596a7216edfcc22160fa1228809feb.png" alt="1a596a7216edfcc22160fa1228809feb.png"></p>
+<h3 id="порівняння">Порівняння</h3>
+<p>Основою умови є порівняння, тобто умову ви маєте сформулювати за допомогою порівняння між собою певних величин (змінних та констант), причому результатом такого порівняння має бути відповідь “так” або “ні”.</p>
+<p>В умовній вказівці ви можете використовувати будь-який з операторів порівняння:
+<img src="./media/ch6/916941ceab60c9fcb299eaee641c0072.png" alt="916941ceab60c9fcb299eaee641c0072.png"></p>
+<h3 id="рівність">Рівність</h3>
+<p>Для перевірки рівності двох значень, використовуйте наступну вказівку:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">if</span> (значення <span class="hljs-number">1</span> == значення<span class="hljs-number">2</span>):
+</code></pre>
+<p>У наведеному нижче прикладі в консолі пишеться “Зараз полудень”, якщо змінна <code>hour</code> має значення 12.</p>
+<pre><code class="language-python hljs" data-highlighted="yes">hour = <span class="hljs-built_in">int</span>(<span class="hljs-built_in">input</span> (<span class="hljs-string">"Котра година? "</span>))
+<span class="hljs-keyword">if</span> hour = <span class="hljs-number">12</span>):
+    <span class="hljs-built_in">print</span> (<span class="hljs-string">"Зараз полудень! "</span>)
+</code></pre>
+<h3 id="менше-і-більше">Менше і більше</h3>
+<p>Ми можемо перевірити, чи одне значення менше або більше іншого, використовуючи оператори <code>&lt;</code> та <code>&gt;</code>. Перегляньте наступний приклад з введенням різних значень вхідних даних.</p>
+<pre><code class="language-python hljs" data-highlighted="yes">hour = <span class="hljs-built_in">int</span>(<span class="hljs-built_in">input</span> (<span class="hljs-string">"Котра година? "</span>))
+<span class="hljs-keyword">if</span> (hour &lt; <span class="hljs-number">12</span>):
+    <span class="hljs-built_in">print</span> (<span class="hljs-string">"Ще не полудень!"</span>)
+<span class="hljs-keyword">if</span> (hour &gt; <span class="hljs-number">12</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Це вже пізніше полудня!"</span>)
+</code></pre>
+<p>Умовні конструкції є невід'ємним елементом будь-якої мови програмування, якщо ми хочемо надати їй трохи складності, оскільки вони дозволяють комп'ютеру приймати рішення. Для цього Python використовує інструкцію <code>if</code> разом із порівнянням, яке ми розглянули в попередньому розділі. Ось приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-number">2</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна!"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Перевірка істинна!
+</code></pre>
+<p>і другий:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-string">"банан"</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-string">"апельсин"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна!"</span>)
+</code></pre>
+<p>Результат виконання: (нічого не виводиться, оскільки умова хибна)</p>
+<p>Щодо цих двох прикладів слід зробити кілька зауважень:</p>
+<ul>
+<li>У першому прикладі інструкція <code>print("Перевірка істинна!")</code> виконується, оскільки перевірка істинна. У другому прикладі перевірка хибна, і нічого не виводиться.</li>
+<li>Блоки інструкцій в умовах обов'язково повинні мати відступи, як і в циклах <code>for</code> та <code>while</code>. Відступ вказує на область дії інструкцій, які потрібно виконати, якщо перевірка істинна.</li>
+<li>Як і в циклах <code>for</code> та <code>while</code>, рядок з інструкцією <code>if</code> закінчується двокрапкою <code><span class="hl-char">:</span></code>.</li>
+</ul>
+<p>Результатом самого порівняння (наприклад, <code>x == 2</code>) є значення булевого типу — <code>True</code> або <code>False</code> (з ним ми вже зустрічалися в Розділі 2 «Змінні» та в підрозділі 5.2 «Порівняння»). Саме це значення й перевіряє інструкція <code>if</code>: якщо воно <code>True</code> — тіло умови виконується, якщо <code>False</code> — Python пропускає його й переходить до наступного рядка коду.</p>
+<h2 id="62-перевірки-з-кількома-варіантами">6.2 Перевірки з кількома варіантами</h2>
+<p>Іноді зручно перевірити відразу кілька варіантів значення в одній інструкції <code>if</code>. Замість кількох окремих інструкцій <code>if</code> можна скористатися конструкцією <code>if</code> / <code>elif</code> / <code>else</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-number">2</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна!"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка хибна!"</span>)
+
+x = <span class="hljs-number">3</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-number">2</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна!"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка хибна!"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Перевірка істинна!
+Перевірка хибна!
+</code></pre>
+<p>Можна перевіряти й серію значень однієї змінної. Наприклад, випадково оберемо пору року й виведемо відповідне повідомлення. У прикладі використано інструкцію <code>random.choice(spysok)</code>, яка повертає випадково обраний елемент зі списку; інструкцію <code>import random</code> ми детальніше розглянемо в Розділі 9 «Модулі», а поки просто приймемо, що вона потрібна:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> random
+
+pora_roku = random.choice([<span class="hljs-string">"зима"</span>, <span class="hljs-string">"весна"</span>, <span class="hljs-string">"літо"</span>, <span class="hljs-string">"осінь"</span>])
+<span class="hljs-keyword">if</span> pora_roku == <span class="hljs-string">"зима"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"час кататися на лижах"</span>)
+<span class="hljs-keyword">elif</span> pora_roku == <span class="hljs-string">"весна"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"час висаджувати квіти"</span>)
+<span class="hljs-keyword">elif</span> pora_roku == <span class="hljs-string">"літо"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"час їхати на море"</span>)
+<span class="hljs-keyword">elif</span> pora_roku == <span class="hljs-string">"осінь"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"час читати книжки довгими вечорами"</span>)
+</code></pre>
+<p>Результат виконання (один із можливих варіантів, оскільки <code>pora_roku</code> обирається випадково):</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">час їхати на море
+</code></pre>
+<p>У цьому прикладі Python перевіряє першу умову, і лише якщо вона хибна — перевіряє другу, і так далі. Код, що відповідає першій умові, яка виявилася істинною, виконується, і Python одразу виходить із блоку <code>if</code>. Можна також додати гілку <code>else</code>, яка виконається, якщо жодна з умов <code>if</code> та <code>elif</code> не була істинною.</p>
+<div class="warn">
+Оскільки Python зупиняється на першій істинній умові, порядок гілок <code>elif</code> має значення. Якщо розташувати менш сувору умову раніше за суворішу (наприклад, перевіряти <code>score &gt;= 4</code> перед <code>score &gt;= 10</code>), гілка з суворішою умовою може ніколи не виконатися — навіть якщо значення насправді їй відповідає. Докладніше про цю пастку — у підрозділі 6.12 «Типові помилки».
+</div>
+<h2 id="63-важливість-відступів">6.3 Важливість відступів</h2>
+<p>Знову зверніть увагу на відступи! Тут потрібна особлива уважність. Щоб переконатися в цьому, виконайте два приклади коду.</p>
+<p><strong>Приклад 1</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]
+<span class="hljs-keyword">for</span> nb <span class="hljs-keyword">in</span> chysla:
+    <span class="hljs-keyword">if</span> nb == <span class="hljs-number">5</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна"</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"тому що змінна nb дорівнює <span class="hljs-subst">{nb}</span>"</span>)
+</code></pre>
+<p><strong>Результат:</strong></p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Перевірка істинна
+тому що змінна nb дорівнює 5
+</code></pre>
+<p><strong>Приклад 2</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]
+<span class="hljs-keyword">for</span> nb <span class="hljs-keyword">in</span> chysla:
+    <span class="hljs-keyword">if</span> nb == <span class="hljs-number">5</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Перевірка істинна"</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"тому що змінна nb дорівнює <span class="hljs-subst">{nb}</span>"</span>)
+</code></pre>
+<p><strong>Результат:</strong></p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">тому що змінна nb дорівнює 4
+Перевірка істинна
+тому що змінна nb дорівнює 5
+тому що змінна nb дорівнює 6
+</code></pre>
+<p>Обидва коди дуже схожі, але дають зовсім різні результати. Якщо уважно подивитися на відступи останнього рядка, можна побачити, що в Коді 1 інструкція має подвійний відступ — тобто належить до блоку <code>if</code>. У Коді 2 та сама інструкція має лише один відступ, тому вже не належить до блоку <code>if</code>, звідси й виведення повідомлення для кожного значення <code>nb</code>.</p>
+<h2 id="64-поєднання-умов">6.4 Поєднання умов</h2>
+<p>Вказівки<code> if </code>і<code> else</code> можуть бути об’єднані, що надає можливість перевірки кількох умов одночасно за допомогою логічних(булевих) операторів. Найчастіше використовують два оператори — АБО та І.</p>
+<p>Таблиця істинності оператора АБО:</p>
+<table>
+<thead>
+<tr>
+<th>Умова 1</th>
+<th>Оператор</th>
+<th>Умова 2</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Істина</td>
+<td>АБО</td>
+<td>Істина</td>
+<td>Істина</td>
+</tr>
+<tr>
+<td>Істина</td>
+<td>АБО</td>
+<td>Хибність</td>
+<td>Істина</td>
+</tr>
+<tr>
+<td>Хибність</td>
+<td>АБО</td>
+<td>Істина</td>
+<td>Істина</td>
+</tr>
+<tr>
+<td>Хибність</td>
+<td>АБО</td>
+<td>Хибність</td>
+<td>Хибність</td>
+</tr>
+</tbody></table>
+<p>Таблиця істинності оператора І:</p>
+<table>
+<thead>
+<tr>
+<th>Умова 1</th>
+<th>Оператор</th>
+<th>Умова 2</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Істина</td>
+<td>І</td>
+<td>Істина</td>
+<td>Істина</td>
+</tr>
+<tr>
+<td>Істина</td>
+<td>І</td>
+<td>Хибність</td>
+<td>Хибність</td>
+</tr>
+<tr>
+<td>Хибність</td>
+<td>І</td>
+<td>Істина</td>
+<td>Хибність</td>
+</tr>
+<tr>
+<td>Хибність</td>
+<td>І</td>
+<td>Хибність</td>
+<td>Хибність</td>
+</tr>
+</tbody></table>
+<p>У Python для оператора І використовують зарезервоване слово <code>and</code>, а для оператора АБО — <code>or</code>. Обидва пишуться в нижньому регістрі. Приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+y = <span class="hljs-number">2</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-number">2</span> <span class="hljs-keyword">and</span> y == <span class="hljs-number">2</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"перевірка істинна"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">перевірка істинна
+</code></pre>
+<p>Той самий результат можна отримати, використавши дві вкладені інструкції <code>if</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">2</span>
+y = <span class="hljs-number">2</span>
+<span class="hljs-keyword">if</span> x == <span class="hljs-number">2</span>:
+    <span class="hljs-keyword">if</span> y == <span class="hljs-number">2</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"перевірка істинна"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">перевірка істинна
+</code></pre>
+<blockquote>
+<p>Ми радимо синтаксис з <code>and</code> — він компактніший. Загалом, чим менше рівнів відступів, тим краще для читабельності.</p>
+</blockquote>
+<p>Ефект цих операторів можна перевірити напряму з <code>True</code> та <code>False</code> (зверніть увагу на регістр):</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-literal">True</span> <span class="hljs-keyword">or</span> <span class="hljs-literal">False</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+</code></pre>
+<p>Нарешті, оператор заперечення <code>not</code> інвертує результат умови:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-keyword">not</span> <span class="hljs-literal">True</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-keyword">not</span> <span class="hljs-literal">False</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-keyword">not</span> (<span class="hljs-literal">True</span> <span class="hljs-keyword">and</span> <span class="hljs-literal">True</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">False</span>
+<span class="hljs-literal">True</span>
+<span class="hljs-literal">False</span>
+</code></pre>
+<p><strong>Порядок виконання <code>and</code> і <code>or</code>.</strong> Коли в одному виразі поєднуються і <code>and</code>, і <code>or</code>, Python спочатку обчислює всі <code>and</code>, а вже потім — <code>or</code> (так само, як у математиці множення виконується раніше за додавання). Наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">status = <span class="hljs-string">"moderator"</span>
+misto = <span class="hljs-string">"Київ"</span>
+<span class="hljs-keyword">if</span> status == <span class="hljs-string">"admin"</span> <span class="hljs-keyword">or</span> status == <span class="hljs-string">"moderator"</span> <span class="hljs-keyword">and</span> misto == <span class="hljs-string">"Київ"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Доступ дозволено"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Доступ дозволено
+</code></pre>
+<p>Тут спершу обчислюється <code>status == "moderator" and misto == "Київ"</code>, а вже результат цього виразу порівнюється через <code>or</code> з <code>status == "admin"</code>. Якщо потрібен інший порядок обчислення, використовують круглі дужки <code>()</code>, які, як і в математиці, підвищують пріоритет виразу всередині них:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">status = <span class="hljs-string">"moderator"</span>
+misto = <span class="hljs-string">"Одеса"</span>
+<span class="hljs-keyword">if</span> (status == <span class="hljs-string">"admin"</span> <span class="hljs-keyword">or</span> status == <span class="hljs-string">"moderator"</span>) <span class="hljs-keyword">and</span> misto == <span class="hljs-string">"Київ"</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Доступ дозволено"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Доступ заборонено"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Доступ заборонено
+</code></pre>
+<p>У цьому варіанті спершу перевіряється, чи <code>status</code> дорівнює <code>"admin"</code> <strong>або</strong> <code>"moderator"</code>, і лише якщо це так — додатково перевіряється місто. Дужки не змінюють результат самі по собі, але роблять намір коду однозначним і легшим для читання, тож у складених умовах їх варто використовувати навіть тоді, коли типовий пріоритет <code>and</code>/<code>or</code> і так дав би потрібний результат.</p>
+<h2 id="65-вкладені-умовні-конструкції">6.5 Вкладені умовні конструкції</h2>
+<p>Умовну конструкцію <code>if</code> можна вкласти всередину іншої <code>if</code>, так само як ми вкладали цикли <code>for</code> один в одного (підрозділ 5.1.5). Це зручно, коли перевірку другої умови має сенс робити лише за умови, що перша вже виконалась, і при цьому для кожного випадку потрібне власне повідомлення:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vik = <span class="hljs-number">19</span>
+ye_kvytok = <span class="hljs-literal">True</span>
+<span class="hljs-keyword">if</span> vik &gt;= <span class="hljs-number">18</span>:
+    <span class="hljs-keyword">if</span> ye_kvytok:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Вхід у кінозал дозволено"</span>)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Вхід заборонено: у вас немає квитка"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Вхід заборонено: фільм тільки для дорослих"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Вхід у кінозал дозволено
+</code></pre>
+<p>Зверніть увагу на відступи: внутрішній <code>if</code> (перевірка <code>ye_kvytok</code>) має власний додатковий рівень відступу порівняно із зовнішнім <code>if</code> (перевірка <code>vik</code>). Завдяки цьому Python розуміє, що наявність квитка перевіряється тільки тоді, коли перша перевірка віку вже виявилася істинною.</p>
+<blockquote>
+<p>Якщо для всіх випадків, коли умова хибна, потрібне те саме повідомлення (як у прикладі з підрозділу 6.4), простіша й читабельніша складена умова з <code>and</code> — <code>if vik &gt;= 18 and ye_kvytok<span class="hl-char">:</span></code>. Проте якщо кожна гілка має власне, окреме повідомлення (як тут: «немає квитка» відрізняється від «фільм тільки для дорослих»), вкладені <code>if</code> є єдиним природним способом це записати.</p>
+</blockquote>
+<h2 id="66-перевірка-введених-даних">6.6 Перевірка введених даних</h2>
+<p>Умовні конструкції особливо корисні для «захисту» програми від некоректних даних, які може ввести користувач — наприклад, від'ємного віку чи занадто великого числа там, де такі значення не мають сенсу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">vidpovid = <span class="hljs-built_in">input</span>(<span class="hljs-string">"Введіть ваш вік: "</span>)
+vik = <span class="hljs-built_in">int</span>(vidpovid)
+<span class="hljs-keyword">if</span> vik &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> vik &gt; <span class="hljs-number">120</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Помилка! Введено нереальний вік"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Вік прийнято. Дякуємо!"</span>)
+</code></pre>
+<p>Приклад введення: <code>200</code></p>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Помилка! Введено нереальний вік
+</code></pre>
+<p>Тут умова <code>vik &lt; 0 or vik &gt; 120</code> істинна, якщо введене число виходить за межі правдоподібних значень (менше 0 <strong>або</strong> більше 120) — саме тому для такої перевірки природно підходить оператор <code>or</code>, а не <code>and</code>: досить, щоб не виконувалась хоча б одна із двох меж, щоб дані вважалися некоректними.</p>
+<h2 id="67-умови-та-списки">6.7 Умови та списки</h2>
+<p>Умовні конструкції особливо часто застосовують разом зі списками, які ми вивчали в Розділі 4 «Списки».</p>
+<p><strong>Перевірка наявності елемента за допомогою <code>in</code>.</strong> Оператор <code>in</code> дозволяє перевірити, чи міститься значення в списку, повертаючи <code>True</code> або <code>False</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">movy = [<span class="hljs-string">"Python"</span>, <span class="hljs-string">"Java"</span>, <span class="hljs-string">"C++"</span>]
+<span class="hljs-keyword">if</span> <span class="hljs-string">"Python"</span> <span class="hljs-keyword">in</span> movy:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Ми вивчаємо саме цю мову"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Ми вивчаємо саме цю мову
+</code></pre>
+<p><strong>Перевірка порожнього списку.</strong> Часто перед початком обробки даних потрібно переконатися, що список узагалі містить елементи. Найпряміший спосіб — порівняти його довжину з нулем:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chysla = []
+<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(chysla) == <span class="hljs-number">0</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Список порожній! Додайте хоча б одне число"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Список порожній! Додайте хоча б одне число
+</code></pre>
+<blockquote>
+<p>Порожній список сам по собі є «хибним» значенням для Python, тож на практиці частіше пишуть скорочено <code>if not chysla<span class="hl-char">:</span></code> замість <code>if len(chysla) == 0<span class="hl-char">:</span></code>. Обидва варіанти рівнозначні; другий (з <code>len()</code>) інтуїтивніший для початківців, тому саме його ми використовуємо тут.</p>
+</blockquote>
+<h2 id="68-тернарний-умовний-вираз">6.8 Тернарний умовний вираз</h2>
+<p>Якщо потрібно зробити простий вибір між двома значеннями і одразу записати результат у змінну, звичайна конструкція <code>if</code>/<code>else</code> може зайняти кілька рядків. Python пропонує компактний однорядковий запис — <strong>тернарний умовний вираз</strong>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chyslo = <span class="hljs-number">4</span>
+rezultat = <span class="hljs-string">"Парне"</span> <span class="hljs-keyword">if</span> chyslo % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"Непарне"</span>
+<span class="hljs-built_in">print</span>(rezultat)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Парне
+</code></pre>
+<p>Цей рядок можна прочитати майже як звичайну мову: «<code>rezultat</code> дорівнює <code>"Парне"</code>, якщо <code>chyslo</code> ділиться на 2 без остачі, інакше — <code>"Непарне"</code>». Загальний синтаксис такий:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">значення_якщо_істина <span class="hljs-keyword">if</span> умова <span class="hljs-keyword">else</span> значення_якщо_хибна
+</code></pre>
+<p>Тернарний вираз повністю еквівалентний такому запису через звичайний <code>if</code>/<code>else</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">if</span> chyslo % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
+    rezultat = <span class="hljs-string">"Парне"</span>
+<span class="hljs-keyword">else</span>:
+    rezultat = <span class="hljs-string">"Непарне"</span>
+</code></pre>
+<blockquote>
+<p>Тернарний вираз варто використовувати лише для простих одноразових виборів, що вкладаються в один рядок. Якщо логіка складніша (кілька умов, кілька дій у кожній гілці), звичайний <code>if</code>/<code>elif</code>/<code>else</code> читається набагато краще.</p>
+</blockquote>
+<h2 id="69-інструкції-break-та-continue">6.9 Інструкції <code>break</code> та <code>continue</code></h2>
+<p>Ці дві інструкції змінюють поведінку циклу (<code>for</code> або <code>while</code>) із перевіркою. Ми вже детально розглядали їх у розділі «Керування виконанням циклів» — тут коротко нагадаємо принцип у поєднанні з <code>if</code>.</p>
+<p>Інструкція <code>break</code> зупиняє поточний цикл:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> chyslo <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):
+    <span class="hljs-keyword">if</span> chyslo &gt; <span class="hljs-number">1</span>:
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-built_in">print</span>(chyslo)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+1
+</code></pre>
+<p>Інструкція <code>continue</code> переходить одразу до наступної ітерації, не виконуючи решту блоку інструкцій циклу:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">for</span> chyslo <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):
+    <span class="hljs-keyword">if</span> chyslo == <span class="hljs-number">2</span>:
+        <span class="hljs-keyword">continue</span>
+    <span class="hljs-built_in">print</span>(chyslo)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0
+1
+3
+</code></pre>
+<h2 id="610-перевірка-значень-для-float">6.10 Перевірка значень для <code>float</code></h2>
+<p>Коли потрібно перевірити значення змінної типу <code>float</code>, першим рефлексом буде використати оператор рівності, наприклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">1</span> / <span class="hljs-number">10</span> == <span class="hljs-number">0.1</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+</code></pre>
+<p>Однак так робити категорично не варто. Python зберігає значення <code>float</code> у вигляді чисел з рухомою комою (звідси й назва), а це має певні обмеження[^1]. Розглянемо приклад:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>((<span class="hljs-number">3</span> - <span class="hljs-number">2.7</span>) == <span class="hljs-number">0.3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-number">3</span> - <span class="hljs-number">2.7</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">False</span>
+<span class="hljs-number">0.2999999999999998</span>
+</code></pre>
+<p>Результат операції <code>3 - 2.7</code> не є точно <code>0.3</code>, тому в другому рядку ми отримуємо <code>False</code>. Ця проблема стосується не Python, а того, як комп'ютери загалом обробляють числа з рухомою комою (як відношення двійкових чисел). Тож деякі значення <code>float</code> можуть бути лише наближеними. Переконатися в цьому можна, попросивши вивести більше десяткових знаків:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-built_in">print</span>(<span class="hljs-number">0.3</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">0.3</span>:<span class="hljs-number">.5</span>f}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{<span class="hljs-number">0.3</span>:<span class="hljs-number">.60</span>f}</span>"</span>)
+zminna = <span class="hljs-number">3</span> - <span class="hljs-number">2.7</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{zminna:<span class="hljs-number">.60</span>f}</span>"</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">abs</span>(zminna - <span class="hljs-number">0.3</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">0.3
+0.30000
+0.299999999999999988897769753748434595763683319091796875000000
+0.299999999999999822364316059974953532218933105468750000000000
+1.6653345369377348e-16
+</code></pre>
+<p>Коли ми вводимо <code>0.3</code>, Python показує округлене значення — насправді число 0.3 можна закодувати як число з рухомою комою лише наближено. Це важливо пам'ятати, порівнюючи два <code>float</code>: навіть якщо <code>0.3</code> і <code>3 - 2.7</code> дають не зовсім однаковий результат, різниця нескінченно мала — порядку <code>1e-16</code>, тобто на рівні 16-го знака після коми! Тому оператор <code>==</code> не можна використовувати для перевірки <code>float</code> на рівність конкретному значенню, адже він перевіряє строгу рівність. Правильний підхід — перевірити, чи потрапляє <code>float</code> у певний інтервал із заданою точністю. Назвемо цю точність <code>delta</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">delta = <span class="hljs-number">1e-5</span>
+zminna = <span class="hljs-number">3.0</span> - <span class="hljs-number">2.7</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-number">0.3</span> - delta &lt; zminna &lt; <span class="hljs-number">0.3</span> + delta)
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">abs</span>(zminna - <span class="hljs-number">0.3</span>) &lt; delta)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+<span class="hljs-literal">True</span>
+</code></pre>
+<p>Тут ми перевіряємо, чи <code>zminna</code> потрапляє в інтервал <code>0.3 ± delta</code>. Обравши <code>delta = 1e-5</code>, ми звіряємо число з точністю до п'ятого знака після коми. Обидва підходи еквівалентні:</p>
+<ul>
+<li>перший рядок інтуїтивніший, оскільки нагадує математичну нерівність;</li>
+<li>другий використовує функцію <code>abs()</code> і є більш компактним.</li>
+</ul>
+<p>Ще один спосіб порівняння <code>float</code>, доступний починаючи з Python 3.5, — функція <code>math.isclose()</code>:</p>
+<pre><code class="language-python hljs" data-highlighted="yes"><span class="hljs-keyword">import</span> math
+
+zminna = <span class="hljs-number">3.0</span> - <span class="hljs-number">2.7</span>
+<span class="hljs-built_in">print</span>(math.isclose(zminna, <span class="hljs-number">0.3</span>, abs_tol=<span class="hljs-number">1e-5</span>))
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-graphql"><span class="hljs-literal">True</span>
+</code></pre>
+<p>Ця функція приймає два <code>float</code> для порівняння та іменований аргумент <code>abs_tol</code>, що відповідає бажаній точності (яку вище ми назвали <code>delta</code>). Радимо завжди вказувати <code>abs_tol</code> явно. Інструкцію <code>import math</code> ми детальніше розглянемо в Розділі 9 «Модулі», а поки просто приймемо, що вона потрібна.</p>
+<blockquote>
+<p>З трьох способів порівняння <code>float</code> радимо <code>math.isclose()</code> — на нашу думку, найбільш читабельний варіант.</p>
+</blockquote>
+<h2 id="611-типові-алгоритми-прийняття-рішень">6.11 Типові алгоритми прийняття рішень</h2>
+<p>Так само як цикли мають свої типові схеми (підрозділ 5.5), умовні конструкції теж лежать в основі кількох класичних задач, які варто впізнавати.</p>
+<p><strong>Пошук більшого з двох чисел.</strong></p>
+<pre><code class="language-python hljs" data-highlighted="yes">a = <span class="hljs-number">15</span>
+b = <span class="hljs-number">22</span>
+<span class="hljs-keyword">if</span> a &gt; b:
+    maksymum = a
+<span class="hljs-keyword">else</span>:
+    maksymum = b
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Максимум:"</span>, maksymum)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-makefile"><span class="hljs-section">Максимум: 22</span>
+</code></pre>
+<p><strong>Визначення максимуму серед трьох (і більше) чисел.</strong> Той самий принцип, що й пошук максимуму в списку (підрозділ 5.5.3): «переможець» ініціалізується першим значенням, а потім послідовно порівнюється з рештою:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">10</span>
+y = <span class="hljs-number">45</span>
+z = <span class="hljs-number">12</span>
+max_chyslo = x
+<span class="hljs-keyword">if</span> y &gt; max_chyslo:
+    max_chyslo = y
+
+<span class="hljs-keyword">if</span> z &gt; max_chyslo:
+    max_chyslo = z
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Найбільше число з трьох:"</span>, max_chyslo)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Найбільше число з трьох: 45
+</code></pre>
+<p><strong>Перевірка парності числа.</strong> Використовує оператор остачі <code>%</code>, з яким ми вже зустрічалися: число парне тоді й лише тоді, коли остача від його ділення на 2 дорівнює нулю.</p>
+<pre><code class="language-python hljs" data-highlighted="yes">chyslo = <span class="hljs-number">8</span>
+<span class="hljs-keyword">if</span> chyslo % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Число парне"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Число непарне"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Число парне
+</code></pre>
+<p><strong>Перевірка належності діапазону.</strong> У Python можна записувати подвійні нерівності майже так само, як у математиці:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">x = <span class="hljs-number">5</span>
+<span class="hljs-keyword">if</span> <span class="hljs-number">1</span> &lt;= x &lt;= <span class="hljs-number">10</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Число знаходиться в межах від 1 до 10"</span>)
+</code></pre>
+<p>🖥 Результат:</p>
+<pre><code data-highlighted="yes" class="hljs language-undefined">Число знаходиться в межах від 1 до 10
+</code></pre>
+<p>Це коротший еквівалент запису <code>if x &gt;= 1 and x &lt;= 10<span class="hl-char">:</span></code>.</p>
+<h2 id="612-типові-помилки">6.12 Типові помилки</h2>
+<p>Як і з циклами (підрозділ 5.6), у роботі з умовними конструкціями є кілька помилок, що трапляються найчастіше.</p>
+<ul>
+<li><strong>Забута двокрапка</strong> в кінці рядка з <code>if</code>, <code>elif</code> або <code>else</code> — Python одразу поверне <code>SyntaxError</code>.</li>
+<li><strong>Неправильні відступи тіла умови</strong> — якщо рядок, який мав виконуватися лише в разі істинної умови, не має потрібного відступу, він або викличе <code>IndentationError</code>, або (що небезпечніше) мовчки виконається завжди, незалежно від умови (див. приклад із подвійним і одинарним відступом у підрозділі 6.3).</li>
+<li><strong>Неправильний порядок умов у <code>elif</code></strong> — якщо розмістити менш сувору умову раніше за суворішу (наприклад, <code>if score &gt;= 4<span class="hl-char">:</span></code> перед <code>elif score &gt;= 10<span class="hl-char">:</span></code>), гілка із суворішою умовою стає недосяжною: щойно значення потрапляє під першу істинну умову, Python виконує саме її й далі гілки не перевіряє. Правило: спочатку пишіть найсуворіші (найвищі або найточніші) умови, а вже потім — простіші.</li>
+<li><strong>Плутанина <code>=</code> та <code>==</code></strong> — оператор присвоювання <code>=</code> і оператор порівняння <code>==</code> виконують абсолютно різні дії; спроба написати <code>if x = 5<span class="hl-char">:</span></code> замість <code>if x == 5<span class="hl-char">:</span></code> призведе до помилки синтаксису.</li>
+</ul>
+<div class="exers">
+<h2 id="613-вправи">6.13 Вправи</h2>
+<h3 id="1-дні-тижня">1. Дні тижня</h3>
+<p>Складіть список <code>tyzhden</code> із назвами семи днів тижня. За допомогою циклу виведіть кожен день тижня разом із повідомленням:</p>
+<ul>
+<li>«На навчання», якщо це з понеділка по четвер;</li>
+<li>«Чудово, це п'ятниця», якщо це п'ятниця;</li>
+<li>«Вихідний день», якщо це субота або неділя.</li>
+</ul>
+<p>Ці повідомлення — лише орієнтир, можете придумати власні.</p>
+<h3 id="2-мінімум-списку">2. Мінімум списку</h3>
+<p>Функція <code>min()</code> у Python повертає найменший елемент списку, що складається з чисел або рядків. Не використовуючи функцію <code>min()</code>, створіть скрипт, який визначає найменший елемент списку <code>[8, 4, 6, 1, 5]</code>.</p>
+<h3 id="3-частота-вибору-у-списку">3. Частота вибору у списку</h3>
+<p>Наведений нижче список представляє результати опитування «Який фрукт ти обираєш найчастіше?»:</p>
+<pre><code class="language-python hljs" data-highlighted="yes">[<span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"апельсин"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"банан"</span>, <span class="hljs-string">"яблуко"</span>, <span class="hljs-string">"груша"</span>]
+</code></pre>
+<p>Обчисліть, скільки разів у цьому списку зустрічається кожен варіант: «яблуко», «банан», «апельсин» та «груша».</p>
+<h3 id="4-оцінки-та-підсумкова-відмітка-учня">4. Оцінки та підсумкова відмітка учня</h3>
+<p>Є список оцінок учня: 11, 9, 7, 8 та 12. Створіть скрипт, який виводить максимальну оцінку (за допомогою <code>max()</code>), мінімальну оцінку (за допомогою <code>min()</code>) і обчислює середнє значення. Виведіть середній бал із двома десятковими знаками, а також підсумкову відмітку, знаючи, що вона «задовільно» — якщо середній бал від 4 включно до 6 виключно, «добре» — від 7 включно до 9 виключно, і «відмінно» — понад 9.</p>
+<h3 id="5-калькулятор-із-вибором-дії">5. Калькулятор із вибором дії</h3>
+<p>Напишіть програму-калькулятор, яка приймає від користувача два числа, а потім запитує математичну дію (<code>+</code>, <code>-</code>, <code>*</code> або <code>/</code>) через <code>input()</code>. Залежно від вибору (використайте <code>if</code>/<code>elif</code>/<code>else</code>), виведіть результат відповідної операції. Якщо користувач обрав ділення <code>/</code>, обов'язково перевірте за допомогою <code>if</code>, що друге число не дорівнює нулю, перш ніж виконувати ділення.</p>
+<h3 id="6-перевірка-логіна-та-пароля">6. Перевірка логіна та пароля</h3>
+<p>Створіть програму, яка запитує логін і пароль користувача через <code>input()</code>. Якщо логін дорівнює <code>"admin"</code>, а пароль — <code>"super_secret123"</code>, виведіть повідомлення про успішний вхід. У будь-якому іншому випадку виведіть повідомлення про помилку доступу.</p>
+<h3 id="7-продаж-квитків-до-кінотеатру">7. Продаж квитків до кінотеатру</h3>
+<p>Напишіть скрипт, який визначає вартість квитка до кінотеатру залежно від віку відвідувача (запитаного через <code>input()</code>):</p>
+<ul>
+<li>дітям до 7 років — безкоштовно;</li>
+<li>школярам від 7 до 17 років — 80 грн;</li>
+<li>дорослим від 18 до 60 років — 150 грн;</li>
+<li>людям старшим за 60 років — 50 грн.</li>
+</ul>
+<p>Передбачте також перевірку некоректно введеного віку (наприклад, від'ємного значення).
+</p></div>
+<div class="project">
+<h2 id="614-творча-майстерня">6.14 Творча майстерня</h2>
+<h3 id="1-гіпотеза-колаца">1. Гіпотеза Колаца</h3>
+<p>Гіпотеза Колаца (також відома як «гіпотеза 3n+1» або «гіпотеза Сіракузи») — це математична гіпотеза, яка й досі залишається недоведеною. Формулюється вона так. Нехай <code>n</code> — додатне ціле число. Якщо <code>n</code> парне, ділимо його на 2. Якщо непарне — множимо на 3 і додаємо 1. Повторюючи цю процедуру, послідовність чисел рано чи пізно досягає значення 1, а потім нескінченно повторює три значення — так званий тривіальний цикл. Досі гіпотезу про те, що з будь-якого додатного цілого числа послідовність завжди досягає 1, не було спростовано. Наприклад, перші елементи послідовності, якщо почати з 10: 10, 5, 16, 8, 4, 2, 1...</p>
+<p>Створіть скрипт, який, починаючи з додатного цілого числа <code>n</code> (наприклад, 10 або 20), будує список чисел цієї послідовності. Чи гіпотеза підтверджується для різних початкових значень <code>n</code>? Які числа утворюють тривіальний цикл?</p>
+<h3 id="2-контроль-якості-деталей">2. Контроль якості деталей</h3>
+<p>Уявімо конвеєр, на якому виготовляють деталі. Ідеальні розміри деталі — довжина 50.0 мм та ширина 20.0 мм, а допустиме відхилення становить ±2 мм за кожним виміром. Нижче наведено список замірів для 15 деталей (кожен елемент — пара <code>[довжина, ширина]</code>):</p>
+<pre><code class="language-python hljs" data-highlighted="yes">[[<span class="hljs-number">50.1</span>, <span class="hljs-number">19.8</span>], [<span class="hljs-number">52.3</span>, <span class="hljs-number">21.1</span>], [<span class="hljs-number">49.7</span>, <span class="hljs-number">20.3</span>],
+ [<span class="hljs-number">55.0</span>, <span class="hljs-number">25.0</span>], [<span class="hljs-number">50.5</span>, <span class="hljs-number">20.5</span>], [<span class="hljs-number">48.9</span>, <span class="hljs-number">19.6</span>],
+ [<span class="hljs-number">51.2</span>, <span class="hljs-number">20.9</span>], [<span class="hljs-number">60.0</span>, <span class="hljs-number">15.0</span>], [<span class="hljs-number">49.4</span>, <span class="hljs-number">20.1</span>],
+ [<span class="hljs-number">50.8</span>, <span class="hljs-number">19.4</span>], [<span class="hljs-number">51.5</span>, <span class="hljs-number">20.6</span>], [<span class="hljs-number">49.9</span>, <span class="hljs-number">20.0</span>],
+ [<span class="hljs-number">50.3</span>, <span class="hljs-number">19.9</span>], [<span class="hljs-number">52.8</span>, <span class="hljs-number">21.5</span>], [<span class="hljs-number">48.6</span>, <span class="hljs-number">20.2</span>]]
+</code></pre>
+<p>Для першої деталі довжина дорівнює 50.1, а ширина — 19.8. Для другої довжина — 52.3, ширина — 21.1 і так далі. Використовуючи цей список, створіть скрипт, який для кожної деталі перевіряє, чи потрапляють обидва виміри в допустимий діапазон, і виводить самі виміри та повідомлення «відповідає стандарту» або «не відповідає стандарту». Наприклад, для перших трьох деталей:</p>
+<pre><code data-highlighted="yes" class="hljs language-csharp">[<span class="hljs-meta">50.1, 19.8</span>] відповідає стандарту
+[<span class="hljs-meta">52.3, 21.1</span>] не відповідає стандарту
+[<span class="hljs-meta">49.7, 20.3</span>] відповідає стандарту
+</code></pre>
+<p>Скільки деталей із 15 відповідають стандарту?</p>
+<h3 id="3-пошук-числа-поділом-навпіл">3. Пошук числа поділом навпіл</h3>
+<p>Пошук поділом навпіл — метод, що полягає в послідовному діленні (як правило, навпіл) простору пошуку для знаходження рішення. Ось приклад розмови між Петром і Павлом, де Петро намагається вгадати число (від 1 до 100 включно), яке задумав Павло:</p>
+<ul>
+<li>[Павло] «Добре, я задумав число від 1 до 100».</li>
+<li>[Петро] «Гаразд, спробую вгадати. Твоє число менше чи більше за 50?»</li>
+<li>[Павло] «Більше».</li>
+<li>[Петро] «Менше, більше чи дорівнює 75?»</li>
+<li>[Павло] «Більше».</li>
+<li>[Петро] «Менше, більше чи дорівнює 87?»</li>
+<li>[Павло] «Менше».</li>
+<li>[Петро] «Менше, більше чи дорівнює 81?»</li>
+<li>[Павло] «Менше».</li>
+<li>[Петро] «Менше, більше чи дорівнює 78?»</li>
+<li>[Павло] «Більше».</li>
+<li>[Петро] «Менше, більше чи дорівнює 79?»</li>
+<li>[Павло] «Дорівнює. Це моє число. Ти вгадав!»</li>
+</ul>
+<p>Хитрість швидкого вгадування — щоразу брати половину інтервалу, у якому міститься число. Ось покроково:</p>
+<ol>
+<li>Число між 1 і 100 — пропонуємо 50 (100 / 2).</li>
+<li>Число між 50 і 100 — пропонуємо 75 (50 + (100 - 50) / 2).</li>
+<li>Число між 75 і 100 — пропонуємо 87 (75 + (100 - 75) / 2).</li>
+<li>Число між 75 і 87 — пропонуємо 81 (75 + (87 - 75) / 2).</li>
+<li>Число між 75 і 81 — пропонуємо 78 (75 + (81 - 75) / 2).</li>
+<li>Число між 78 і 81 — пропонуємо 79 (78 + (81 - 78) / 2).</li>
+</ol>
+<p>Створіть скрипт, який відтворює цю гру у вгадування: ви задумуєте число від 1 до 100, а комп'ютер намагається вгадати його методом поділу навпіл, ставлячи запитання через функцію <code>input()</code>. </p>
+<p>Орієнтовний результат роботи програми для наведеної вище розмови:</p>
+<pre><code data-highlighted="yes" class="hljs language-bash">Задумайте число від 1 до 100.
+Ваше число більше, менше чи дорівнює 50? [+/-/=] +
+Ваше число більше, менше чи дорівнює 75? [+/-/=] +
+Ваше число більше, менше чи дорівнює 87? [+/-/=] -
+Ваше число більше, менше чи дорівнює 81? [+/-/=] -
+Ваше число більше, менше чи дорівнює 78? [+/-/=] +
+Ваше число більше, менше чи дорівнює 79? [+/-/=] =
+Я вгадав за 6 запитань!
+</code></pre>
+<p>Символи <code>[+/-/=]</code> показують, як відповідати: <code>+</code>, якщо задумане число більше за запропоноване комп'ютером, <code>-</code>, якщо менше, і <code>=</code>, якщо дорівнює (після кожної відповіді натисніть Enter).</p>
+</div>
+<div class="read">
+<h2 id="що-читати">Що читати</h2>
+<ol>
+<li><p><strong>Python Docs — More Control Flow Tools (<code>if</code>, <code>elif</code>, <code>else</code>)</strong><br><a href="https://docs.python.org/3/tutorial/controlflow.html">https://docs.python.org/3/tutorial/controlflow.html</a></p>
+</li>
+<li><p><strong>Python Docs — Truth Value Testing</strong><br><a href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">https://docs.python.org/3/library/stdtypes.html#truth-value-testing</a></p>
+</li>
+<li><p><strong>Python Docs — Boolean Operations (<code>and</code>, <code>or</code>, <code>not</code>)</strong><br><a href="https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not">https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not</a></p>
+</li>
+<li><p><strong>Python Docs — Comparisons</strong><br><a href="https://docs.python.org/3/library/stdtypes.html#comparisons">https://docs.python.org/3/library/stdtypes.html#comparisons</a></p>
+</li>
+<li><p><strong>Real Python — Conditional Statements (<code>if</code>/<code>else</code>)</strong><br><a href="https://realpython.com/python-conditional-statements/">https://realpython.com/python-conditional-statements/</a></p>
+</li>
+<li><p><strong>Programiz — Python <code>if...else</code></strong><br><a href="https://www.programiz.com/python-programming/if-elif-else">https://www.programiz.com/python-programming/if-elif-else</a></p>
+</li>
+<li><p><strong>GeeksforGeeks — Decision Making in Python (<code>if</code>, <code>elif</code>, <code>else</code>)</strong><br><a href="https://www.geeksforgeeks.org/decision-making-python-if-elif-else-nested-if-switch-case/">https://www.geeksforgeeks.org/decision-making-python-if-elif-else-nested-if-switch-case/</a></p>
+</li>
+<li><p><strong>W3Schools — Python Conditions and If Statements</strong><br><a href="https://www.w3schools.com/python/python_conditions.asp">https://www.w3schools.com/python/python_conditions.asp</a>
+</p></li></ol></div><ol><li>
+</li>
+</ol>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.preview-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const wrapper = btn.closest('.preview');
+            if (wrapper) wrapper.classList.toggle('open');
+        });
+    });
+});
+</script>
+</body>
+</html>
