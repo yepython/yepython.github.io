@@ -467,8 +467,8 @@ pre {
 }
 
 .CodeMirror {
-  height: auto;
-  position: unset;
+  height: 100%;
+  position: relative;
 }
 
 .CodeMirror-hints {
