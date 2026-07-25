@@ -150,13 +150,10 @@
           padding: 2px 10px 2px 10px;
           font-family: sans-serif;
           font-size: 0.8em;
-          background: #3f738f;
           color: #ffffff;
-          border: 1px solid var(--ide-border);
-          border-width: 1px 1px 0 0;
-          border-radius: 0 12px 12px 0;
           box-sizing: border-box;
           height: 2em;
+          position: relative;
       }
       #btn_toggle_file_sidebar {
           cursor: pointer;
@@ -167,26 +164,51 @@
           line-height: 0.8em;
           text-align: center;
           font-size: 20px;
-          color: #ffffff;
+          color: #3f738f;;
           padding-bottom: 1em;
       }
+      #current_file_tab_wrap {
+          position: relative;
+          display: inline-flex;
+          align-self: stretch;
+          margin-top: -1px;
+          z-index: 2;
+      }
+      #current_file_tab_wrap::before,
+      #current_file_tab_wrap::after {
+          content: "";
+          position: absolute;
+          bottom: 0px;
+          width: 8px;
+          height: 8px;
+          background: radial-gradient(circle at 0 0, transparent 8px, #3f738f 8px);
+      }
+      #current_file_tab_wrap::before {
+          left: -8px;
+      }
+      #current_file_tab_wrap::after {
+          right: -8px;
+          transform: scaleX(-1);
+      }
+      #current_file_tab_wrap:has(#current_file_name:hover)::before,
+      #current_file_tab_wrap:has(#current_file_name:hover)::after {
+          background: radial-gradient(circle at 0 0, transparent 8px, #3f738f 8px);
+      }
       #current_file_name {
-          color: navy;
-          background: #ffffff;
-          border: 1px solid #d6ac04;
-          border-radius: 15px;
-          padding: 3px 10px;
+          display: inline-flex;
+          align-items: center;
+          color: #ffffff;
+          background: #3f738f;;
+          border: 0px solid #d6ac04;
+          border-bottom: none;
+          border-radius: 10px 10px 0 0;
+          padding: 3px 14px;
           overflow: hidden;
+          font-weight: 700;
           text-overflow: ellipsis;
           white-space: nowrap;
-          height: 12px;
-		  margin-top: -1px;
-		  padding-top:0px;
           cursor: pointer;
           user-select: none;
-      }
-      #current_file_name:hover {
-          background: #fffceb;
       }
       #file_sidebar {
           position: absolute;
@@ -439,7 +461,7 @@
     <div id="holder" class="holder" style="display:none">
         <div id="file_tabs">
             <button type="button" id="btn_toggle_file_sidebar" title="Файли проєкту" data-i18n-title="files_toggle_title">▸</button>
-            <span id="current_file_name" data-i18n="file_tab_name" title="Подвійний клац: перейменувати або видалити файл" data-i18n-title="current_file_dblclick_hint">mycode.py</span>
+            <span id="current_file_tab_wrap"><span id="current_file_name" data-i18n="file_tab_name" title="Подвійний клац: перейменувати або видалити файл" data-i18n-title="current_file_dblclick_hint">mycode.py</span></span>
         </div>
         <div id="file_sidebar" style="display:none">
             <div id="file_sidebar_header">
@@ -785,7 +807,7 @@
         </fieldset>
         <div style="margin-top:12px; text-align:center;">
             <button id="btn_open_runtime" 
-                title = "Середовище виконання" 
+                title = "Середовище виконання" data-i18n-title="runtime_env_title"
                 style="padding:8px 20px; font-size:1.5em; cursor:pointer; background:#5b7fa6; color:#fff; border:none; border-radius:6px 6px 50% 50%;height: 1.8em;width: 20%;">
                 <i class="fa fa-cogs"></i>
             </button>
@@ -793,23 +815,23 @@
     </div>
 
     <!-- Runtime Environment Dialog -->
-    <div id="runtime_env" title="Середовище виконання" style="display:none;">
+    <div id="runtime_env" title="Середовище виконання" data-i18n-title="runtime_env_title" style="display:none;">
         <div class="rt-info-block">
-            <div><b>Версія Skulpt:</b> <span id="rt_skulpt_version">—</span></div>
-            <div style="margin-top:4px;"><b>Python:</b> <span id="rt_python_version">3.7+</span></div>
+            <div><b data-i18n="rt_skulpt_label">Версія Skulpt:</b> <span id="rt_skulpt_version">—</span></div>
+            <div style="margin-top:4px;"><b data-i18n="rt_python_label">Python:</b> <span id="rt_python_version">3.7+</span></div>
         </div>
 
-        <div class="rt-section-title">Підтримувані бібліотеки</div>
+        <div class="rt-section-title" data-i18n="rt_libs_title">Підтримувані бібліотеки</div>
         <div style="font-size:0.83em; color:#555; margin-bottom:6px;">
-            <i class="fa fa-info-circle"></i> Зміни набувають чинності після перезавантаження сторінки.
+            <i class="fa fa-info-circle"></i> <span data-i18n="rt_reload_note">Зміни набувають чинності після перезавантаження сторінки.</span>
         </div>
 
         <table class="rt-libs-table">
             <thead>
                 <tr>
-                    <th>Бібліотека</th>
-                    <th>Опис</th>
-                    <th style="text-align:center;">Статус</th>
+                    <th data-i18n="rt_lib_col_name">Бібліотека</th>
+                    <th data-i18n="rt_lib_col_desc">Опис</th>
+                    <th style="text-align:center;" data-i18n="rt_lib_col_status">Статус</th>
                 </tr>
             </thead>
             <tbody id="rt_libs_tbody">
@@ -817,7 +839,7 @@
             </tbody>
         </table>
 
-        <div class="rt-save-note">Автори: Pete Dring, Michael Ebert, Nebojša Vasiljević, mohayonao, Олександр Мізюк,</br> Григорій Громко</div>
+        <div class="rt-save-note"><span data-i18n="rt_authors_label">Автори:</span> Pete Dring, Michael Ebert, Nebojša Vasiljević, mohayonao, Олександр Мізюк,</br> Григорій Громко</div>
     </div>
     <!-- Модальне вікно з підказкою клавіатурних сполучень (Ctrl + ?) -->
     <div id="shortcuts_help" title="Сполучення клавіш" data-i18n-title="shortcuts_title" style="display:none;">
