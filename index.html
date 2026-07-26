@@ -849,6 +849,33 @@
 
         <div class="rt-save-note"><span data-i18n="rt_authors_label">Автори:</span> Pete Dring, Michael Ebert, Nebojša Vasiljević, mohayonao, Олександр Мізюк,</br> Григорій Громко</div>
     </div>
+
+    <!-- Вікно "Запускач для вашої програми" (ланчер) -->
+    <div id="launcher_dialog" title="Запускач для вашої програми" data-i18n-title="launcher_title" style="display:none;">
+        <p style="margin-top:0;" data-i18n="launcher_desc">Це посилання відкриває середовище програмування з вашою програмою. Ним можна поділитися з ким завгодно.</p>
+        <div class="launcher_frame" style="border:1px solid var(--ide-border,#b9c8d9);border-radius:10px;padding:10px 14px;margin-bottom:12px;background:var(--ide-sidebar-bg,#f8f9fb);color:var(--ide-text,inherit);">
+            <div>
+                <b data-i18n="launcher_mode_label">Спосіб:</b>
+                <label style="display:block;margin-left:8px;cursor:pointer;"><input type="radio" name="launcher_mode" value="base64" checked> <span data-i18n="launcher_mode_base64">Base64 (код вбудовано у посилання)</span></label>
+                <label style="display:block;margin-left:8px;cursor:pointer;"><input type="radio" name="launcher_mode" value="dpaste"> <span data-i18n="launcher_mode_dpaste">dpaste.com (коротке посилання, потрібен інтернет)</span></label>
+            </div>
+            <div id="launcher_dpaste_options" style="display:none;margin-top:8px;">
+                <label><span data-i18n="launcher_expiry_label">Термін дії:</span> <select id="launcher_dpaste_expiry">
+                    <option value="1" data-i18n="launcher_expiry_day">одна доба</option>
+                    <option value="7" selected data-i18n="launcher_expiry_week">один тиждень</option>
+                    <option value="30" data-i18n="launcher_expiry_month">один місяць</option>
+                    <option value="365" data-i18n="launcher_expiry_year">один рік</option>
+                </select></label>
+            </div>
+        </div>
+        <div class="launcher_frame" style="border:1px solid var(--ide-border,#b9c8d9);border-radius:10px;padding:10px 14px;margin-bottom:12px;background:var(--ide-sidebar-bg,#f8f9fb);color:var(--ide-text,inherit);font-size:0.83em;">
+            <i class="fa fa-info-circle"></i> <span id="launcher_hint_text" data-i18n="launcher_hint">Base64 працює будь-де, але для великих програм посилання виходить довгим; dpaste.com дає коротке посилання, проте сніпет видаляється після завершення терміну дії, а для відкриття потрібен доступ до dpaste.com.Код також можна розмістити самостійно за будь-якою адресою в інтернеті й відкрити його посиланням виду %LAUNCHER_BASE_URL%?load=<адреса вашого файлу>.</span>
+        </div>
+        <textarea id="launcher_url_text" readonly rows="5" style="width:100%;box-sizing:border-box;resize:none;font-family:monospace;font-size:0.82em;padding:6px;"></textarea>
+        <div style="margin-top:12px;text-align:right;">
+            <button type="button" id="btn_copy_launcher"><i class="fa fa-clipboard"></i> <span data-i18n="launcher_copy">Копіювати у буфер обміну</span></button>
+        </div>
+    </div>
     <!-- Модальне вікно з підказкою клавіатурних сполучень (Ctrl + ?) -->
     <div id="shortcuts_help" title="Сполучення клавіш" data-i18n-title="shortcuts_title" style="display:none;">
         <div class="rt-info-block">
