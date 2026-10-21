@@ -253,6 +253,16 @@ html, body {
   background-color: #a9a9a9;
 }
 
+/* tkinter-вікна (TkDesktop): контейнер живе у діалозі виводу (#dlg),
+   тому позиціюємо його у потоці, а не на весь екран. */
+#tk-desktop {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  min-height: 260px;
+  overflow: visible;
+}
+
 .btn_lineno {
   font-size: small !important;
 }
@@ -302,6 +312,24 @@ html, body {
 .error {
   color: #f00;
   padding: 5px;
+}
+
+/* Трасування помилки — у форматі CPython: переноси рядків мають зберегатися. */
+.error-traceback {
+  white-space: pre-wrap;
+  font-family: var(--code-font, Consolas, "DejaVu Sans Mono", monospace);
+  font-size: 1em;
+  line-height: 1.45;
+}
+
+.error-traceback .btn_lineno {
+  color: #00f;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .buttonPanel {

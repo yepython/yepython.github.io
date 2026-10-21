@@ -50,14 +50,13 @@ def __init():
   global __background
 
   __master = tk.Tk()
-  __wx = __master.winfo_screenwidth()
-  __wy = __master.winfo_screenheight()
-  __mw = 810
-  __mh = 670
-  if __wx < 810:
-      __mw = __wx-20
-  if __wy < 670:
-      __mh = __wy    
+  # Без resize() вікно має розмір 800x600, а канвас займає його повністю.
+  # Розмір НЕ обмежується розмірами "екрана": у браузері winfo_screenheight()
+  # повертає висоту доступної області сторінки (напр. 294), і вікно
+  # непомітно ставало меншим за 800x600. Віконна система сама масштабує
+  # вікно, якщо воно не вміщується.
+  __mw = 800
+  __mh = 600
   __master.geometry(f"{__mw}x{__mh}")
   __master.title("SimpleGraphics")
 
@@ -75,7 +74,9 @@ def __init():
   except AttributeError:
     pass
 
-  __canvas = tk.Canvas(__master, width=__mw-10, height=__mh-70)
+  # highlightthickness=0 і bd=0: інакше рамка канваса додає по кілька пікселів
+  # з кожного боку, і він виходить більшим за вікно.
+  __canvas = tk.Canvas(__master, width=__mw, height=__mh, highlightthickness=0, bd=0)
   __canvas.pack()
 
   # Skulpt's browser tkinter shim has no winfo_pointerxy(): the browser

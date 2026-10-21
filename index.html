@@ -385,6 +385,8 @@
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="./lib/font-awesome.min.css">   
     <link rel="stylesheet" href="./jquery/ui/1.13.3/themes/base/jquery-ui.css">
+    <!-- tkinter (CPython-пакет + рухій Tk): стилі віджетів -->
+    <link rel="stylesheet" href="./lib/tk/tk-styles.css">
     
     <script src="./lib/base.js"></script>
     <script src="./jquery/jquery-3.7.1.js"></script>
@@ -396,11 +398,60 @@
     <script src="./lib/skulpt/deps/tk_colors.js"></script>
     <script src="./lib/skulpt/deps/math.js"></script>
     <script src="./lib/skulpt/deps/chart.js"></script>
+    <!-- Рухій Tcl/Tk і DOM-рендерер вікон. Мають бути завантажені ДО запуску
+         Python-коду: модуль _tkinter читає window.TkEngine в момент імпорту. -->
+    <script src="./lib/tk/tk-engine.js"></script>
+    <script src="./lib/tk/tk-window-system.js"></script>
     <script src="./lib/extlibs.js"></script>
     <script src="./lib/jsfs.js"></script>    
     <script src="./lib/mml-emitter.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script>
+    // tkinter: робочий стіл для вікон Tk (TkDesktop) + зв'язка з рушієм Tcl.
+    // Рушій TkEngine має бути завантажений вище (див. <script src="./lib/tk/tk-engine.js">).
+    (function () {
+        function initTkDesktop() {
+            if (typeof TkEngine === 'undefined' || typeof TkWindowSystem === 'undefined') return;
+            var area = document.getElementById('tk-desktop');
+            if (!area || area.dataset.tkemuReady === '1') return;
+            area.dataset.tkemuReady = '1';
+            var engine = TkEngine;
+            var desktop = new TkWindowSystem.TkDesktop(
+                // події від користувача → Python (TkApp)
+                function (ev) { engine.deliver(JSON.stringify([ev])); },
+                // робоча область (для розміщення вікон)
+                function () { return area.getBoundingClientRect(); },
+                // компактний режим (вузький екран)
+                function () { return window.innerWidth < 760; },
+                // кількість відкритих вікон змінилась
+                function () {},
+                // файл, завантажений у діалозі відкриття/збереження
+                function (file) {
+                    if (typeof PythonIDE !== 'undefined' && PythonIDE.addFileToProject) {
+                        PythonIDE.addFileToProject(file);
+                    }
+                }
+            );
+            area.appendChild(desktop.element);
+            // операції рушія → DOM
+            engine.ui.send = function (json) { desktop.apply(json); };
+            engine.ui.screen_size = function () {
+                return [area.clientWidth || 800, area.clientHeight || 600];
+            };
+            // Таймери/after: поки не виконується користувацький код.
+            setInterval(function () {
+                var busy = (typeof PythonIDE !== 'undefined') && PythonIDE.running;
+                if (!busy) engine.pump();
+            }, 40);
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTkDesktop);
+        } else {
+            initTkDesktop();
+        }
+    })();
+    </script>
     <script>
     // Динамічне завантаження бібліотек відповідно до налаштувань у localStorage
     (function() {
@@ -674,6 +725,9 @@
     <div id="dlg" title="mycode.py" data-i18n-title="file_tab_name_title" style="display:none">        
         <div id="p5Sketch"></div>
         <div id="output"></div>        
+        <!-- Контейнер вікон tkinter (TkDesktop). Окремо від #output, бо вивід
+             перезаписується під час запуску програми. -->
+        <div id="tk-desktop" class="tk-desktop"></div>
         <canvas id="myChart" style="width:100%;max-width:600px;max-height:800px;background-color: #CCC;display:none"></canvas>
         <canvas id="canvas" width="300" height="400" style="background-color:#ccc;;display:none"></canvas>
     </div>
