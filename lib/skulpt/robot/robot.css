@@ -1,0 +1,316 @@
+.world-panel { min-height: 0; }
+
+/* --- вікно з картою (модальна панель 800×600) --- */
+
+.map-panel {
+  position: fixed;
+  top: 60px;
+  left: 12px;
+  width: 800px;
+  height: 600px;
+  z-index: 3000;
+  max-width: 96vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-dark, #14141c);
+  border: 1px solid var(--line, #33344a);
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .7);
+  overflow: hidden;
+}
+
+.map-panel[hidden] { display: none; }
+
+.map-panel-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  background: var(--panel-dark, #14141c);
+  border-bottom: 1px solid var(--line, #33344a);
+  cursor: move;
+  user-select: none;
+}
+
+.map-panel-title {
+  font-weight: 600;
+  color: var(--accent, #f2b84b);
+}
+
+.map-panel-name {
+  flex: 1;
+  color: var(--muted, #9a9ab0);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- кнопки вибору карти (map1..mapN) --- */
+
+.map-toolbar .sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line, #33344a);
+}
+
+.map-picker {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.map-pages {
+  display: flex;
+  gap: 3px;
+}
+
+.map-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #1b5e20;
+  border-radius: 50%;
+  background: #2e7d32;
+  color: #fff;
+  font: bold 11px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.map-btn:hover { background: #388e3c; }
+.map-btn:active { transform: translateY(1px); }
+
+.map-btn.active {
+  background: #7fd88f;
+  border-color: #c8e6c9;
+  color: #14401a;
+}
+
+.map-arrow {
+  width: 20px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #9a9a9a;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.map-arrow:hover:not(:disabled) { color: #fff; }
+.map-arrow:disabled { opacity: .3; cursor: default; }
+
+.map-panel .field-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;              /* смуги прокручування, коли карта більша за вікно */
+}
+
+.field-sizer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#field {
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: block;
+}
+
+/* --- привітальне вікно --- */
+
+.congrats {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 14, .78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.congrats[hidden] { display: none; }
+
+.congrats-box {
+  width: 420px;
+  padding: 26px 28px 22px;
+  text-align: center;
+  background: var(--panel, #1c1c28);
+  border: 2px solid var(--accent, #f2b84b);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+}
+
+.congrats-box h1 {
+  margin: 10px 0 6px;
+  font-size: 24px;
+  color: var(--accent, #f2b84b);
+}
+
+.congrats .medals {
+  font-size: 34px;
+  letter-spacing: 6px;
+  line-height: 1.2;
+}
+
+.congrats .trophy {
+  font-size: 64px;
+  line-height: 1.1;
+  margin: 6px 0 2px;
+}
+
+.congrats-note {
+  margin: 4px 0 16px;
+  color: var(--muted, #9a9ab0);
+}
+
+.field-wrap {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  background: #0b0b12;
+}
+
+
+
+#field {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.btn.tiny {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.status {
+  margin-left: auto;
+  padding: 0;
+  color: var(--muted, #9a9ab0);
+  font-size: 13px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status.error { color: var(--error, #ff6b6b); }
+
+/* --- кнопки панелі (у ЄPython немає загального .btn) --- */
+
+.map-panel .map-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-panel .btn {
+  cursor: pointer;
+  color: #eee;
+  background: #2a2a3a;
+  border: 1px solid var(--line, #33344a);
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+  touch-action: manipulation;
+}
+
+.map-panel .btn:hover { background: #38384c; }
+.map-panel .btn:active { transform: translateY(1px); }
+
+.map-panel .btn.primary {
+  background: #2e7d32;
+  border-color: #1b5e20;
+}
+
+.map-panel .btn.primary:hover { background: #388e3c; }
+
+.map-panel .congrats-box .btn {
+  width: auto;
+  height: auto;
+  padding: 8px 22px;
+  font-size: 15px;
+}
+
+.map-panel-head { touch-action: none; }
+.map-panel-head button { cursor: pointer; }
+
+/* без напису й назви карти кнопку закриття притискаємо праворуч */
+#btn-close-map { margin-left: auto; }
+
+/* вибір карти: «таблетка» з півкруглими боками посередині між керуванням і «Закрити» */
+.map-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.map-center .map-picker {
+  padding: 3px 8px;
+  border: 1px solid var(--line, #33344a);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .05);
+}
+
+/* --- мобільний вигляд: двохрядкова панель, вікно по центру --- */
+@media (max-width: 640px), (max-height: 500px) {
+  .map-panel {
+    width: 96vw;
+    height: 92vh;
+    max-width: 96vw;
+    max-height: 92vh;
+  }
+
+  .map-panel-head {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    cursor: default;
+  }
+
+  /* 1-й рядок: кнопки керування (ліворуч) і «Закрити» (праворуч) */
+  .map-panel .map-toolbar { order: 1; flex: 1; }
+  #btn-close-map { order: 2; margin-left: auto; }
+
+  /* 2-й рядок: фрейм вибору карти на всю ширину, посередині */
+  .map-center { order: 3; flex: 0 0 100%; }
+
+  .map-btn { width: 24px; height: 24px; font-size: 10px; }
+  .map-pages { gap: 2px; }
+}
+
+/* --- поле карти: розмір визначає лише панель, а не вміст -------------------
+   Без смуг прокручування й contain розмір полотна не може вплинути на розмір
+   вікна перегляду (інакше — нескінченний цикл перемальовування). */
+.map-panel .field-wrap {
+  position: relative;
+  overflow: hidden;
+  contain: layout size;
+}
+
+.map-panel .field-sizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.map-panel #field {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+}

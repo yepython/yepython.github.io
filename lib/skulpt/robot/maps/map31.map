@@ -1,0 +1,19 @@
+# This file was saved at Sun Oct 25 2026 03:02:46 GMT+0200 (за східноєвропейським стандартним часом)
+# from file:///home/mx-linux/%D0%97%D0%B0%D0%B2%D0%B0%D0%BD%D1%82%D0%B0%D0%B6%D0%B5%D0%BD%D0%B5/RoboMind/mapeditor/index.html
+
+direction:
+right
+
+paint:
+(w,.,10,4)
+
+map:
+CHHHHHHHHHHHHD
+GNMFFFFJNMFFJI
+GNIP   BAE* GI
+GNI     O   GI
+GNI  @  *   GI
+GNI     O   GI
+GNIP   CAD* GI
+GNLHHHHKNLHHKI
+BFFFFFFFFFFFFE

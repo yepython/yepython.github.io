@@ -1,0 +1,36 @@
+# This file was saved at Sun Oct 25 2026 03:29:42 GMT+0300 (за східноєвропейським літнім часом)
+# from file:///home/mx-linux/%D0%97%D0%B0%D0%B2%D0%B0%D0%BD%D1%82%D0%B0%D0%B6%D0%B5%D0%BD%D0%B5/RoboMind/mapeditor/index.html
+
+direction:
+right
+
+paint:
+(w,.,6,3)
+(w,.,7,3)
+(w,.,8,3)
+(w,.,9,3)
+(w,.,10,3)
+(w,.,11,3)
+(w,.,12,3)
+(w,.,6,4)
+(w,.,6,5)
+(w,.,6,6)
+(w,.,6,7)
+(w,.,2,8)
+(w,.,3,8)
+(w,.,4,8)
+(w,.,5,8)
+(w,.,6,8)
+
+map:
+CHHHHHHHHHHHHHHD
+GN            NI
+G    MHHHHHHHJ I
+G SS G      *I I
+G SS G MFFFFFK I
+G    G IQ     OI
+G   QG I       I
+GNHHHK I  SS   I
+G @    I  SS   I
+GNFFFFFK      NI
+BFFFFFFFFFFFFFFE
