@@ -330,6 +330,33 @@
           background: var(--ide-menu-hover);
       }
 
+
+      /* --- Мобільні: кнопки панелі #footer не зменшуються при розгортанні --- */
+      @media screen and (max-width: 499px) {
+          #footer {
+              display: flex !important;
+              flex-wrap: nowrap;
+              align-items: center;
+              box-sizing: border-box;
+              padding: 10px;
+              margin: 5px;
+              max-width: calc(100vw - 10px);
+              overflow-x: auto;
+              overflow-y: hidden;
+          }
+          #footer.footer_expanded .toolButton,
+          #footer .toolButton.visibleButton,
+          #footer .toolButton:not(.hiddenButton) {
+              flex: 0 0 auto !important;
+              width: 50px !important;
+              max-width: 50px !important;
+              height: auto !important;
+              max-height: 50px !important;
+              padding: 0 !important;
+              box-sizing: border-box;
+          }
+      }
+
     </style>
 
     <meta charset="UTF-8">
@@ -1006,6 +1033,36 @@
 
     <script src="./lib/addfuncs.js"></script> 
     <script src="./lib/main.js"></script>
+
+    <!-- Мобільні: кнопка #btn_tools розгортає панель #footer до 75% ширини
+         (щоб кнопки не стискалися), повторне натискання повертає її до
+         "згорнутого" стану. -->
+    <script>
+    (function () {
+        var btn = document.getElementById('btn_tools');
+        var footer = document.getElementById('footer');
+        if (!btn || !footer) return;
+        var mq = window.matchMedia('(max-width: 499px)');
+        var expanded = false;
+        function apply() {
+            if (mq.matches && expanded) {
+                footer.style.width = '75%';
+                footer.style.minWidth = 'max-content';
+                footer.classList.add('footer_expanded');
+            } else {
+                footer.style.width = '';
+                footer.style.minWidth = '';
+                footer.classList.remove('footer_expanded');
+            }
+        }
+        btn.addEventListener('click', function () {
+            expanded = !expanded;
+            apply();
+        });
+        if (mq.addEventListener) mq.addEventListener('change', apply);
+        else if (mq.addListener) mq.addListener(apply);
+    })();
+    </script>
 
     <!-- Ініціалізація модального вікна з клавіатурними скороченнями -->
     <script>

@@ -248,6 +248,9 @@
 /* без напису й назви карти кнопку закриття притискаємо праворуч */
 #btn-close-map { margin-left: auto; }
 
+/* кнопка «Згорнути» — лише на мобільних (див. media-запит нижче) */
+#btn-min-map { display: none; }
+
 /* вибір карти: «таблетка» з півкруглими боками посередині між керуванням і «Закрити» */
 .map-center {
   flex: 1;
@@ -264,23 +267,28 @@
 }
 
 /* --- мобільний вигляд: двохрядкова панель, вікно по центру --- */
-@media (max-width: 640px), (max-height: 500px) {
+@media (max-width: 640px), (max-height: 400px) {
   .map-panel {
     width: 96vw;
-    height: 92vh;
+    height: min(92vh, 450px);   /* на телефонах висота не більша за 500px */
     max-width: 96vw;
-    max-height: 92vh;
+    max-height: min(92vh, 450px);
   }
+
+  /* «Згорнути»: лишається лише верхня частина з кнопками, карта прихована */
+  .map-panel.collapsed { height: auto; }
+  .map-panel.collapsed .field-wrap { display: none; }
+  .map-panel.collapsed .map-panel-head { border-bottom: 0; }
 
   .map-panel-head {
     flex-wrap: wrap;
     row-gap: 6px;
-    cursor: default;
   }
 
-  /* 1-й рядок: кнопки керування (ліворуч) і «Закрити» (праворуч) */
+  /* 1-й рядок: кнопки керування (ліворуч), «Згорнути» і «Закрити» (праворуч) */
   .map-panel .map-toolbar { order: 1; flex: 1; }
-  #btn-close-map { order: 2; margin-left: auto; }
+  #btn-min-map { order: 2; display: inline-block; }
+  #btn-close-map { order: 2; margin-left: 0; }
 
   /* 2-й рядок: фрейм вибору карти на всю ширину, посередині */
   .map-center { order: 3; flex: 0 0 100%; }
