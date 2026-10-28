@@ -509,13 +509,15 @@ button.ui-button::-moz-focus-inner {
 .ui-dialog .ui-dialog-titlebar-close {
 	position: absolute;
 	right: .5em;
-	top: 40%;
-	width: 30px;
-	margin: -10px 0 0 0;
+	top: 50%;
+	width: 1.7em;
+	margin: 0;
 	padding: 1px;
-	height: 30px;
+	height: 1.7em;
     background-color: #f00;
     border-color: #f00;
+    transform: translateY(-50%);
+    box-sizing: border-box;
 }
 .ui-dialog .ui-dialog-content {
 	position: relative;

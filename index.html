@@ -158,14 +158,26 @@
       #btn_toggle_file_sidebar {
           cursor: pointer;
           border: none;
-          background: transparent;
-          width: 24px;
-          height: 24px;
-          line-height: 0.8em;
-          text-align: center;
-          font-size: 20px;
-          color: #3f738f;;
-          padding-bottom: 1em;
+          width: 18px;
+          height: 18px;
+          padding: 0;
+          vertical-align: middle;
+          position: relative;
+          top: -2px;
+          /* Будь-який текст/емодзі всередині (його може виставити JS) ховаємо —
+             вигляд кнопки задають лише зображення-фони нижче. */
+          font-size: 0;
+          line-height: 0;
+          color: transparent;
+          overflow: hidden;
+          background-color: transparent;
+          background-image: url("./media/closed_project.png");
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+      }
+      #holder.sidebar_open #btn_toggle_file_sidebar {
+          background-image: url("./media/open_project.png");
       }
       #current_file_tab_wrap {
           position: relative;
@@ -212,7 +224,7 @@
       }
       #file_sidebar {
           position: absolute;
-          top: 3px;
+          top: -7px;
           left: 0;
           width: var(--file-sidebar-width);
           height: 100%;
@@ -412,7 +424,7 @@
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="./lib/font-awesome.min.css">   
     <link rel="stylesheet" href="./jquery/ui/1.13.3/themes/base/jquery-ui.css">
-    <!-- tkinter (CPython-пакет + рухій Tk): стилі віджетів -->
+    <!-- tkinter (CPython-пакет + рушій Tk): стилі віджетів -->
     <link rel="stylesheet" href="./lib/tk/tk-styles.css">
     <link rel="stylesheet" href="./lib/skulpt/robot/robot.css">
     
@@ -426,17 +438,17 @@
     <script src="./lib/skulpt/deps/tk_colors.js"></script>
     <script src="./lib/skulpt/deps/math.js"></script>
     <script src="./lib/skulpt/deps/chart.js"></script>
-    <!-- Рухій Tcl/Tk і DOM-рендерер вікон. Мають бути завантажені ДО запуску
+    <!-- Рушій Tcl/Tk і DOM-рендерер вікон. Мають бути завантажені ДО запуску
          Python-коду: модуль _tkinter читає window.TkEngine в момент імпорту. -->
     <script src="./lib/tk/tk-engine.js"></script>
     <script src="./lib/tk/tk-window-system.js"></script>
     <script src="./lib/extlibs.js"></script>
     <script src="./lib/jsfs.js"></script>    
-<script src="./lib/mml-emitter.js"></script>
-<script src="./lib/skulpt/robot/world.js"></script>
-<script src="./lib/skulpt/robot/render.js"></script>
-<script src="./lib/skulpt/robot/robot-ui.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+	<script src="./lib/mml-emitter.js"></script>			
+	<script src="./lib/skulpt/robot/world.js"></script>
+	<script src="./lib/skulpt/robot/render.js"></script>
+	<script src="./lib/skulpt/robot/robot-ui.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script>
     // tkinter: робочий стіл для вікон Tk (TkDesktop) + зв'язка з рушієм Tcl.
@@ -542,7 +554,7 @@
 	<img src="logo.png" id="logo" width="150" height="60" style="cursor:pointer;" title="Подвійний клац: створити ланчер програми" data-i18n-title="logo_launcher_title">
     <div id="holder" class="holder" style="display:none">
         <div id="file_tabs">
-            <button type="button" id="btn_toggle_file_sidebar" title="Файли проєкту" data-i18n-title="files_toggle_title">▸</button>
+            <button type="button" id="btn_toggle_file_sidebar" title="Файли проєкту" data-i18n-title="files_toggle_title"></button>
             <span id="current_file_tab_wrap"><span id="current_file_name" data-i18n="file_tab_name" title="Подвійний клац: перейменувати або видалити файл" data-i18n-title="current_file_dblclick_hint">mycode.py</span></span>
         </div>
         <div id="file_sidebar" style="display:none">
@@ -570,6 +582,7 @@
         let runImmediately = false;
         window.mml_stored = null;
 
+        var robotMode = false;
         if (window.location.search !== '') {
             const params = new URL(window.location).searchParams;
             var viewEmbed = params.get("view") === "embed";
@@ -578,6 +591,7 @@
             var codeParam = params.get("code");
             var runCodeParam = params.get("runcode");
             var pasteParam = params.get("paste");
+            robotMode = params.get("mode") === "robot";
 
             if (runCodeParam) {
                 runCodeParam = runCodeParam.replace(/\s/g, "+");
@@ -610,6 +624,25 @@
             // так само, як це вже робиться для параметра load= (через loadFromURL).
             if (pasteParam && !codeFromParam) {
                 loadFromURL = 'https://dpaste.com/' + encodeURIComponent(pasteParam) + '.txt';
+            }
+        }
+
+        if (robotMode) {
+            function openRobotMode() {
+                if (typeof window.RMApp !== 'undefined') {
+                    if (typeof RMApp.createMapWindow === 'function') {
+                        RMApp.createMapWindow();
+                    } else if (typeof RMApp.openMap === 'function') {
+                        RMApp.openMap();
+                    }
+                    return;
+                }
+                setTimeout(openRobotMode, 100);
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', openRobotMode);
+            } else {
+                openRobotMode();
             }
         }
 
@@ -754,7 +787,6 @@
         </fieldset>
     </div>
     <div id="dlg" title="mycode.py" data-i18n-title="file_tab_name_title" style="display:none">        
-        <div id="p5Sketch"></div>
         <div id="output"></div>        
         <!-- Контейнер вікон tkinter (TkDesktop). Окремо від #output, бо вивід
              перезаписується під час запуску програми. -->
@@ -764,6 +796,10 @@
     </div>
     <div id="dlg_processing" title="Processing" style="display:none; padding:0; overflow:hidden;">
         <canvas id="pjs_canvas" style="display:block;"></canvas>
+    </div>
+    <!-- Окреме вікно для полотна p5 (замість виведення в консолі) -->
+    <div id="dlg_p5" title="p5" style="display:none; padding:0; overflow:hidden;">
+        <div id="p5Sketch"></div>
     </div>
     <div id="save" title="Файли - збереження, отримання, відновлення" data-i18n-title="save_title" style="display:none;">
         <div id="save_grid">

@@ -591,6 +591,39 @@ li.CodeMirror-hint-active {
   }
 }
 
+/* Fix jQuery UI dialog close button sizing */
+.ui-dialog .ui-dialog-titlebar {
+  min-height: 2em;
+  padding: 0.3em 2.4em 0.3em 0.6em;
+  box-sizing: border-box;
+}
+.ui-dialog .ui-dialog-title {
+  float: left;
+  margin: 0.1em 0;
+  line-height: 1.6em;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-dialog .ui-dialog-titlebar-close {
+  position: absolute;
+  right: 0.4em;
+  top: 50%;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+}
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -8px 0 0 -8px;
+}
+
 @media print {
   .ui-dialog {
     display: none !important;
@@ -1024,19 +1057,19 @@ li.CodeMirror-hint-active {
 }
 
 .save_btn_area h2 {
-  margin: 4px 0 2px;
-  font-size: 1.1em;
+  margin: 6px 0 4px;
+  font-size: 1.5em;
 }
 
 .save_btn_area h3 {
   margin: 4px 0 0;
-  font-size: 0.85em;
+  font-size: 1.1em;
   color: #444;
 }
 
 .save_btn_area p {
-  margin: 2px 0;
-  font-size: 0.88em;
+  margin: 4px 0;
+  font-size: 1.15em;
   color: #333;
 }
 
@@ -1183,4 +1216,38 @@ div.ui-dialog:has(#shortcuts_help) .ui-dialog-content {
     margin: 0 3px;
     color: #7a8ba3;
     font-weight: bold;
+}
+
+/* --- Окреме вікно p5 --- */
+#dlg_p5 {
+  padding: 0;
+  overflow: auto;
+  background-color: #fff;
+}
+#p5Sketch {
+  display: inline-block;
+  line-height: 0;
+}
+#p5Sketch canvas {
+  display: block;
+}
+
+/* --- Єдиний вигляд усіх діалогів: тонка рамка та закруглені кути ---
+   (Консоль, Налаштування, Файли, Файловий менеджер, p5 тощо).
+   overflow:hidden не використовуємо — він обрізав би ручки зміни розміру,
+   тому кути закруглюємо окремо для заголовка та вмісту. */
+.ui-dialog,
+div.ui-dialog:has(#filemanager),
+div.ui-dialog:has(#shortcuts_help) {
+  border: 1px solid #888 !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+}
+.ui-dialog .ui-dialog-titlebar {
+  border: none;
+  border-radius: 7px 7px 0 0;
+  margin: 0;
+}
+.ui-dialog .ui-dialog-content {
+  border-radius: 0 0 7px 7px;
 }
