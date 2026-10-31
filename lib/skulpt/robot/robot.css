@@ -207,6 +207,111 @@
 
 .status.error { color: var(--error, #ff6b6b); }
 
+/* --- повідомлення внизу вікна карти (імпорт світу) --- */
+
+.map-status {
+  flex: none;
+  padding: 6px 10px;
+  border-top: 1px solid var(--line, #33344a);
+  background: #2a1414;
+  color: var(--error, #ff6b6b);
+  font-size: 12.5px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.map-status[hidden] { display: none; }
+
+.map-status.info {
+  background: rgba(255, 255, 255, .04);
+  color: var(--muted, #9a9ab0);
+}
+
+/* --- вибір світу з локального файлу (?world=file) --- */
+
+.world-picker {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(10, 10, 14, .82);
+  z-index: 30;
+}
+
+.world-picker-box {
+  width: 440px;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 22px 24px 20px;
+  overflow: auto;
+  text-align: center;
+  color: var(--text, #e6e6ee);
+  background: var(--panel, #1c1c28);
+  border: 2px solid var(--accent, #f2b84b);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+}
+
+.world-picker-icon {
+  font-size: 40px;
+  line-height: 1.1;
+}
+
+.world-picker-box h2 {
+  margin: 6px 0 10px;
+  font-size: 20px;
+  color: var(--accent, #f2b84b);
+}
+
+.world-picker-box p {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.world-picker-box .world-picker-note {
+  color: var(--muted, #9a9ab0);
+  font-size: 12.5px;
+}
+
+.world-picker-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.world-picker .btn {
+  padding: 8px 14px;
+  color: #eee;
+  background: #2a2a3a;
+  border: 1px solid var(--line, #33344a);
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.world-picker .btn:disabled { opacity: .55; cursor: default; }
+
+.world-picker .btn.primary {
+  background: #43a047;
+  border-color: #43a047;
+}
+
+.world-picker-box .world-picker-error {
+  margin: 12px 0 0;
+  color: var(--error, #ff6b6b);
+  font-size: 12.5px;
+  text-align: left;
+  word-break: break-word;
+}
+
+.world-picker-error[hidden] { display: none; }
+
 /* --- кнопки панелі (у ЄPython немає загального .btn) --- */
 
 .map-panel .map-toolbar {

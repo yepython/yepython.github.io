@@ -28,6 +28,7 @@
 # «command» — назва функції в JS-модулі _robot (не «зарезервована» в Skulpt).
 from _robot import command as _call
 from _robot import CollisionError
+from _robot import OutOfBoundsError
 
 __all__ = [
     "forward", "backward", "left", "right",
@@ -44,6 +45,7 @@ __all__ = [
     "EnergonLeft", "isPainted",
     "collected", "EnergonTotal",
     "CollisionError",
+    "OutOfBoundsError",
 ]
 
 
