@@ -1,0 +1,17 @@
+{
+  "title": "Вітальне вікно",
+  "description": "Створіть вікно з заголовком «Вітальне вікно», розміром 300x200 та написом (Label) з текстом «Вітаємо!»",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOEQ2CgRXAAEbAjdNQdGR0LnQptGV0InRvNCP0IN50ZfQptGD0YnRlkhHWBcJLBtKAldfX1MtFwlRU1tfXipXVnNITW9GWxx6OAcVFVwaAAEmSUY3ChwRDxfQoNGg0JvRldCk0YXRiklIR3wVByAETEw4Ql1ZLUsdGB0GAwE9FU5qZQ==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true,
+    "style": true
+  },
+  "timeout": 10,
+  "version": 1
+}

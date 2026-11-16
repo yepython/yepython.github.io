@@ -1,0 +1,16 @@
+{
+  "title": "Максимум трьох чисел",
+  "description": "Створіть функцію maximum(a, b, c), яка повертає найбільше з трьох чисел.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRkJFwc/EAtrDkhFUBwSVXBfellUSE8DclhGImVERRIQW1B5B1BHVAVVZHJFRmNPREUSXRILeQd6WVRITwc0RQVjUUQICDoSFnlFUFlUSAJOb0UFSU9ERRJCV0IsFx5ZGWI=",
+  "console_cases_text": "",
+  "function_cases_text": "maximum(1, 2, 3)\nmaximum(9, 5, 1)\nmaximum(4, 7, 7)\nmaximum(-1, -5, -3)\nmaximum(0, 0, 0)\n",
+  "requirements_text": "require def maximum\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

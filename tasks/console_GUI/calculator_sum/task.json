@@ -1,0 +1,16 @@
+{
+  "title": "Калькулятор",
+  "description": "Введіть два числа в консолі (кожне з нового рядка) та відобразіть результат їх додавання у графічному вікні Tkinter у вигляді напису (Label).",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJveg0GEVVkckVGYw5EWBJZXEJxDB4JARxHR3tvAzsMARVGEHdOOgAADR0HAVRYRUZjTwVFDxACPC0XCUN+SE9OcgdGfk8NC0YYW1gpEARRXUFlCyoGAzMbRCBKU1dGLQwfF05iT05yRQRjUkRVOEJdWS1FTVkAA0E6OU1PSRsPS35RUFM1TQIWGxxDTiYAHjdSFxFAGFMWckUSUF1GHw8xDk5qZRYKXUQcWzgMHhUbBx9Ge28=",
+  "console_cases_text": "=== Тест 1\n2\n3\n=== Тест 2\n10\n-4\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

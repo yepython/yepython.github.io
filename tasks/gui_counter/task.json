@@ -1,0 +1,16 @@
+{
+  "title": "Лічильник",
+  "description": "Створіть вікно з міткою, що показує 0, і кнопкою з текстом «Уперед». Кожне натискання кнопки збільшує значення лічильника на 1.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOEQ2CgRXAAEbAjdNQQAAEQtGVUARcG8cGxhIUk4mDkgPDgYAXhhAWTYRXFkADRcab0JWZEZuCVBcHEY4BhtRXWJlCjcDRioBB00bCjgWeUVQFRYEQQ09CwAqCEwRV0hGCyoRAlEdBhtGPgcKbQwDAEYYFUI8HQReXUFPRXJUT2plbgdGXhILeREbVzYdGxo9C04xAAsRHhBGUyERTV7Rl9GX0ZrQrtGn0ZFBb08HCl9dU1g9WBkXF0FlDCYLSDMOBw4aGThENgoEVxkJBgA+CgkzR01v",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "click Уперед\nclick Уперед\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Конвертер валют",
+  "description": "Введіть у консолі суму в гривнях та курс валюти (кожне значення з нового рядка). У графічному вікні Tkinter відобразіть результат конвертації (сума / курс) у вигляді напису (Label).",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJveg0GEVVkckVGYw4JCkdeRhZkRRYVGwkbRjsLFjYbTEwbOldOOgAADVQtFw03FRIqAApfOBASFnkEHRYBBhtOb0VWbV9uEUBJCDx5RVBZBgkbC3JYRiUDCwRGGFtYKRAEUV1BZQsqBgMzG0QgSlNXRi0MHxdOYk9OckUUIhsBRQ8QAxhpbxkfVBoOGjdFW35PVF84EBIWeRcRDRFIUk5jS1ZJHQEWR1xGFmRFERQbHQEackpGMQ4QADhCXVktRU1ZAANBOjlNT0kbD0t+UVBTNU0CFhscQ04mAB43UhcRQBhAUyoQHA1dQUEeMwYNa0ZuF11fRhg0BBkXGAcAHnpMbA==",
+  "console_cases_text": "=== Тест 1\n100\n40\n=== Тест 2\n250\n50\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Повзунок",
+  "description": "Створіть повзунок (Scale) від 0 до 100 з початковим значенням 0 (горизонтальний) та напис (Label), що показує поточне значення повзунка. При зміні положення повзунка напис має оновлюватися.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFo7CVBEVBwEQB4EBCYDTBddX0YaeREVAQBVSF51TGwvDQhLQlFRXXFMenMQDQlOPQs5LgASABpGU1pwX3pZVEhPAjAJSCAACgNbVxpCPB0ERAccHUY7CxJrCQgKU0QaQDgJWVBdQWVkIQZGfk8QDhxjUVc1AFgLGwcbQnIDFCwCO1gCHBJCNlhBSURETwEgDAMtG1lCWl9AXyMKHg0VBEhCcgYJLgIFC1YNXVgGCB8PEUFlHTFLFiIMD00bOkBZNhFeFBUBAQI9ChZrRm4=",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "scale 50\nscale 25\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

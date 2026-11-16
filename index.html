@@ -54,6 +54,17 @@
           table-layout: fixed;
       }
 
+      #runtime_env .rt-info-block#rt_info_block {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+      }
+      #runtime_env #rt_lang_slot {
+          margin-left: auto;
+          flex-shrink: 0;
+      }
+
       /* --- Круглі та більші чекбокси у "Середовищі програмування" --- */
       #runtime_env input[type="checkbox"],
       #settings input[type="checkbox"] {
@@ -432,6 +443,8 @@
     <script src="./jquery/jquery-3.7.1.js"></script>
     <script src="./jquery/ui/1.13.3/jquery-ui.js"></script> 
     <script src="./lib/jq/jquery.ui.touch-punch.min.js"></script>
+    <!-- Підключення мовного файла -->
+    <script src="./lib/langloader.js?v=6"></script>
     <script src="./lib/lib.js"></script>
     <script src="./lib/skulpt/skulpt.js"></script>
     <script src="./lib/skulpt/skulpt-stdlib.js"></script>
@@ -450,6 +463,7 @@
 	<script src="./lib/skulpt/robot/robot-ui.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script>
     // tkinter: робочий стіл для вікон Tk (TkDesktop) + зв'язка з рушієм Tcl.
     // Рушій TkEngine має бути завантажений вище (див. <script src="./lib/tk/tk-engine.js">).
@@ -545,11 +559,26 @@
 	<script src="./lib/filedialog.js"></script>
     <script src="./lib/customfile.js"></script>
     <script src="./lib/samplefile.js"></script>    
-    <!-- Підключення мовного файла -->
-    <script src="./lib/translations.js"></script>
+
+
     
 </head>
 <body>
+    <!-- Режим іспиту (?mode=exam): кнопки Task / Test / Submit вгорі по центру -->
+    <div id="exam_toolbar">
+        <button type="button" class="exam-btn" id="btn_exam_task">
+            <img src="./media/task.png" alt="Завдання" title="Завдання"
+                 data-i18n-alt="exam_task_title" data-i18n-title="exam_task_title">
+        </button>
+        <button type="button" class="exam-btn" id="btn_exam_test">
+            <img src="./media/test.png" alt="Тест" title="Тест"
+                 data-i18n-alt="exam_test_title" data-i18n-title="exam_test_title">
+        </button>
+        <button type="button" class="exam-btn" id="btn_exam_submit">
+            <img src="./media/submit.png" alt="Надіслати" title="Надіслати"
+                 data-i18n-alt="exam_submit_title" data-i18n-title="exam_submit_title">
+        </button>
+    </div>
     <div id="loading"></div>
 	<img src="logo.png" id="logo" width="150" height="60" style="cursor:pointer;" title="Подвійний клац: створити ланчер програми" data-i18n-title="logo_launcher_title">
     <div id="holder" class="holder" style="display:none">
@@ -583,6 +612,7 @@
         window.mml_stored = null;
 
         var robotMode = false;
+        var examMode = false;
         if (window.location.search !== '') {
             const params = new URL(window.location).searchParams;
             var viewEmbed = params.get("view") === "embed";
@@ -592,6 +622,7 @@
             var runCodeParam = params.get("runcode");
             var pasteParam = params.get("paste");
             robotMode = params.get("mode") === "robot";
+            examMode = params.get("mode") === "exam";
 
             if (runCodeParam) {
                 runCodeParam = runCodeParam.replace(/\s/g, "+");
@@ -644,6 +675,52 @@
             } else {
                 openRobotMode();
             }
+        }
+
+        if (examMode) {
+            document.body.classList.add('exam-mode');
+            // Завантажуємо checker.js лише в режимі іспиту (ліниве підвантаження)
+            (function loadChecker() {
+                var s = document.createElement('script');
+                s.src = './lib/checker.js?v=12';
+                document.head.appendChild(s);
+            })();
+            // Кнопки режиму іспиту: Task / Test / Submit. Реальна поведінка —
+            // у PythonIDE.exam (lib.js); за замовчуванням вони нічого не роблять.
+            function bindExamButton(id, handler) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('click', function () {
+                    if (window.PythonIDE && PythonIDE.exam &&
+                        typeof PythonIDE.exam[handler] === 'function') {
+                        PythonIDE.exam[handler]();
+                    }
+                });
+            }
+            bindExamButton('btn_exam_task', 'onTask');
+            bindExamButton('btn_exam_test', 'onTest');
+            bindExamButton('btn_exam_submit', 'onSubmit');
+
+            // Якщо task=file — одразу відкрити вибір файлу завдання (як ?world=file у robot)
+            (function autoOpenTaskFile() {
+                try {
+                    var params = new URL(window.location).searchParams;
+                    if (params.get('task') === 'file') {
+                        function tryOpen() {
+                            if (window.__checkerLoaded && window.PythonIDE && PythonIDE.exam && typeof PythonIDE.exam.onTask === 'function') {
+                                PythonIDE.exam.onTask();
+                            } else {
+                                setTimeout(tryOpen, 100);
+                            }
+                        }
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', tryOpen);
+                        } else {
+                            tryOpen();
+                        }
+                    }
+                } catch (e) {}
+            })();
         }
 
         if (viewEmbed) {
@@ -945,9 +1022,13 @@
 
     <!-- Runtime Environment Dialog -->
     <div id="runtime_env" title="Середовище виконання" data-i18n-title="runtime_env_title" style="display:none;">
-        <div class="rt-info-block">
-            <div><b data-i18n="rt_skulpt_label">Версія Skulpt:</b> <span id="rt_skulpt_version">—</span></div>
-            <div style="margin-top:4px;"><b data-i18n="rt_python_label">Python:</b> <span id="rt_python_version">3.7+</span></div>
+        <div class="rt-info-block" id="rt_info_block">
+            <div class="rt-info-versions">
+                <div><b data-i18n="rt_skulpt_label">Версія Skulpt:</b> <span id="rt_skulpt_version">—</span></div>
+                <div style="margin-top:4px;"><b data-i18n="rt_python_label">Python:</b> <span id="rt_python_version">3.7+</span></div>
+            </div>
+            <!-- Кнопку вибору мови (#epylang_btn) додає main.js -->
+            <div id="rt_lang_slot"></div>
         </div>
 
         <div class="rt-section-title" data-i18n="rt_libs_title">Підтримувані бібліотеки</div>
@@ -997,6 +1078,11 @@
             <button type="button" id="btn_copy_launcher"><i class="fa fa-clipboard"></i> <span data-i18n="launcher_copy">Копіювати у буфер обміну</span></button>
         </div>
     </div>
+    <!-- Діалоги режиму іспиту -->
+    <div id="exam_task_dialog" title="Завдання" data-i18n-title="exam_task_dialog_title" style="display:none;"></div>
+    <div id="exam_check_dialog" title="Результат перевірки" data-i18n-title="exam_check_dialog_title" style="display:none;"></div>
+    <div id="exam_submit_dialog" title="Надіслати" data-i18n-title="exam_submit_dialog_title" style="display:none;"></div>
+
     <!-- Модальне вікно з підказкою клавіатурних сполучень (Ctrl + ?) -->
     <div id="shortcuts_help" title="Сполучення клавіш" data-i18n-title="shortcuts_title" style="display:none;">
         <div class="rt-info-block">

@@ -1,0 +1,16 @@
+{
+  "title": "Список фруктів",
+  "description": "Створіть список (Listbox) з елементами «Яблуко», «Банан», «Апельсин» та напис (Label). При виборі елемента списку в написі має з'явитися назва вибраного фрукта. Початково напис порожній.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFo7RU1ZAANBIjsWEiEAHE1AX11CcG8WFgZIBho3CEYqAUQ+FdCf0IPQjdCa0Z/Rjl5YSEjRv9Gi0ZjRltG+SEhFFdCg0I3Qg9Gi0KnQsdGB0YlPMlRYRUZjTwgHHFlcRTwXBFEAA0ErHCFKYwYQAF8ZOFo7SwAYFwNHR1gXAzAaCBESDRJCMks8GBYNA0YgCgk3Q0QRV0hGC35CWXMGDRwbPhFIMw4HDhoZODw9ABZZGwYwHTcJAyAbTABEVVxCcF96WVRITx03CUZ+TwgHHFNHRCoAHBwXHAYBPE1PSU9ERRJZVBYqABxDfkhPTnJFRmNPFgBBRV5CdwYfFxIBCEYmAB43UggHHFdXQnEWFRUvWDJHe29sLw1KB1teVh5+WUw1HRsbDD0dNSYDAQZGDgwRdUUfFysbCgI3BhJqZRYKXUQcWzgMHhUbBx9Ge28=",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "select 1\nselect 2\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

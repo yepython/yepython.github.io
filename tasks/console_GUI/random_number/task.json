@@ -1,0 +1,16 @@
+{
+  "title": "Генератор випадкових чисел",
+  "description": "Введіть у консолі межі діапазону: мінімальне та максимальне значення (кожне з нового рядка). У вікні Tkinter створіть кнопку «Згенерувати» та напис (Label). Початково напис порожній. Після натискання кнопки в написі має з'явитися випадкове ціле число в заданому діапазоні.",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvGRQEBx0achcHLQsLCDg6RkQgX3pZVEhPD3JYRioBEE1bXkJDLU1ZUH5IT05yB0Z+Tw0LRhhbWCkQBFFdQWULKgYDMxtEIEpTV0YtDB8XTmJPTnJFB2NSRFQ4EBIWeQdQRFRZX15YFwksG0RYEkRZGA0OWFB+BA0CclhGNwRKKVNSV1pxFx8WAERPGjcdEn5IQ0w4XFBadxURGh9ARmRYAQMlTwMAXFVAVy0AWFBOYk9OckUKIQNKBl1eVF8+TQQcDBxSHSYXTjEOCgFdXRxEOAsUEBocRw9+RQRqRk1vOERZGBsQBA0bBkccPQoSb08QAEpEDxHRjtGW0YXRhNGB0KjQrNGc0aLQp9GeZENEBl1dX1c3AU0eEQYKHDMRA2pBFARRWxofUxcfFgBGAg87CwosABRNGzo=",
+  "console_cases_text": "=== Тест 1\n1\n10\n=== Тест 2\n5\n5\n",
+  "function_cases_text": "",
+  "requirements_text": "require import random\nforbid call eval\n",
+  "actions_text": "click Згенерувати\nclick Згенерувати\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

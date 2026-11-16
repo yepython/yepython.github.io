@@ -1,0 +1,15 @@
+{
+  "title": "Сума чисел від 1 до N",
+  "description": "Прочитайте ціле число N (N >= 0) і виведіть суму всіх цілих чисел від 1 до N включно.",
+  "mode": "console",
+  "reference_code": "ENC:N0VNWR0GG0Y7CxY2G0xMGzpGWS0EHFlJSF9kNAoUYwZEDFwQQFc3AhVRRURPAHJORnJGXm8SEBIWLQoEGBhIRFNyDGwzHQ0LRhhGWS0EHFB+",
+  "console_cases_text": "=== Тест 1\n5\n=== Тест 2\n1\n=== Тест 3\n10\n=== Тест 4\n0\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06
+  },
+  "timeout": 10,
+  "version": 1
+}

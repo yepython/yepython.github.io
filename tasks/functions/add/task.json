@@ -1,0 +1,16 @@
+{
+  "title": "Сума чисел",
+  "description": "Створіть функцію add(a, b), яка повертає суму двох чисел.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRUMC0YzSUYhRl5vEhASFisABAwGBk8Pck5GIWU=",
+  "console_cases_text": "",
+  "function_cases_text": "add(2, 3)\nadd(-5, 5)\nadd(0, 0)\nadd(10, -3)\n",
+  "requirements_text": "require def add\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

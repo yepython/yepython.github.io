@@ -1,0 +1,17 @@
+{
+  "title": "Поточний час",
+  "description": "Створіть вікно з написом (Label), який показує поточний час. Час має оновлюватися кожну секунду за допомогою методу after. Конкретне значення часу не перевіряється — перевіряється наявність потрібних віджетів та періодичне оновлення.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvGRQEBx0achEPLgpub0BfXUJ5WFANH0Y7BXpMbC8NCEUPEEZddykRGxEERxw9ChJvTxAASkQPEX5MehUWBEEeMwYNa0Zub1ZVVBYtDBMSXEFVZHJFRmMDBgkcU11YPwwXUQANFxpvEQ8uCkoWRkJUQjAIFVFTTSdUdyhcZjxDTBs6EhZ5RQIWGxxBDzQRAzFHVVUCAB4WLQwTEl1iZRo7Bg1rRm4XXV9GGDQEGRcYBwAeekxs",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "require call after\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true,
+    "gui_ignore_text": true
+  },
+  "timeout": 10,
+  "version": 1
+}

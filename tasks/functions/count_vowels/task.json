@@ -1,0 +1,16 @@
+{
+  "title": "Кількість голосних",
+  "description": "Створіть функцію count_vowels(s), яка повертає кількість голосних латинських літер (a, e, i, o, u) у рядку без урахування регістру.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRcHGgAmOhAsGAEJQRhBH2NvUFlUSAwBJwsSY1JEVTgQEhZ5Ax8LVAsHTjsLRjBBCApFVUAecF96WVRIT05yRUYqCUQGWhBbWHlCERwdBxpJaG9GY09ERRIQEhZ5RVAaGx0BGnJOW2NebkUSEBJEPBEFCxpIDAEnCxJJ",
+  "console_cases_text": "",
+  "function_cases_text": "count_vowels('hello')\ncount_vowels('Python')\ncount_vowels('AEIOU')\ncount_vowels('rhythm')\ncount_vowels('')\ncount_vowels('Sky')\n",
+  "requirements_text": "require def count_vowels\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

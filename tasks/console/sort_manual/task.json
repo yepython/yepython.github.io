@@ -1,0 +1,15 @@
+{
+  "title": "Сортування без використання sort()",
+  "description": "Прочитайте рядок із цілих чисел, розділених пробілами, і виведіть їх за зростанням через пробіл. Використовувати sort() і sorted() заборонено.",
+  "mode": "console",
+  "reference_code": "ENC:NxAdClRVTzU7CxJrF01FVF9AFiFFGRdUAQEeJxFOakEXFV5ZRh5wOHoXVFVPAjcLTi0aCRYbOlRZK0UZWR0GTxwzCwEmRwpMCDoSFnlFFhYGSAVOOwtGMQ4KAlcYXBZ0RUFZWUgGR2hvRmNPREUSEBJfP0UeDBkbNAQPRVhjAREIQWtYFnJFQSROYk9OckVGY09ERRIQElgsCAMiHjVDTjwQCzA0DkUZEANreVhQFwEFHDU4RU1jXjlJEl5HWyo+GiR+GB0HPBFOYU9GS1hfW1hxFgQLXBBGTjQKFGMXRAxcEFxDNBZZUH4=",
+  "console_cases_text": "=== Тест 1\n3 1 2\n=== Тест 2\n5 4 3 2 1\n=== Тест 3\n1\n=== Тест 4\n2 2 1\n=== Тест 5\n10 -5 0 3\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call sort\nforbid call sorted\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06
+  },
+  "timeout": 10,
+  "version": 1
+}

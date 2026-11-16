@@ -1,0 +1,16 @@
+{
+  "title": "Перевернутий рядок",
+  "description": "Створіть функцію reverse_string(s), яка повертає рядок у зворотному порядку.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWQYNGQsgFgMcHBAXW15VHipMSnNUSE9OIAASNh0KRUFrCAx0VC1z",
+  "console_cases_text": "",
+  "function_cases_text": "reverse_string('hello')\nreverse_string('Python')\nreverse_string('')\nreverse_string('a')\nreverse_string('абв')\n",
+  "requirements_text": "require def reverse_string\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

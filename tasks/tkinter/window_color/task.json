@@ -1,0 +1,17 @@
+{
+  "title": "Зміна кольору вікна",
+  "description": "Створіть три кнопки: «Червоний», «Зелений», «Синій». При натисканні кнопки колір фону головного вікна має змінитися на відповідний (red, green, blue).",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZODw9ABZZBw0bMSAAAmtGXm8SEBIWKwofDVoLAAA0DAFrDQNYFUJXUn5MenMQDQlOIQASHAgWAFdeGh9jb1BZVEgdAT0RSCAACgNbVxpUPlhXHgYNCgB1TGxJCwEDEkNXQgYHHAwRQEZUWEVGY08WCl1EHFU2CxYQE0ANCW9CBC8aAUIbOjhCMksyDAAcAAB6FwksG0hFRlVKQmRC0ZfRjNC00ZrRkdGT0arRnEFvTwcKX11TWD1YAxwANx0LNkxIMw4HDhoZOEIySzIMABwAAHoXCSwbSEVGVUpCZELRp9GM0Y/RndGS0ZbRq0JKYwwLCF9RXFJkFhUNKw8dCzcLT20fBQZZGBs8LQ5eOwEcGwE8TRQsABBJEkRXTi1YV9GY0YzRldC50Zd1SUYgAAkIU15WCyoABCYWBBoLe0sWIgwPTRs6QFk2EV4UFQEBAj0KFmtGbg==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "click Червоний\nclick Зелений\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true,
+    "style": true
+  },
+  "timeout": 10,
+  "version": 1
+}

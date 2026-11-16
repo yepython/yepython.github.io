@@ -177,6 +177,71 @@ html, body {
   height: 1em;
   padding: 3px;
 }
+
+/* --- Режим іспиту (?mode=exam) ---
+   Тло сторінки та панель кнопок Task / Test / Submit вгорі по центру.
+   !important потрібен, бо lib.js задає колір тла інлайн-стилем
+   залежно від обраної теми редактора (день/сутінки/ніч). */
+body.exam-mode {
+  background-color: rgb(255, 194, 198) !important;
+}
+
+#exam_toolbar {
+  display: none;
+}
+
+body.exam-mode #exam_toolbar {
+  display: flex;
+  position: fixed;
+  top: 8px;
+  left: 150px;
+  align-items: center;
+  gap: 12px;
+  background-color: rgb(255, 194, 198);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+#exam_toolbar .exam-btn {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 12px;
+  transition: transform 0.15s ease;
+}
+
+#exam_toolbar .exam-btn img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+#exam_toolbar .exam-btn:hover {
+  transform: scale(1.08);
+}
+
+#exam_toolbar .exam-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+  #exam_toolbar .exam-btn img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* --- Результат перевірки в режимі іспиту --- */
+#exam_check_dialog { font-family: monospace; font-size: 13px; white-space: pre-wrap; }
+#exam_check_dialog .chk-ok { color: #0a7a0a; }
+#exam_check_dialog .chk-err { color: #b00020; }
+#exam_check_dialog .chk-warn { color: #b36b00; }
+#exam_check_dialog .chk-dim { color: #777; }
+#exam_check_dialog .chk-head { color: #1a4fa0; font-weight: 600; }
 #recover {
   width: 80%;
 }

@@ -1,0 +1,16 @@
+{
+  "title": "Привітання користувача",
+  "description": "Створіть поле введення (Entry), кнопку з текстом «Привітати» та напис (Label). Після натискання кнопки напис має показати: Привіт, <ім'я>!, де <ім'я> — текст із поля введення.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFM3EQIAVFVPGjlLIy0bFhwaQl1ZLUx6HBocHRd8FQcgBExMOEJXRSwJBFlJSBsFfCkHIQoITUBfXUJ1RQQcDBxSSXVMbDEKFxBeRBxGOAYbUV1iZQo3A0YkHQEARhgbDFNFUFlUBg4DN0VbYwoKEUBJHFE8EVhQfkhPTnIXAzAaCBEcU11YPwwXUQANFxpvQtG50IPRl9GW0LPRsBwSEXlOUBcVBQpOeUVBYkhNbzhEWRgbEAQNGwZHHD0KEm9PEABKRA8R0YbQpdGI0YvQotCq0Z/QrNGqQkpjDAsIX1FcUmQCAhwRHEZAIgQFKEdNb0BfXUJ3CBEQGgQAASJNT0k=",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "type Іван\nclick Привітати\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

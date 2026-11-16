@@ -1,0 +1,16 @@
+{
+  "title": "Факторіал",
+  "description": "Створіть функцію factorial(n), яка обчислює факторіал числа n (n ≥ 0). Факторіал 0 дорівнює 1.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRIJDBo9Fw8iA0wLGwo4FnlFUAsRGxoCJkVbY15uRRIQElA2F1AQVAEBTiAECCQKTFceEFwWckVBUE5iT05yRUZjT0QXV0NHWi1FWkRUAWVOckVGMQoQEEBeEkQ8FgUVAGI=",
+  "console_cases_text": "",
+  "function_cases_text": "factorial(0)\nfactorial(1)\nfactorial(5)\nfactorial(7)\n",
+  "requirements_text": "require def factorial\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

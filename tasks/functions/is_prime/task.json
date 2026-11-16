@@ -1,0 +1,16 @@
+{
+  "title": "Перевірка простого числа",
+  "description": "Створіть функцію is_prime(n), яка повертає True, якщо число n є простим, інакше False. Числа менші за 2 не є простими.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWR0bMB4gDAsmRwpMCDoSFnlFGR9UBk9ScldcSU9ERRIQEhZ5FxUNARoBThQECjAKbkUSEBJfeVhQS35IT05yEg4qAwFFWxAYFjBFTERUBlVkckVGY09ERRJZVBY3RVVZHUhSU3JVXElPREUSEBIWeUVQWVQaChonFwhjKQUJQVU4FnlFUFlUSE8Hck5bY15uRRIQEkQ8EQULGkg7HCcAbA==",
+  "console_cases_text": "",
+  "function_cases_text": "is_prime(2)\nis_prime(3)\nis_prime(4)\nis_prime(17)\nis_prime(1)\nis_prime(0)\nis_prime(25)\nis_prime(29)\n",
+  "requirements_text": "require def is_prime\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

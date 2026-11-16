@@ -1,0 +1,15 @@
+{
+  "title": "Паліндром",
+  "description": "Прочитайте рядок без пробілів і виведіть «паліндром», якщо він читається однаково в обидва боки, або «не паліндром» в іншому разі.",
+  "mode": "console",
+  "reference_code": "ENC:KkVNWR0GHxsmTU9JBgJFQRAPC3kWK0NORV4zaG9GY09EFUBZXEJxR9GP0YnRj9C+0ZLRmtCS0ZvRmmFGbgBeQ1cMU0VQWVQYHQc8EU5h0ZLRkUXQjdCA0InRoNGk0ZHQsNGH0YhKRmQ=",
+  "console_cases_text": "=== Тест 1\nlevel\n=== Тест 2\nhello\n=== Тест 3\nabba\n=== Тест 4\nabca\n=== Тест 5\na\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06
+  },
+  "timeout": 10,
+  "version": 1
+}

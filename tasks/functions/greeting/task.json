@@ -1,0 +1,16 @@
+{
+  "title": "Привітання",
+  "description": "Створіть функцію greeting(name), яка приймає ім'я та повертає рядок привітання у форматі: Привіт, <name>!",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRMaCgsmDAgkRwoEX1UbDFNFUFlUGgoaJxcIYwlD0brRstCI0IDRoNCbSVACGgkCCy9EQUk=",
+  "console_cases_text": "",
+  "function_cases_text": "greeting('Анна')\ngreeting('Олег')\ngreeting('Світ')\n",
+  "requirements_text": "require def greeting\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЄPython — Підготовка завдання (вчитель)</title>
+    <link rel="stylesheet" href="./lib/cm/codemirror.css">
+    <script src="./lib/cm/codemirror.js"></script>
+    <script src="./lib/cm/python.js"></script>
+    <script src="./jquery/jquery-3.7.1.js"></script>
+    <script src="./jquery/ui/1.13.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="./jquery/ui/1.13.3/themes/base/jquery-ui.css">
+    <script src="./lib/langloader.js?v=2"></script>
+    <script src="./lib/lib.js"></script>
+    <script src="./lib/skulpt/skulpt.js"></script>
+    <script src="./lib/skulpt/skulpt-stdlib.js"></script>
+    <script src="./lib/skulpt/deps/tk_colors.js"></script>
+    <script src="./lib/tk/tk-engine.js"></script>
+    <script src="./lib/tk/tk-window-system.js"></script>
+    <script src="./lib/extlibs.js"></script>
+    <script src="./lib/jsfs.js"></script>
+    <script src="./lib/checker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f1220;
+            --bg-soft: #161a2e;
+            --panel: #1b2038;
+            --panel-2: #232a47;
+            --border: #2d3556;
+            --border-soft: #262c48;
+            --text: #e6e9f5;
+            --muted: #8f97b8;
+            --accent: #6c7bff;
+            --accent-2: #8a5cff;
+            --accent-glow: rgba(108, 123, 255, .35);
+            --success: #34d399;
+            --warn: #fbbf24;
+            --danger: #f87171;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 10px 30px rgba(0,0,0,.35);
+            --font: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+            --mono: "JetBrains Mono", Consolas, "SF Mono", monospace;
+        }
+        body.light {
+            --bg: #f4f6fb;
+            --bg-soft: #eef1f8;
+            --panel: #ffffff;
+            --panel-2: #f7f9fc;
+            --border: #d6dbe8;
+            --border-soft: #e3e7f0;
+            --text: #1a1d2e;
+            --muted: #5b6380;
+            --accent: #4f5bd5;
+            --accent-2: #7c3aed;
+            --accent-glow: rgba(79, 91, 213, .25);
+            --success: #059669;
+            --warn: #d97706;
+            --danger: #dc2626;
+            --shadow: 0 10px 30px rgba(0,0,0,.12);
+        }
+        body.light {
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(79,91,213,.10), transparent 60%),
+                radial-gradient(900px 500px at 110% 110%, rgba(124,58,237,.08), transparent 60%),
+                var(--bg);
+        }
+        body.light ::-webkit-scrollbar-thumb { background: #b0b6cc; }
+        body.light ::-webkit-scrollbar-thumb:hover { background: #9aa1bd; }
+        body.light .topbar { background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(245,247,252,.95)); }
+        body.light button { background: linear-gradient(180deg, var(--panel-2), var(--panel)); color: var(--text); }
+        body.light .CodeMirror { background: #fff; color: #1a1d2e; }
+        body.light .CodeMirror-gutters { background: #f0f2f7 !important; }
+        body.light .CodeMirror-linenumber { color: #6b7390 !important; }
+        body.light .panel { background: var(--panel); border-color: var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.06); backdrop-filter: none; }
+        body.light .panel-header { background: var(--panel-2); color: var(--text); border-bottom-color: var(--border-soft); }
+        body.light .panel-header .icon { background: linear-gradient(135deg, rgba(79,91,213,.15), rgba(124,58,237,.15)); color: var(--accent); }
+        body.light .status { background: var(--bg-soft); color: var(--muted); border-color: var(--border-soft); }
+        body.light .tabs { background: var(--bg-soft); border-bottom-color: var(--border-soft); }
+        body.light .tab-btn { color: var(--muted); }
+        body.light .tab-btn:hover { color: var(--text); background: rgba(0,0,0,.04); }
+        body.light .tab-btn.active { background: var(--panel); color: var(--text); border-color: var(--border); }
+        body.light .accordion summary { color: var(--text); }
+        body.light .accordion summary:hover { background: rgba(0,0,0,.03); }
+        body.light .accordion summary .chev { color: var(--muted); }
+        body.light .help { background: var(--bg-soft); color: var(--muted); border-color: var(--border-soft); }
+        body.light .bottom { color: var(--muted); }
+        body.light .link-box { background: var(--panel); }
+        body.light .topbar { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,247,252,.98)); border-bottom-color: var(--border); }
+        body.light button { background: linear-gradient(180deg, var(--panel-2), var(--panel)); color: var(--text); border-color: var(--border); }
+        body.light button.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+        body.light .mode-pills label { background: var(--bg-soft); color: var(--text); border-color: var(--border); }
+        body.light .mode-pills input:checked + label { background: linear-gradient(135deg, rgba(79,91,213,.15), rgba(124,58,237,.15)); color: var(--text); }
+        body.light .opts-group { background: var(--bg-soft); border-color: var(--border-soft); }
+        body.light .opts-group b { color: var(--muted); }
+        body.light .files-list { background: var(--panel); color: var(--text); border-color: var(--border); }
+        body.light .frame { background: var(--panel); border-color: var(--border); }
+        body.light .frame-title { color: var(--text); }
+        body.light input, body.light textarea, body.light select { background: var(--bg-soft); color: var(--text); border-color: var(--border); }
+        body.light .CodeMirror { background: #fff !important; color: #1a1d2e !important; }
+        body.light .CodeMirror-gutters { background: #f0f2f7 !important; border-right: 1px solid var(--border-soft) !important; }
+        body.light .CodeMirror-linenumber { color: #6b7390 !important; }
+        body.light .CodeMirror-cursor { border-left: 2px solid var(--accent) !important; }
+        body.light .CodeMirror-selected { background: rgba(79,91,213,.2) !important; }
+
+        /* jQuery UI dialog — фон і рамка */
+        .ui-dialog {
+            background: var(--panel) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow) !important;
+            color: var(--text) !important;
+        }
+        .ui-dialog .ui-dialog-titlebar {
+            background: var(--panel-2) !important;
+            border-bottom: 1px solid var(--border-soft) !important;
+            color: var(--text) !important;
+        }
+        .ui-dialog .ui-dialog-content {
+            background: var(--panel) !important;
+            color: var(--text) !important;
+        }
+        body.light .ui-dialog { background: #ffffff !important; border-color: #d6dbe8 !important; box-shadow: 0 10px 30px rgba(0,0,0,.15) !important; }
+        body.light .ui-dialog .ui-dialog-titlebar { background: #f7f9fc !important; border-bottom-color: #e3e7f0 !important; }
+        body.light .ui-dialog .ui-dialog-content { background: #ffffff !important; }
+
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font);
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(108,123,255,.18), transparent 60%),
+                radial-gradient(900px 500px at 110% 110%, rgba(138,92,255,.15), transparent 60%),
+                var(--bg);
+            color: var(--text);
+            font-size: 13.5px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #303a63; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+        ::-webkit-scrollbar-thumb:hover { background: #3d4a80; background-clip: content-box; }
+
+        /* ---------- Topbar ---------- */
+        .topbar {
+            display: flex; gap: 8px; padding: 12px 18px;
+            background: linear-gradient(180deg, rgba(27,32,56,.95), rgba(22,26,46,.95));
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap; align-items: center;
+            position: relative; z-index: 10;
+        }
+        .topbar .brand {
+            display: flex; align-items: center; gap: 10px; margin-right: 14px;
+            font-weight: 700; letter-spacing: .3px; font-size: 15px;
+        }
+        .topbar .brand .dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .topbar .brand small { color: var(--muted); font-weight: 500; font-size: 11px; }
+
+        button {
+            font-family: inherit; font-size: 12.5px; font-weight: 500;
+            padding: 8px 14px; border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--panel-2), var(--panel));
+            color: var(--text);
+            cursor: pointer;
+            transition: transform .08s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+            display: inline-flex; align-items: center; gap: 6px;
+            white-space: nowrap;
+        }
+        button:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        button:active { transform: translateY(1px); }
+        button.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-color: transparent; color: #fff;
+            box-shadow: 0 6px 18px -6px var(--accent-glow);
+        }
+        button.primary:hover { box-shadow: 0 8px 24px -6px var(--accent-glow); }
+        button.ghost { background: transparent; }
+        button.danger:hover { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(248,113,113,.2); }
+
+        .topbar .divider { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+
+        .status {
+            margin-left: auto; color: var(--muted); font-size: 12px;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 12px; border-radius: 999px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--border-soft);
+            max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .status::before {
+            content: ""; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--success); box-shadow: 0 0 8px var(--success);
+            flex-shrink: 0;
+        }
+
+        /* ---------- Layout ---------- */
+        .workspace {
+            flex: 1; display: flex; flex-direction: column;
+            min-height: 0; padding: 14px 18px; gap: 12px;
+            overflow-y: auto;
+        }
+        .main { display: flex; flex: 1; gap: 12px; min-height: 0; }
+
+        /* ---------- Panels ---------- */
+        .panel {
+            background: linear-gradient(180deg, rgba(35,42,71,.65), rgba(27,32,56,.65));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+        .panel-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-soft);
+            font-weight: 600; font-size: 12.5px;
+            color: var(--text);
+            background: rgba(255,255,255,.02);
+        }
+        .panel-header .icon {
+            width: 24px; height: 24px; border-radius: 7px;
+            display: grid; place-items: center; font-size: 13px;
+            background: linear-gradient(135deg, rgba(108,123,255,.25), rgba(138,92,255,.25));
+            color: #c7ccff;
+        }
+        .panel-header .spacer { flex: 1; }
+
+        /* Accordion for task info */
+        .accordion { border-bottom: 1px solid var(--border-soft); }
+        .accordion:last-child { border-bottom: none; }
+        .accordion summary {
+            list-style: none; cursor: pointer;
+            padding: 10px 14px;
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 600; font-size: 12.5px;
+            user-select: none;
+            transition: background .15s;
+        }
+        .accordion summary::-webkit-details-marker { display: none; }
+        .accordion summary:hover { background: rgba(255,255,255,.03); }
+        .accordion summary .chev {
+            margin-left: auto; transition: transform .2s; color: var(--muted); font-size: 11px;
+        }
+        .accordion[open] summary .chev { transform: rotate(90deg); }
+        .accordion-body { padding: 4px 14px 14px; }
+
+        /* Form controls */
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .3px; text-transform: uppercase; }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            font-family: inherit; font-size: 13px;
+            padding: 8px 10px;
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            transition: border-color .15s, box-shadow .15s;
+            outline: none;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        textarea { resize: vertical; min-height: 40px; }
+        .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+        .row .field { flex: 1; min-width: 140px; }
+
+        /* Mode pills */
+        .mode-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+        .mode-pills input { display: none; }
+        .mode-pills label {
+            padding: 8px 14px; border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--bg-soft);
+            cursor: pointer; font-size: 12.5px; font-weight: 500;
+            transition: all .15s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .mode-pills label::before {
+            content: ""; width: 10px; height: 10px; border-radius: 50%;
+            border: 2px solid var(--muted);
+            transition: all .15s;
+        }
+        .mode-pills label:hover { border-color: var(--accent); }
+        .mode-pills input:checked + label {
+            background: linear-gradient(135deg, rgba(108,123,255,.25), rgba(138,92,255,.25));
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .mode-pills input:checked + label::before {
+            background: var(--accent); border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+        .mode-hint {
+            color: var(--success); font-size: 12px; margin-left: 4px;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .mode-hint:not(:empty)::before { content: "✓"; }
+
+        /* Options grid */
+        .opts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        .opts-group {
+            background: var(--bg-soft);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+        }
+        .opts-group b {
+            font-size: 11px; color: var(--muted); text-transform: uppercase;
+            letter-spacing: .4px; display: block; margin-bottom: 8px;
+        }
+        .check {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 12px; cursor: pointer; margin: 4px 10px 4px 0;
+            color: var(--text); user-select: none;
+        }
+        .check input {
+            appearance: none; -webkit-appearance: none;
+            width: 16px; height: 16px; border-radius: 5px;
+            border: 1.5px solid var(--border); background: var(--panel);
+            cursor: pointer; transition: all .15s; flex-shrink: 0;
+            position: relative;
+        }
+        .check input:checked {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-color: transparent;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .check input:checked::after {
+            content: "✓"; position: absolute; inset: 0;
+            display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 800;
+        }
+        .opts-group .inline-num {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; color: var(--muted); margin-right: 10px;
+        }
+        .opts-group .inline-num input { width: 70px; padding: 4px 8px; font-size: 12px; }
+
+        /* Editor panels */
+        .left, .right {
+            flex: 1; display: flex; flex-direction: column;
+            min-height: 320px; min-width: 0;
+            position: relative;
+        }
+        .editor-wrap { flex: 1; position: relative; min-height: 0; }
+        .left .CodeMirror, .right .CodeMirror {
+            position: absolute; inset: 0; height: auto !important;
+            font-family: var(--mono); font-size: 12.5px;
+            background: var(--bg-soft) !important;
+            color: var(--text);
+        }
+        .CodeMirror-gutters { background: #131726 !important; border-right: 1px solid var(--border-soft) !important; }
+        .CodeMirror-linenumber { color: #4d5679 !important; }
+        .CodeMirror-cursor { border-left: 2px solid var(--accent) !important; }
+        .CodeMirror-selected { background: rgba(108,123,255,.25) !important; }
+        .CodeMirror-activeline-background { background: rgba(255,255,255,.02) !important; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 4px; padding: 8px 10px 0;
+            background: rgba(0,0,0,.15);
+            border-bottom: 1px solid var(--border-soft);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            padding: 8px 14px; cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            background: transparent;
+            font-size: 12px; font-weight: 500; color: var(--muted);
+            border-radius: 8px 8px 0 0;
+            white-space: nowrap;
+            transition: all .15s;
+        }
+        .tab-btn:hover { color: var(--text); background: rgba(255,255,255,.04); border-color: transparent; box-shadow: none; }
+        .tab-btn.active {
+            background: var(--bg-soft);
+            color: #fff;
+            border-color: var(--border);
+            border-bottom-color: var(--bg-soft);
+            margin-bottom: -1px;
+            box-shadow: none;
+        }
+        .tab-content {
+            display: none; flex: 1; flex-direction: column; padding: 10px;
+            min-height: 0;
+        }
+        .tab-content.active { display: flex; }
+        .tab-content textarea {
+            flex: 1; font-family: var(--mono); font-size: 12px;
+            min-height: 120px; resize: none;
+        }
+        .tab-actions { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+        .tab-actions button { padding: 6px 12px; font-size: 11.5px; }
+
+        .help {
+            font-size: 11.5px; color: var(--muted);
+            padding: 8px 10px; margin-bottom: 8px;
+            background: rgba(108,123,255,.06);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            white-space: pre-wrap;
+            max-height: 74px; overflow: auto;
+            font-family: var(--mono);
+            line-height: 1.5;
+        }
+
+        .files-list {
+            flex: 1; border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--mono); font-size: 12px;
+            padding: 8px; overflow: auto;
+            background: var(--bg-soft);
+            min-height: 80px;
+        }
+        .files-list > div {
+            padding: 6px 10px; border-radius: 6px;
+            transition: background .15s;
+            cursor: default;
+        }
+        .files-list > div:hover { background: rgba(255,255,255,.04); }
+        .files-list:empty::after {
+            content: attr(data-empty);
+            color: var(--muted); font-style: italic;
+        }
+
+        /* Link box */
+        .link-box {
+            display: flex; gap: 10px; align-items: center;
+            padding: 12px 18px;
+            background: linear-gradient(180deg, var(--panel), var(--bg-soft));
+            border-top: 1px solid var(--border);
+        }
+        .link-box b {
+            font-size: 12px; color: var(--muted); text-transform: uppercase;
+            letter-spacing: .4px; white-space: nowrap;
+        }
+        .link-box input {
+            flex: 1; font-family: var(--mono); font-size: 12px;
+            background: var(--bg); cursor: text;
+        }
+
+        /* Bottom tip */
+        .bottom {
+            padding: 8px 18px 12px;
+            font-size: 11.5px; color: var(--muted);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .bottom::before {
+            content: "💡"; font-size: 14px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 12px 18px; border-radius: var(--radius-sm);
+            box-shadow: 0 10px 40px rgba(0,0,0,.5), 0 0 0 4px var(--accent-glow);
+            font-size: 12.5px; z-index: 9999;
+            opacity: 0; transform: translateY(20px);
+            transition: all .25s ease;
+            max-width: 360px;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .main { flex-direction: column; }
+            .left, .right { min-height: 260px; }
+            .status { display: none; }
+        }
+        @media (max-width: 640px) {
+            .topbar { padding: 10px 12px; }
+            .topbar .brand small { display: none; }
+            .workspace { padding: 10px; }
+            button { padding: 7px 11px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <span class="dot"></span>
+            <span>ЄPython</span>
+            <small>· підготовка завдання</small>
+        </div>
+        <button onclick="loadReference()">📂 Еталон</button>
+        <button onclick="analyzeCode()">🔍 Аналізувати</button>
+        <button class="primary" onclick="tryRunReference()">▶ Пробний запуск</button>
+        <span class="divider"></span>
+        <button onclick="saveTask()">💾 Зберегти JSON</button>
+        <button onclick="openTask()">📥 Відкрити</button>
+        <span class="divider"></span>
+        <button onclick="checkResult()">🗃️ Перевірити результат</button>
+        <span class="divider"></span>
+        <button class="ghost" onclick="openHelp()" title="Допомога">❓ Допомога</button>
+        <button class="ghost" onclick="toggleTheme()" id="themeToggle" title="Перемкнути тему">🌙 Темна</button>
+        <span class="status" id="status">Готово. Завантажте еталонний код.</span>
+    </div>
+
+    <div class="workspace">
+        <div class="panel">
+            <details class="accordion" open>
+                <summary>
+                    <span class="icon">📋</span>
+                    Інформація про завдання
+                    <span class="chev">▶</span>
+                </summary>
+                <div class="accordion-body">
+                    <div class="row" style="margin-bottom:12px;">
+                        <div class="field" style="flex:3;">
+                            <label>Назва</label>
+                            <input type="text" id="title" placeholder="Наприклад: Калькулятор на Tkinter">
+                        </div>
+                        <div class="field" style="flex:1;">
+                            <label>Тайм-аут (с)</label>
+                            <input type="number" id="timeout" value="20">
+                        </div>
+                        <div class="field" style="flex:1;">
+                            <label>Пам'ять (МБ)</label>
+                            <input type="number" id="memLimit" value="1024">
+                        </div>
+                        <div class="field" style="flex:1;">
+                            <label>Ліміт виводу (КБ)</label>
+                            <input type="number" id="outLimit" value="1024">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Опис</label>
+                        <textarea id="desc" style="height:64px;" placeholder="Короткий опис завдання для учня…"></textarea>
+                    </div>
+                </div>
+            </details>
+
+            <details class="accordion" open>
+                <summary>
+                    <span class="icon">⚙️</span>
+                    Режим перевірки
+                    <span class="chev">▶</span>
+                </summary>
+                <div class="accordion-body">
+                    <div class="mode-pills">
+                        <input type="radio" name="mode" id="m-auto" value="auto" checked onchange="updateModeHint()">
+                        <label for="m-auto">Авто</label>
+                        <input type="radio" name="mode" id="m-console" value="console" onchange="updateModeHint()">
+                        <label for="m-console">Консоль</label>
+                        <input type="radio" name="mode" id="m-gui" value="gui" onchange="updateModeHint()">
+                        <label for="m-gui">GUI (Tkinter)</label>
+                        <input type="radio" name="mode" id="m-both" value="both" onchange="updateModeHint()">
+                        <label for="m-both">Консоль + Tkinter</label>
+                        <input type="radio" name="mode" id="m-func" value="functions" onchange="updateModeHint()">
+                        <label for="m-func">Функції</label>
+                    </div>
+                    <div class="mode-hint" id="modeHint" style="margin-top:10px;"></div>
+                </div>
+            </details>
+
+            <details class="accordion">
+                <summary>
+                    <span class="icon">🎯</span>
+                    Що саме перевіряти (опції)
+                    <span class="chev">▶</span>
+                </summary>
+                <div class="accordion-body">
+                    <div class="opts-grid">
+                        <div class="opts-group">
+                            <b>GUI</b>
+                            <label class="check"><input type="checkbox" data-opt="ignore_order" checked> порядок дітей</label>
+                            <label class="check"><input type="checkbox" data-opt="dialogs" checked> діалоги</label>
+                            <label class="check"><input type="checkbox" data-opt="style"> стиль</label>
+                            <label class="check"><input type="checkbox" data-opt="layout"> розташування</label>
+                            <label class="check"><input type="checkbox" data-opt="stdout"> print()</label>
+                            <label class="check"><input type="checkbox" data-opt="loose_ttk"> tk≈ttk</label>
+                        </div>
+                        <div class="opts-group">
+                            <b>Текст у GUI</b>
+                            <label class="check"><input type="checkbox" data-opt="gui_ignore_ws" checked> пробіли</label>
+                            <label class="check"><input type="checkbox" data-opt="gui_ignore_case"> регістр</label>
+                            <label class="check"><input type="checkbox" data-opt="gui_ignore_punct"> пунктуація</label>
+                            <label class="check"><input type="checkbox" data-opt="gui_ignore_text"> ігнорувати текст</label>
+                        </div>
+                        <div class="opts-group">
+                            <b>Консоль</b>
+                            <label class="check"><input type="checkbox" data-opt="console_ignore_ws" checked> пробіли</label>
+                            <label class="check"><input type="checkbox" data-opt="console_ignore_case"> регістр</label>
+                            <label class="check"><input type="checkbox" data-opt="console_prompts"> підказки</label>
+                            <span class="inline-num">допуск: <input type="text" data-opt="console_float_tol" value="1e-6"></span>
+                        </div>
+                        <div class="opts-group">
+                            <b>Загальне</b>
+                            <span class="inline-num">seed: <input type="text" data-opt="random_seed" value="12345"></span>
+                            <span class="inline-num">схожість %: <input type="text" data-opt="similarity_threshold" value="90"></span>
+                            <span class="inline-num">тайм-аут виклику (с): <input type="text" data-opt="func_case_timeout" value="3"></span>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <div class="main">
+            <div class="panel left">
+                <div class="panel-header">
+                    <span class="icon">🐍</span>
+                    Еталонний (референсний) код
+                    <span class="spacer"></span>
+                </div>
+                <div class="editor-wrap">
+                    <textarea id="codeEditor"></textarea>
+                </div>
+            </div>
+
+            <div class="panel right">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="actions">Tkinter: дії</button>
+                    <button class="tab-btn" data-tab="console">Консоль: тести</button>
+                    <button class="tab-btn" data-tab="functions">Функції</button>
+                    <button class="tab-btn" data-tab="requirements">Вимоги</button>
+                    <button class="tab-btn" data-tab="files">Додаткові файли</button>
+                </div>
+                <div class="tab-content active" id="tab-actions">
+                    <div class="help">Сценарій дій для Tkinter (по одній команді на рядок, # — коментар):
+click Текст | type Текст | append Текст | select 1 | combo 2 | scale 50 | key Return | menu Файл/Новий | wait 0.5
+Приклад:
+type 12
+click +
+type 5
+click =</div>
+                    <div class="tab-actions">
+                        <button onclick="loadInto('actions')">📂 Завантажити…</button>
+                        <button onclick="clearTab('actions')" class="danger">🗑 Очистити</button>
+                    </div>
+                    <textarea id="actionsText" placeholder="Введіть сценарій дій…"></textarea>
+                </div>
+                <div class="tab-content" id="tab-console">
+                    <div class="help">Тести для консольних програм: === Назва, далі по одному рядку на input(). Порожній рядок вводу: &lt;порожньо&gt;. Рядки з # — коментарі.</div>
+                    <div class="tab-actions">
+                        <button class="primary" onclick="generateTests()">⚡ Згенерувати з еталону</button>
+                        <button onclick="loadInto('console')">📂 Завантажити…</button>
+                        <button onclick="autoConsoleHint()">📝 Шаблон input()</button>
+                        <button onclick="clearTab('console')" class="danger">🗑 Очистити</button>
+                    </div>
+                    <textarea id="consoleText" placeholder="=== Тест 1&#10;вхідні дані…"></textarea>
+                </div>
+                <div class="tab-content" id="tab-functions">
+                    <div class="help">Режим «Функції»: по одному виразу в рядку; результат порівнюється з еталоном. Кілька операторів через «;» — результатом є останній вираз.</div>
+                    <div class="tab-actions">
+                        <button onclick="functionTemplate()">🧩 Заготовка з еталона</button>
+                        <button onclick="loadInto('functions')">📂 Завантажити…</button>
+                        <button onclick="clearTab('functions')" class="danger">🗑 Очистити</button>
+                    </div>
+                    <textarea id="functionsText" placeholder="solve(1, 2)&#10;solve(5, 7)"></textarea>
+                </div>
+                <div class="tab-content" id="tab-requirements">
+                    <div class="help">Вимоги до коду (перевіряються за текстом програми, без запуску): require def solve | require for | forbid call eval | forbid import numpy. Українською: вимагати / заборонити.</div>
+                    <div class="tab-actions">
+                        <button onclick="loadInto('requirements')">📂 Завантажити…</button>
+                        <button onclick="clearTab('requirements')" class="danger">🗑 Очистити</button>
+                    </div>
+                    <textarea id="requirementsText" placeholder="require def solve&#10;forbid import numpy"></textarea>
+                </div>
+                <div class="tab-content" id="tab-files">
+                    <div class="help">Додаткові файли, які програма читає за іменем (наприклад, data.txt). Вони копіюються в робочу папку еталона і учня.</div>
+                    <div class="tab-actions">
+                        <button onclick="addFile()">➕ Додати файл…</button>
+                        <button onclick="removeFile()" class="danger">🗑 Видалити вибраний</button>
+                    </div>
+                    <div class="files-list" id="filesList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom">
+        Підготувавши завдання, збережіть його як JSON. Надайте учню посилання на ЄPython з параметром ?mode=exam&task=&lt;URL&gt;, якщо завдання розміщено на вебресурсі, або ?mode=exam&task=file, якщо завдання знаходиться на пристрої учня.
+    </div>
+    <input type="file" id="fileInput" accept=".py,.json,.txt,*.*" style="display:none" onchange="handleFileLoad(this)">
+    <input type="file" id="resultFileInput" accept="image/*" style="display:none" onchange="handleResultFile(this)">
+    <div id="resultDialog" title="Результат перевірки" style="display:none;"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ---------- Мова інтерфейсу ----------
+        // Визначаємо мову: localStorage ЄPython -> мова браузера -> uk/en
+        (function detectLang() {
+            var lang = "en";
+            try {
+                // Спочатку перевіряємо URL-параметр ?lang= (як у ЄPython)
+                var urlLang = null;
+                try { urlLang = new URLSearchParams(window.location.search).get("lang"); } catch (e) {}
+                if (urlLang) {
+                    var c = urlLang.toLowerCase().split(/[-_]/)[0];
+                    lang = (c === "uk") ? "uk" : "en";
+                } else {
+                    var saved = localStorage.getItem("epython_lang") || localStorage.getItem("teacher_lang");
+                    if (saved) {
+                        var cs = saved.toLowerCase().split(/[-_]/)[0];
+                        lang = (cs === "uk") ? "uk" : "en";
+                    } else {
+                        var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+                        if (nav.indexOf("uk") === 0) lang = "uk";
+                        else lang = "en";
+                    }
+                }
+            } catch (e) {}
+            window.__teacherLang = (lang === "uk") ? "uk" : "en";
+        })();
+
+        var T = {
+            uk: {},
+            en: {
+                "Завантажити еталон…": "Load reference…",
+                "Аналізувати код": "Analyze code",
+                "Пробний запуск": "Trial run",
+                "Зберегти завдання (JSON)…": "Save task (JSON)…",
+                "Відкрити": "Open",
+                "❓ Допомога": "❓ Help",
+                "🌙 Темна": "🌙 Dark",
+                "☀ Світла": "☀ Light",
+                "Готово. Завантажте еталонний код.": "Ready. Load reference code.",
+                "Інформація про завдання": "Task information",
+                "Назва": "Title",
+                "Тайм-аут (с)": "Timeout (s)",
+                "Пам'ять (МБ)": "Memory (MB)",
+                "Ліміт виводу (КБ)": "Output limit (KB)",
+                "Опис": "Description",
+                "Режим перевірки": "Check mode",
+                "Авто": "Auto",
+                "Консоль": "Console",
+                "GUI (Tkinter)": "GUI (Tkinter)",
+                "Консоль + Tkinter": "Console + Tkinter",
+                "Функції": "Functions",
+                "Що саме перевіряти (опції)": "What to check (options)",
+                "Еталонний (референсний) код": "Reference code",
+                "Tkinter: дії": "Tkinter: actions",
+                "Консоль: тести": "Console: tests",
+                "Функції: виклики": "Functions: calls",
+                "Вимоги до коду": "Code requirements",
+                "Додаткові файли": "Additional files",
+                "Посилання для учня": "Student link",
+                "Завантажити…": "Load…",
+                "Очистити": "Clear",
+                "Згенерувати тести з еталону": "Generate tests from reference",
+                "Шаблон input()": "input() template",
+                "Заготовка з еталона": "Template from reference",
+                "Додати файл…": "Add file…",
+                "Видалити вибраний": "Remove selected",
+                "Зберегти": "Save",
+                "Перевірити результат": "Check result",
+                "Завантажити еталон…": "Load reference…",
+                "Аналізувати код": "Analyze code",
+                "Пробний запуск": "Trial run",
+                "Зберегти завдання (JSON)…": "Save task (JSON)…",
+                "Відкрити": "Open",
+                "Допомога": "Help",
+                "Темна": "Dark",
+                "Світла": "Light",
+                "Готово. Завантажте еталонний код.": "Ready. Load reference code.",
+                "Підготувавши завдання, збережіть його як JSON. Надайте учню посилання на ЄPython з параметром ?mode=exam&task=<URL>, якщо завдання розміщено на вебресурсі, або ?mode=exam&task=file, якщо завдання знаходиться на пристрої учня.": "After preparing the task, save it as JSON. Give the student a link to ЄPython with ?mode=exam&task=<URL> if the task is hosted online, or ?mode=exam&task=file if the task is on the student's device.",
+                "Підказка: завантажте еталон → «Аналізувати код» → налаштуйте тести/сценарій → «Зберегти завдання (JSON)».": "Hint: load reference → «Analyze code» → configure tests/scenario → «Save task (JSON)».",
+                "📂 Еталон": "📂 Reference",
+                "🔍 Аналізувати": "🔍 Analyze",
+                "▶ Пробний запуск": "▶ Trial run",
+                "💾 Зберегти JSON": "💾 Save JSON",
+                "📥 Відкрити": "📥 Open",
+                "🗃️ Перевірити результат": "🗃️ Check result",
+                "❓ Допомога": "❓ Help",
+                "🌙 Темна": "🌙 Dark",
+                "☀ Світла": "☀ Light",
+                "· підготовка завдання": "· task preparation",
+                "порядок дітей": "child order",
+                "діалоги": "dialogs",
+                "стиль": "style",
+                "розташування": "layout",
+                "пробіли": "whitespace",
+                "регістр": "case",
+                "пунктуація": "punctuation",
+                "ігнорувати текст": "ignore text",
+                "підказки": "prompts",
+                "допуск:": "tolerance:",
+                "Загальне": "General",
+                "схожість %:": "similarity %:",
+                "тайм-аут виклику (с):": "call timeout (s):",
+                "seed:": "seed:",
+                "Текст у GUI": "GUI text",
+                "Tkinter: дії": "Tkinter: actions",
+                "Консоль: тести": "Console: tests",
+                "Функції: виклики": "Functions: calls",
+                "Вимоги": "Requirements",
+                "Додаткові файли": "Additional files",
+                "Еталонний (референсний) код": "Reference code",
+                "Сценарій дій для Tkinter (по одній команді на рядок, # — коментар):\nclick Текст | type Текст | append Текст | select 1 | combo 2 | scale 50 | key Return | menu Файл/Новий | wait 0.5\nПриклад:\ntype 12\nclick +\ntype 5\nclick =": "Tkinter action scenario (one command per line, # — comment):\nclick Text | type Text | append Text | select 1 | combo 2 | scale 50 | key Return | menu File/New | wait 0.5\nExample:\ntype 12\nclick +\ntype 5\nclick =",
+                "Тести для консольних програм: === Назва, далі по одному рядку на input(). Порожній рядок вводу: <порожньо>. Рядки з # — коментарі.": "Console program tests: === Name, then one line per input(). Empty input line: <empty>. Lines with # — comments.",
+                "Режим «Функції»: по одному виразу в рядку; результат порівнюється з еталоном. Кілька операторів через «;» — результатом є останній вираз.": "Functions mode: one expression per line; result compared with reference. Multiple statements via ';' — result is the last expression.",
+                "Вимоги до коду (перевіряються за текстом програми, без запуску): require def solve | require for | forbid call eval | forbid import numpy. Українською: вимагати / заборонити.": "Code requirements (checked by program text, without running): require def solve | require for | forbid call eval | forbid import numpy.",
+                "Додаткові файли, які програма читає за іменем (наприклад, data.txt). Вони копіюються в робочу папку еталона і учня.": "Additional files read by name (e.g. data.txt). Copied to both reference and student working folders.",
+                "Підготувавши завдання, збережіть його як JSON. Надайте учню посилання на ЄPython з параметром ?mode=exam&task=<URL>, якщо завдання розміщено на вебресурсі, або ?mode=exam&task=file, якщо завдання знаходиться на пристрої учня.": "After preparing the task, save it as JSON. Give the student a link to ЄPython with ?mode=exam&task=<URL> if hosted online, or ?mode=exam&task=file if on the student's device.",
+                "📂 Завантажити…": "📂 Load…",
+                "🗑 Очистити": "🗑 Clear",
+                "⚡ Згенерувати з еталону": "⚡ Generate from reference",
+                "📝 Шаблон input()": "📝 input() template",
+                "🧩 Заготовка з еталона": "🧩 Template from reference",
+                "➕ Додати файл…": "➕ Add file…",
+                "🗑 Видалити вибраний": "🗑 Remove selected",
+                "Готово. Завантажте еталонний код.": "Ready. Load reference code.",
+                "Авто: визначено — за еталоном.": "Auto: detected from reference.",
+                "Наприклад: Калькулятор на Tkinter": "Example: Tkinter Calculator",
+                "Короткий опис завдання для учня…": "Short task description for student…",
+                "Введіть сценарій дій…": "Enter action scenario…",
+                "=== Тест 1\nвхідні дані…": "=== Test 1\ninput data…",
+                "solve(1, 2)\nsolve(5, 7)": "solve(1, 2)\nsolve(5, 7)",
+                "require def solve\nforbid import numpy": "require def solve\nforbid import numpy",
+            }
+        };
+
+        // ---------- Переклад динамічних рядків ----------
+        Object.assign(T.en, {
+            "Перемкнути тему": "Toggle theme",
+            "Результат перевірки": "Check result",
+            "Немає додаткових файлів": "No additional files",
+            "ЄPython — Підготовка завдання (вчитель)": "ЄPython — Task preparation (teacher)",
+            "☀ Світла": "☀ Light",
+            "🌙 Темна": "🌙 Dark",
+            "Авто: визначено ": "Auto: detected ",
+            " за еталоном.": " from reference.",
+            "Тільки консоль (input / print).": "Console only (input / print).",
+            "Тільки Tkinter (GUI).": "Tkinter (GUI) only.",
+            "Консоль + Tkinter.": "Console + Tkinter.",
+            "Функції (виклики).": "Functions (calls).",
+            "Додано файл: ": "File added: ",
+            "Еталон завантажено: ": "Reference loaded: ",
+            "Завдання завантажено: ": "Task loaded: ",
+            "Завдання збережено: ": "Task saved: ",
+            "Помилка читання: ": "Read error: ",
+            "Спочатку завантажте еталонний код.": "Load the reference code first.",
+            "Аналіз еталонного коду:": "Reference code analysis:",
+            "• Використовує Tkinter: ": "• Uses Tkinter: ",
+            "• Виклики input(): ": "• input() calls: ",
+            "• Виклики print(): ": "• print() calls: ",
+            "так": "yes",
+            "ні": "no",
+            "• Приблизно полів введення: ": "• Approx. input fields: ",
+            "• Знайдені тексти віджетів: ": "• Widget texts found: ",
+            "Рекомендація: режим GUI. Додайте сценарій дій (вкладка «Tkinter»).": "Recommendation: GUI mode. Add an action scenario (the «Tkinter» tab).",
+            "Рекомендація: режим Консоль. Заповніть тести (вкладка «Консоль»).": "Recommendation: Console mode. Fill in the tests (the «Console» tab).",
+            "Увага: код змішаний (GUI + консоль). Можна обрати «Консоль + Tkinter».": "Note: mixed code (GUI + console). You can choose «Console + Tkinter».",
+            "• Функції верхнього рівня: ": "• Top-level functions: ",
+            "Схоже на модуль із функціями — можна обрати режим «Функції (виклики)».": "Looks like a module of functions — you can choose the «Functions» mode.",
+            "Увага: ≈ ": "Note: ≈ ",
+            " виклик(ів) input().": " input() call(s).",
+            "На вкладці «Консоль» має бути стільки ж рядків даних у кожному тесті.": "On the «Console» tab each test must have as many data lines.",
+            "Підготовка пробного запуску…": "Preparing trial run…",
+            "Помилка збереження у localStorage: ": "localStorage save error: ",
+            "Пробний запуск відкрито у новій вкладці.": "Trial run opened in a new tab.",
+            "Генерація тестів…": "Generating tests…",
+            "У еталоні немає input() — тести не потрібні.": "The reference has no input() — no tests needed.",
+            "Авто-основний": "Auto-main",
+            "Авто-нуль/0": "Auto-zero/0",
+            "Тести згенеровано.": "Tests generated.",
+            "Помилка генерації: ": "Generation error: ",
+            "Забагато запитів input()": "Too many input() requests",
+            "# Згенеровано автоматично з еталону. За потреби відредагуйте вхідні рядки.": "# Generated automatically from the reference. Edit the input lines if needed.",
+            "# Рядки після # — очікуваний вивід (для вас; чекер їх ігнорує).": "# Lines after # are the expected output (for you; the checker ignores them).",
+            "# ПОМИЛКА генерації: ": "# GENERATION ERROR: ",
+            "# --- очікуваний вивід ---": "# --- expected output ---",
+            "<порожньо>": "<empty>",
+            "# Заготовка: замініть аргументи на реальні значення, по одному виклику в рядку.": "# Template: replace arguments with real values, one call per line.",
+            "# Шаблон: у еталоні знайдено викликів input(): ": "# Template: input() calls found in the reference: ",
+            "# Замініть кожен рядок-заповнювач на вхідні дані. Якщо input() стоїть у циклі, рядків має бути більше.": "# Replace each placeholder line with input data. If input() is inside a loop, more lines are needed.",
+            "Тест": "Test",
+            "рядок": "line",
+            "Шаблон input() додано: ": "input() template added, calls: ",
+            " симв.)": " chars)",
+            "QR-код не знайдено на зображенні.": "QR code not found in the image.",
+            "Помилка розшифрування: ": "Decryption error: ",
+            "Час виконання": "Run time",
+            "Натиснуто символів": "Characters typed",
+            "Символів у коді": "Characters in code",
+            "Вставок з буфера": "Clipboard pastes",
+            "Перевірок (Check)": "Checks (Test)",
+            "Останній результат": "Last result",
+            "Час закінчення": "Finish time",
+            "IP комп'ютера": "Computer IP",
+            "Рівень": "Score",
+            " с": " s"
+        });
+        function L(uk) {
+            if ((window.__teacherLang || "en") === "uk") return uk;
+            return Object.prototype.hasOwnProperty.call(T.en, uk) ? T.en[uk] : uk;
+        }
+        function openHelp() {
+            window.open((window.__teacherLang === "uk") ? "teacher_app_doc.html" : "teacher_app_doc_en.html", "_blank");
+        }
+
+        function applyTeacherLang() {
+            var lang = window.__teacherLang || "en";
+            document.documentElement.lang = lang;
+            var fl = document.getElementById("filesList");
+            if (fl) fl.setAttribute("data-empty", L("Немає додаткових файлів"));
+            if (lang === "uk") return; // default is Ukrainian
+            document.title = L(document.title);
+            var dict = T[lang] || T.en;
+            // walk all text nodes
+            var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            var node;
+            while ((node = walker.nextNode())) {
+                // skip script/style content
+                var parent = node.parentElement;
+                if (parent && (parent.tagName === "SCRIPT" || parent.tagName === "STYLE")) continue;
+                var v = node.nodeValue;
+                if (!v) continue;
+                var trimmed = v.trim();
+                if (!trimmed) continue;
+                if (dict[trimmed]) {
+                    node.nodeValue = v.replace(trimmed, dict[trimmed]);
+                }
+            }
+            // placeholders/titles
+            document.querySelectorAll("[title]").forEach(function (el) {
+                var t = el.getAttribute("title");
+                if (dict[t]) el.setAttribute("title", dict[t]);
+            });
+            document.querySelectorAll("[placeholder]").forEach(function (el) {
+                var t = el.getAttribute("placeholder");
+                if (dict[t]) el.setAttribute("placeholder", dict[t]);
+            });
+        }
+
+        var editorCM = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+            mode: "python", lineNumbers: true, indentUnit: 4, tabSize: 4, indentWithTabs: false,
+            theme: "default"
+        });
+
+        var files = {};
+
+        var TASK_KEY = "YepythonRefCode2026";
+        function encodeRefCode(code) {
+            if (!code) return code;
+            var xored = "";
+            for (var i = 0; i < code.length; i++) {
+                xored += String.fromCharCode(code.charCodeAt(i) ^ TASK_KEY.charCodeAt(i % TASK_KEY.length));
+            }
+            return "ENC:" + btoa(unescape(encodeURIComponent(xored)));
+        }
+        function decodeRefCode(code) {
+            if (!code || String(code).indexOf("ENC:") !== 0) return code;
+            try {
+                var b64 = String(code).slice(4);
+                var xored = decodeURIComponent(escape(atob(b64)));
+                var dec = "";
+                for (var i = 0; i < xored.length; i++) {
+                    dec += String.fromCharCode(xored.charCodeAt(i) ^ TASK_KEY.charCodeAt(i % TASK_KEY.length));
+                }
+                return dec;
+            } catch (e) { return code; }
+        }
+
+        function getMode() { return document.querySelector('input[name="mode"]:checked').value; }
+
+        function showToast(msg) {
+            var t = document.getElementById("toast");
+            t.textContent = msg;
+            t.classList.add("show");
+            clearTimeout(t._timer);
+            t._timer = setTimeout(function () { t.classList.remove("show"); }, 3200);
+        }
+
+        function setStatus(msg) {
+            document.getElementById("status").textContent = msg;
+            showToast(msg);
+        }
+
+        function toggleTheme() {
+            var body = document.body;
+            var isLight = body.classList.toggle("light");
+            var btn = document.getElementById("themeToggle");
+            if (btn) btn.textContent = isLight ? L("☀ Світла") : L("🌙 Темна");
+            try { localStorage.setItem("teacher_theme", isLight ? "light" : "dark"); } catch (e) {}
+        }
+        function applySavedTheme() {
+            var saved = null;
+            try { saved = localStorage.getItem("teacher_theme"); } catch (e) {}
+            if (saved === "light") {
+                document.body.classList.add("light");
+                var btn = document.getElementById("themeToggle");
+                if (btn) btn.textContent = L("☀ Світла");
+            }
+        }
+
+        function updateModeHint() {
+            var m = getMode();
+            var code = editorCM.getValue();
+            var detected = code.trim() ? Checker.detectMode(code) : "—";
+            var hints = {
+                auto: L("Авто: визначено ") + detected.toUpperCase() + L(" за еталоном."),
+                console: L("Тільки консоль (input / print)."),
+                gui: L("Тільки Tkinter (GUI)."),
+                both: L("Консоль + Tkinter."),
+                functions: L("Функції (виклики).")
+            };
+            document.getElementById("modeHint").textContent = hints[m] || "";
+        }
+
+        function getOpts() {
+            var opts = {};
+            document.querySelectorAll("[data-opt]").forEach(function (el) {
+                var key = el.getAttribute("data-opt");
+                if (el.type === "checkbox") opts[key] = el.checked;
+                else opts[key] = el.value;
+            });
+            if (opts.console_float_tol) opts.console_float_tol = parseFloat(opts.console_float_tol);
+            if (opts.random_seed === "" || opts.random_seed == null) opts.random_seed = null;
+            else opts.random_seed = parseInt(opts.random_seed, 10);
+            if (opts.similarity_threshold) opts.similarity_threshold = parseInt(opts.similarity_threshold, 10) / 100;
+            if (opts.func_case_timeout) opts.func_case_timeout = parseFloat(opts.func_case_timeout);
+            opts.limit_memory_mb = parseInt(document.getElementById("memLimit").value || "1024", 10);
+            opts.limit_output_kb = parseInt(document.getElementById("outLimit").value || "1024", 10);
+            return opts;
+        }
+
+        function loadReference() {
+            document.getElementById("fileInput").dataset.target = "reference";
+            document.getElementById("fileInput").click();
+        }
+
+        function handleFileLoad(input) {
+            var file = input.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            var target = input.dataset.target;
+            if (target === "file") {
+                reader.onload = function (e) { files[file.name] = e.target.result; refreshFiles(); setStatus(L("Додано файл: ") + file.name); };
+                reader.readAsText(file);
+                input.value = "";
+                return;
+            }
+            reader.onload = function (e) {
+                var text = e.target.result;
+                if (target === "reference") {
+                    editorCM.setValue(text);
+                    setStatus(L("Еталон завантажено: ") + file.name);
+                    if (!document.getElementById("title").value.trim()) document.getElementById("title").value = file.name.replace(/\.[^.]+$/, "");
+                    analyzeCode();
+                } else if (target === "open") {
+                    try {
+                        var task = JSON.parse(text);
+                        document.getElementById("title").value = task.title || "";
+                        document.getElementById("desc").value = task.description || "";
+                        document.getElementById("timeout").value = task.timeout || 20;
+                        if (task.options && task.options.limit_memory_mb) document.getElementById("memLimit").value = task.options.limit_memory_mb;
+                        if (task.options && task.options.limit_output_kb) document.getElementById("outLimit").value = task.options.limit_output_kb;
+                        editorCM.setValue(decodeRefCode(task.reference_code || ""));
+                        document.getElementById("actionsText").value = task.actions_text || "";
+                        document.getElementById("consoleText").value = task.console_cases_text || "";
+                        document.getElementById("functionsText").value = task.function_cases_text || "";
+                        document.getElementById("requirementsText").value = task.requirements_text || "";
+                        var m = task.mode || "auto";
+                        var radio = document.querySelector('input[name="mode"][value="' + m + '"]');
+                        if (radio) radio.checked = true;
+                        updateModeHint();
+                        if (task.options) {
+                            Object.keys(task.options).forEach(function (k) {
+                                var el = document.querySelector('[data-opt="' + k + '"]');
+                                if (el) {
+                                    if (el.type === "checkbox") el.checked = !!task.options[k];
+                                    else el.value = task.options[k];
+                                }
+                            });
+                        }
+                        files = task.files || {};
+                        refreshFiles();
+                        setStatus(L("Завдання завантажено: ") + file.name);
+                    } catch (err) {
+                        setStatus(L("Помилка читання: ") + err.message);
+                    }
+                } else if (target === "tab") {
+                    var tab = input.dataset.tab;
+                    var el = document.getElementById(tab === "actions" ? "actionsText" : tab === "console" ? "consoleText" : tab === "functions" ? "functionsText" : tab === "requirements" ? "requirementsText" : null);
+                    if (el) el.value = text;
+                }
+            };
+            reader.readAsText(file);
+            input.value = "";
+        }
+
+        function loadInto(tab) {
+            document.getElementById("fileInput").dataset.target = "tab";
+            document.getElementById("fileInput").dataset.tab = tab;
+            document.getElementById("fileInput").click();
+        }
+
+        function clearTab(tab) {
+            var el = document.getElementById(tab === "actions" ? "actionsText" : tab === "console" ? "consoleText" : tab === "functions" ? "functionsText" : tab === "requirements" ? "requirementsText" : null);
+            if (el) el.value = "";
+        }
+
+        function analyzeCode() {
+            var code = editorCM.getValue();
+            if (!code.trim()) { setStatus(L("Спочатку завантажте еталонний код.")); return; }
+            var has_tk = /\b[Tt]kinter\b/.test(code);
+            var has_input = /\binput\s*\(/.test(code);
+            var has_print = /\bprint\s*\(/.test(code);
+            var buttons = (code.match(/(?:text\s*=\s*["'])([^"']+)\s*["']/g) || []).map(function (s) { return s.match(/["']([^"']+)["']/)[1]; });
+            var entries = (code.match(/\b(?:Entry|Text|Spinbox|Combobox)\b/g) || []).length;
+            var defs = (code.match(/^def\s+(\w+)/gm) || []).map(function (s) { return s.replace(/^def\s+/, ""); });
+            var n_input = (code.match(/\binput\s*\(/g) || []).length;
+
+            var msg = [L("Аналіз еталонного коду:"), ""];
+            msg.push(L("• Використовує Tkinter: ") + (has_tk ? L("так") : L("ні")));
+            msg.push(L("• Виклики input(): ") + (has_input ? L("так") : L("ні")));
+            msg.push(L("• Виклики print(): ") + (has_print ? L("так") : L("ні")));
+            if (has_tk) {
+                msg.push(L("• Приблизно полів введення: ") + entries);
+                if (buttons.length) {
+                    var unique = [];
+                    buttons.forEach(function (b) { if (unique.indexOf(b) < 0) unique.push(b); });
+                    msg.push(L("• Знайдені тексти віджетів: ") + unique.slice(0, 12).join(", "));
+                }
+                msg.push("");
+                msg.push(L("Рекомендація: режим GUI. Додайте сценарій дій (вкладка «Tkinter»)."));
+            } else {
+                msg.push("");
+                msg.push(L("Рекомендація: режим Консоль. Заповніть тести (вкладка «Консоль»)."));
+            }
+            if (has_tk && (has_input || has_print)) msg.push(L("Увага: код змішаний (GUI + консоль). Можна обрати «Консоль + Tkinter»."));
+            if (defs.length) {
+                msg.push("");
+                msg.push(L("• Функції верхнього рівня: ") + defs.slice(0, 10).join(", "));
+                if (!has_tk && !has_input) msg.push(L("Схоже на модуль із функціями — можна обрати режим «Функції (виклики)»."));
+            }
+            if (has_input && n_input) {
+                msg.push("");
+                msg.push(L("Увага: ≈ ") + n_input + L(" виклик(ів) input()."));
+                msg.push(L("На вкладці «Консоль» має бути стільки ж рядків даних у кожному тесті."));
+            }
+            alert(msg.join("\n"));
+            if (has_tk && !(has_input || has_print)) document.querySelector('input[name="mode"][value="gui"]').checked = true;
+            else if (!has_tk) document.querySelector('input[name="mode"][value="console"]').checked = true;
+            updateModeHint();
+        }
+
+        function tryRunReference() {
+            var code = editorCM.getValue();
+            if (!code.trim()) { setStatus(L("Спочатку завантажте еталонний код.")); return; }
+            setStatus(L("Підготовка пробного запуску…"));
+            var task = buildTask();
+            try {
+                localStorage.setItem("yepython_test_task", JSON.stringify(task));
+            } catch (e) {
+                setStatus(L("Помилка збереження у localStorage: ") + (e && e.message));
+                return;
+            }
+            var url = "index.html?mode=exam&task=test";
+            window.open(url, "_blank");
+            setStatus(L("Пробний запуск відкрито у новій вкладці."));
+        }
+
+        function generateTests() {
+            setStatus(L("Генерація тестів…"));
+            var code = editorCM.getValue();
+            if (!code.trim()) { setStatus(L("Спочатку завантажте еталонний код.")); return; }
+            if (code.indexOf("input(") < 0 && code.indexOf("input (") < 0) {
+                setStatus(L("У еталоні немає input() — тести не потрібні."));
+                return;
+            }
+            var runtime = { random_seed: getOpts().random_seed };
+            (async function () {
+                try {
+                    var tests = [];
+                    var main = await generateConsoleSession(code, null, 8, runtime);
+                    tests.push({ name: L("Авто-основний"), stdin_lines: main.stdin_lines, stdout: main.stdout, ok: main.ok, error: main.error });
+                    var zero = await generateConsoleSession(code, ["0"], 8, runtime);
+                    if (JSON.stringify(zero.stdin_lines) !== JSON.stringify(main.stdin_lines)) {
+                        tests.push({ name: L("Авто-нуль/0"), stdin_lines: zero.stdin_lines, stdout: zero.stdout, ok: zero.ok, error: zero.error });
+                    }
+                    var text = formatGeneratedCases(tests);
+                    document.getElementById("consoleText").value = text;
+                    setStatus(L("Тести згенеровано."));
+                } catch (e) {
+                    setStatus(L("Помилка генерації: ") + (e && e.message));
+                    console.error(e);
+                }
+            })();
+        }
+
+        async function generateConsoleSession(source, seedLines, timeout, runtime) {
+            var lines = (seedLines || []).slice();
+            var last = {};
+            for (var i = 0; i < 21; i++) {
+                var stdin = lines.length ? (lines.join("\n") + "\n") : "";
+                last = await Checker.runConsoleProgram(source, "ref.py", stdin, timeout || 8, false, false, {}, runtime);
+                if (last.error) return { stdin_lines: lines, stdout: "", prompts: [], ok: false, error: last.error };
+                var exc = last.exception || {};
+                if (exc.type !== "EOFError") {
+                    return { stdin_lines: lines, stdout: last.stdout || "", prompts: last.prompts || [], ok: true, error: null, exit_code: last.exit_code, exception: exc || null };
+                }
+                var prompts = last.prompts || [];
+                var prompt = (prompts.length > lines.length) ? prompts[lines.length] : (prompts.length ? prompts[prompts.length - 1] : "");
+                lines.push(heuristicInput(prompt, lines.length, lines));
+            }
+            return { stdin_lines: lines, stdout: last.stdout || "", prompts: last.prompts || [], ok: false, error: L("Забагато запитів input()") };
+        }
+
+        function heuristicInput(prompt, index, prevLines) {
+            var p = (prompt || "").toLowerCase();
+            var en = !/[а-яіїєґ]/.test(p) && (window.__teacherLang !== "uk");
+            if (/скільки|кількість|число елементів|розмір|count|how many|number of|size/.test(p)) return "3";
+            if (/вік|рік|номер|індекс|age|year|index/.test(p)) return String(Math.max(1, index));
+            if (/ціна|сума|вартість|оцінка|бал|price|cost|sum|amount|score|grade/.test(p)) return String(10 + index * 5);
+            if (/ім'я|прізвище|назва|слово|текст|рядок|name|word|text|string/.test(p)) return (en ? "text" : "текст") + (index + 1);
+            if (/так|ні|yes|no|y\/n/.test(p)) return en ? "yes" : "так";
+            if (prevLines && prevLines.length) {
+                try {
+                    var n = parseInt(prevLines[0], 10);
+                    if (n > 0 && n <= 20 && prevLines.length <= n) return String(prevLines.length);
+                } catch (e) {}
+            }
+            if (index === 0) return "3";
+            return String(index);
+        }
+
+        function formatGeneratedCases(tests) {
+            var blocks = [L("# Згенеровано автоматично з еталону. За потреби відредагуйте вхідні рядки."), L("# Рядки після # — очікуваний вивід (для вас; чекер їх ігнорує)."), ""];
+            tests.forEach(function (t) {
+                blocks.push("=== " + t.name);
+                if (t.error && !t.ok) blocks.push(L("# ПОМИЛКА генерації: ") + t.error);
+                (t.stdin_lines || []).forEach(function (line) { blocks.push(encodeConsoleLine(line)); });
+                var out = (t.stdout || "").trim();
+                if (out) {
+                    blocks.push(L("# --- очікуваний вивід ---"));
+                    out.split("\n").forEach(function (ol) { blocks.push("# " + ol); });
+                }
+                blocks.push("");
+            });
+            return blocks.join("\n").replace(/\n+$/, "") + "\n";
+        }
+
+        function encodeConsoleLine(line) {
+            if (line.trim() === "") return L("<порожньо>");
+            if ("#<=\\\"".indexOf(line.charAt(0)) >= 0) return "\\" + line;
+            return line;
+        }
+
+        function autoConsoleHint() {
+            var code = editorCM.getValue();
+            if (!code.trim()) { setStatus(L("Спочатку завантажте еталонний код.")); return; }
+            var re = /\binput\s*\(\s*(?:[fFrRuU]{0,2}(?:"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'))?/g;
+            var m, calls = [];
+            while ((m = re.exec(code)) !== null) {
+                calls.push({
+                    line: code.slice(0, m.index).split("\n").length,
+                    prompt: (m[1] !== undefined ? m[1] : (m[2] !== undefined ? m[2] : ""))
+                });
+            }
+            if (!calls.length) { setStatus(L("У еталоні немає input() — тести не потрібні.")); return; }
+            var empty = L("<порожньо>");
+            var out = [
+                L("# Шаблон: у еталоні знайдено викликів input(): ") + calls.length + ".",
+                L("# Замініть кожен рядок-заповнювач на вхідні дані. Якщо input() стоїть у циклі, рядків має бути більше."),
+                "=== " + L("Тест") + " 1"
+            ];
+            calls.forEach(function (c, i) {
+                out.push("# input() #" + (i + 1) + " (" + L("рядок") + " " + c.line + ")" + (c.prompt ? ": " + c.prompt : ""));
+                out.push(empty);
+            });
+            var box = document.getElementById("consoleText");
+            var cur = box.value.replace(/\s+$/, "");
+            box.value = (cur ? cur + "\n\n" : "") + out.join("\n") + "\n";
+            setStatus(L("Шаблон input() додано: ") + calls.length);
+        }
+
+        function functionTemplate() {
+            var code = editorCM.getValue();
+            var lines = [L("# Заготовка: замініть аргументи на реальні значення, по одному виклику в рядку.")];
+            var re = /^def ([A-Za-z_]\w*)\s*\(([^)]*)\)/gm;
+            var m;
+            while ((m = re.exec(code)) !== null) {
+                var args = m[2].split(",").map(function (a) { return a.trim().split("=")[0].trim(); }).filter(function (a) { return a && a !== "self"; });
+                lines.push("# " + m[1] + "(" + args.join(", ") + ")");
+            }
+            document.getElementById("functionsText").value = lines.join("\n") + "\n";
+        }
+
+        function addFile() {
+            document.getElementById("fileInput").dataset.target = "file";
+            document.getElementById("fileInput").click();
+        }
+
+        function removeFile() {
+            var names = Object.keys(files);
+            if (names.length) {
+                delete files[names[names.length - 1]];
+                refreshFiles();
+            }
+        }
+
+        function refreshFiles() {
+            var list = document.getElementById("filesList");
+            list.innerHTML = "";
+            Object.keys(files).forEach(function (name) {
+                var div = document.createElement("div");
+                div.textContent = "📄 " + name + "  (" + files[name].length + L(" симв.)");
+                list.appendChild(div);
+            });
+        }
+
+        function openTask() {
+            document.getElementById("fileInput").dataset.target = "open";
+            document.getElementById("fileInput").click();
+        }
+
+        function checkResult() {
+            document.getElementById("resultFileInput").click();
+        }
+
+        function handleResultFile(input) {
+            var file = input.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    var code = null;
+                    if (typeof jsQR !== "undefined") {
+                        code = jsQR(imageData.data, imageData.width, imageData.height);
+                    }
+                    if (!code || !code.data) {
+                        showResultDialog(L("QR-код не знайдено на зображенні."));
+                        return;
+                    }
+                    // Decrypt: base64 decode + XOR
+                    var raw = code.data;
+                    var text = raw;
+                    if (raw.indexOf("ENC:") === 0) {
+                        try {
+                            var b64 = raw.slice(4);
+                            var xored = decodeURIComponent(escape(atob(b64)));
+                            var key = "YepythonExam2026";
+                            var dec = "";
+                            for (var i = 0; i < xored.length; i++) {
+                                dec += String.fromCharCode(xored.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                            }
+                            text = dec;
+                        } catch (err) {
+                            text = L("Помилка розшифрування: ") + err.message;
+                        }
+                    }
+                    showResultDialog(text);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            input.value = "";
+        }
+
+        function showResultDialog(text) {
+            var $d = $("#resultDialog");
+            // Парсимо компактний формат T=...;K=...;P=...;C=...;R=...;score;FINISH=...;IP=...
+            var rows = [];
+            var parts = String(text).split(";");
+            var labels = {
+                "T": L("Час виконання"),
+                "K": L("Натиснуто символів"),
+                "L": L("Символів у коді"),
+                "P": L("Вставок з буфера"),
+                "C": L("Перевірок (Check)"),
+                "R": L("Останній результат"),
+                "FINISH": L("Час закінчення"),
+                "IP": L("IP комп'ютера")
+            };
+            var score = "";
+            parts.forEach(function (p) {
+                p = p.trim();
+                if (!p) return;
+                var eq = p.indexOf("=");
+                if (eq >= 0) {
+                    var key = p.slice(0, eq).trim();
+                    var val = p.slice(eq + 1).trim();
+                    if (labels[key]) {
+                        // special: P has nested (chars)
+                        if (key === "P") {
+                            var m = val.match(/^(.*)\((.*)\)$/);
+                            if (m) val = m[1] + " (" + m[2] + L(" симв.)");
+                        }
+                        rows.push([labels[key], val]);
+                    } else if (key === "T") {
+                        rows.push([labels[key], val + L(" с")]);
+                    }
+                } else {
+                    // score like "6 / 6 (100%)" or "1 / 6 (17%)"
+                    if (/[0-9]/.test(p) && p.indexOf("/") >= 0) score = p;
+                }
+            });
+            var html = "<table style='width:100%;border-collapse:collapse;font-size:13px;'>";
+            rows.forEach(function (r) {
+                html += "<tr><td style='padding:6px 8px;font-weight:600;border-bottom:1px solid #eee;width:45%;'>" + escapeHtml(r[0]) + "</td><td style='padding:6px 8px;border-bottom:1px solid #eee;'>" + escapeHtml(r[1]) + "</td></tr>";
+            });
+            if (score) {
+                html += "<tr><td style='padding:6px 8px;font-weight:600;'>" + escapeHtml(L("Рівень")) + "</td><td style='padding:6px 8px;'>" + escapeHtml(score) + "</td></tr>";
+            }
+            html += "</table>";
+            if (!rows.length) {
+                html = "<pre style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;'>" + escapeHtml(text) + "</pre>";
+            }
+            $d.html(html);
+            if ($d.dialog("instance")) $d.dialog("open");
+            else $d.dialog({ modal: true, width: 460, maxHeight: 500, title: L("Результат перевірки") });
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function buildTask() {
+            var opts = getOpts();
+            var mode = getMode();
+            var code = editorCM.getValue();
+            var detectedMode = Checker.detectMode(code);
+            if (mode === "auto") mode = detectedMode;
+            var task = {
+                title: document.getElementById("title").value,
+                description: document.getElementById("desc").value,
+                mode: mode,
+                reference_code: encodeRefCode(code),
+                actions_text: document.getElementById("actionsText").value,
+                console_cases_text: document.getElementById("consoleText").value,
+                function_cases_text: document.getElementById("functionsText").value,
+                requirements_text: document.getElementById("requirementsText").value,
+                files: files,
+                options: opts,
+                timeout: parseFloat(document.getElementById("timeout").value || "20"),
+                created: new Date().toISOString(),
+                version: 1
+            };
+            return task;
+        }
+
+        function saveTask() {
+            var task = buildTask();
+            var json = JSON.stringify(task, null, 2);
+            var blob = new Blob([json], { type: "application/json" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = (task.title || "task").replace(/[^a-z0-9_\-]/gi, "_") + ".task.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            setStatus(L("Завдання збережено: ") + a.download);
+            updateStudentLink();
+        }
+
+        function updateStudentLink() { /* підказка тепер у тексті внизу */ }
+
+        document.querySelectorAll(".tab-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
+                document.querySelectorAll(".tab-content").forEach(function (c) { c.classList.remove("active"); });
+                btn.classList.add("active");
+                document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+            });
+        });
+
+        updateModeHint();
+        updateStudentLink();
+        applySavedTheme();
+        applyTeacherLang();
+        setTimeout(function () { editorCM.refresh(); }, 100);
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "title": "Генератор випадкових чисел",
+  "description": "Створіть кнопку з текстом «Згенерувати» та напис (Label). Початково напис порожній. При натисканні кнопки в написі має з'явитися випадкове ціле число від 1 до 100 (використовуйте модуль random).",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvGRQEBx0achcHLQsLCDg6QFk2EVBEVBwEQAYOTmplCAdeEA8WLQ5eNRUKCgJ6FwksG0hFRlVKQmRCV1B+BA0CfBUHIARMTDg6VlM/RRccGg0dDyYATmpVbkUSEBJaOwleGhsGCQc1TRImFxBYQURAHisEHh0bBUEcMwsCKgEQTQMcEgdpVVlQXWJlGjlLJDYbEApcGEBZNhFcWQANFxpvQtGx0bDRmtGZ0ZDRstGz0IDQhtCb0Z1XVVQLAAM/BAgnUgMAXFVAVy0AWVcECQwFekxsMQALERxdU183CR8WBEBGZA==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "require import random\nforbid call eval\n",
+  "actions_text": "click Згенерувати\nclick Згенерувати\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

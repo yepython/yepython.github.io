@@ -1,0 +1,13 @@
+{
+  "title": "Ехо - консоль+GUI",
+  "description": "Отримайте рядок через input() і виведіть його у верхньому регістрі в консоль. Одночасно створіть вікно Tkinter з міткою(Label), що містить введений рядок.",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvehcVBQpOb0UPLR8RERoZOEYrDB4NXAYOAzdLEzMfARcaGRs8KwofDVRVTxo5SzIoR01vQF9dQncRGQ0YDUcAMwgDamUIB14QDxYtDl41FQoKAnoXCSwbSEVGVUpCZAsRFBFBZQIwCUgzDgcOGhk4RDYKBFcZCQYAPgoJM0dNbw==",
+  "console_cases_text": "=== Тест 1\nhello\n=== Тест 2\nworld\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {},
+  "timeout": 10,
+  "version": 1
+}

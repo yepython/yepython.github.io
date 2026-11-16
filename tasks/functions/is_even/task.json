@@ -1,0 +1,16 @@
+{
+  "title": "Парне число",
+  "description": "Створіть функцію is_even(n), яка повертає True, якщо число парне, інакше False.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWR0bMAskAAhrAU1fOBASFnkXFQ0BGgFOPEVDY11EWA8QAjw=",
+  "console_cases_text": "",
+  "function_cases_text": "is_even(2)\nis_even(7)\nis_even(0)\nis_even(-4)\nis_even(-3)\n",
+  "requirements_text": "require def is_even\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

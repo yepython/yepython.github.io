@@ -1,0 +1,16 @@
+{
+  "title": "Лічильник натискань",
+  "description": "Створіть вікно з написом (Label), що показує 0, і кнопкою з текстом «Натисни». Кожне натискання кнопки збільшує значення на 1.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFo7CVBEVBwEQB4EBCYDTBddX0YaeREVAQBVSF51TGwvDQhLQlFRXXFMenMQDQlOOwsFa0ZebxIQEhY1BxxXFwcBCDsCTjcKHBEPQ0ZEcQweDVwEDQJ8BgEmG0xCRlVKQn5MWVlfSF5He29sNwRKJ0dERlk3TQIWGxxDTiYAHjdSQ9G40ILRstCK0bfRpNGdV1VUCwADPwQIJ1INC1EZHEY4BhtRXWIdAT0RSC4ODQteX11GcUx6",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "click Натисни\nclick Натисни\nclick Натисни\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

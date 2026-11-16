@@ -1,0 +1,15 @@
+{
+  "title": "Числа Фібоначчі",
+  "description": "Прочитайте число N і виведіть перші N чисел Фібоначчі через пробіл. Послідовність починається з 0, 1 (F0 = 0, F1 = 1).",
+  "mode": "console",
+  "reference_code": "ENC:N0VNWR0GG0Y7CxY2G0xMGzpTGnkHUERUWENOY28UJhwRCUYQDxYCOHofGxpPB3IMCGMdBQtVVRpYcF96WVRITxw3FhMvG0oEQkBXWD1NAw0GQA5He29GY09EBB4QUBZkRRJVVAlPRXIHbDMdDQtGGBAWe0saFh0GRxw3FhMvG01MOA==",
+  "console_cases_text": "=== Тест 1\n1\n=== Тест 2\n2\n=== Тест 3\n7\n=== Тест 4\n10\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06
+  },
+  "timeout": 10,
+  "version": 1
+}

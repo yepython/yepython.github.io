@@ -1,0 +1,17 @@
+{
+  "title": "Вікно з персональними налаштуваннями",
+  "description": "Введіть у консолі заголовок вікна, ширину та висоту (кожне значення з нового рядка). Створіть вікно Tkinter із заданим заголовком і розмірами (geometry у форматі «ширинаxвисота»).",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJveg0dHAMLclhGKgEUEEYYGzwuRU1ZHQYfGyZNT0kHRFgSWVxGLBFYUH4aAAEmRVtjGw9LZlsaH1MXHxYARhsHJgkDaxsNEV5VGzwwA1AOVElSTnVCRiIBAEVaEBMLeUJXQ35IT05yFwksG0oCV19fUy0XCVEDSEROdR1BY0REDRs6QFk2EV4UFQEBAj0KFmtGbg==",
+  "console_cases_text": "=== Тест 1\nМоє вікно\n300\n200\n=== Тест 2\nНалаштування\n400\n250\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true,
+    "style": true
+  },
+  "timeout": 10,
+  "version": 1
+}

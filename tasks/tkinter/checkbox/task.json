@@ -1,0 +1,16 @@
+{
+  "title": "Прапорець",
+  "description": "Створіть прапорець (Checkbutton) з текстом «Погоджуюсь», кнопку «Перевірити» та напис (Label). Початково напис показує «Ні». Після натискання «Перевірити»: якщо прапорець увімкнено — напис показує «Так», інакше — «Ні».",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOEA4F1BEVBwEQBAKCS8KBQtkUUAecG8EElorBwsxDgQ2GxAKXBhAWTYRXFkADRcab0LRudG90ZzRmtGR0ITRs9G80bfQlUJcWQIJHQczBwomUhIEQBkcRjgGG1FdYgMMPkVbYxsPS35RUFM1TQIWGxxDTiYAHjdSQ9G40aQXGzw1BxxXBAkMBXpMbEkLAQMSU1pTOg5YUE5iT05yRQ8lTxIEQB5VUy1NWUN+SE9OckVGY08IB14eUVk3AxkeXBwKFiZYQdGh0Z/RnkIbOhIWeUUVFQcNVWRyRUZjT0RFElxQWncGHxcSAQhGJgAeN1JD0bjRpBcbPFMRG1c2HRsaPQtOMQALER4QRlMhEU1e0avRndCv0ZvRoNCz0KbRu9Ct0ZxCHhBRWTQIERcQVQwGNwYNakEUBFFbGh9TFx8WAEYCDzsLCiwAFE0bOg==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "click Перевірити\nclick Погоджуюсь\nclick Перевірити\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

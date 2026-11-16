@@ -1,0 +1,16 @@
+{
+  "title": "Перевірка пароля",
+  "description": "Введіть пароль у консолі. Правильний пароль — «python123». У графічному вікні Tkinter відобразіть напис (Label): «Доступ дозволено», якщо пароль правильний, або «Доступ заборонено», якщо ні.",
+  "mode": "both",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegkVGxwZPRcCY1JEDFxAR0JxTHoQEkgfDyEWESwdAEUPDRIRKRwEERsGXlxhQlxJT0RFEl1BUXlYUF7RoNGW0K7QrNCR0ZpG0bfRkdGT0ZfQjNCL0IfQi9GnQnocGBsKVFhFRmNPCRZVEA8WftGx0Y7QuNC20KvRkE7RpdGV0ZfRvdCv0ZrRmNCH0I3QjBFTFx8WAEhSTiYOSBcETEw4RFkYFQQSHBhAHQE9EUpjGwEdRg1fRT5MXgkVCwRGe28ULAAQS19RW1g1Ch8JXEFl",
+  "console_cases_text": "=== Тест 1\npython123\n=== Тест 2\nqwerty\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

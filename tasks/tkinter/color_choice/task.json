@@ -1,0 +1,17 @@
+{
+  "title": "Вибір кольору",
+  "description": "Створіть напис (Label) з текстом «Текст» чорного кольору та три перемикачі (Radiobutton): «Червоний», «Зелений», «Синій». При виборі перемикача колір тексту напису має змінитися на відповідний (red, green, blue).",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFo7CVBEVBwEQB4EBCYDTBddX0YaeREVAQBVSNGM0afRn9Cn0IFISEVUVw8ROwkRGh9PRmQ+BwptHwUGWRgbPFMBFR9UGwoaDRcDJ0dNXzgQEhZ5CRIVWgsAADQMAWsJA1gVQldSfkx6cxANCU4hABIcCBYAV14aH2NvUFlUSAMMPksFLAECDFUYVFFkQhcLEQ0BSXtvbCcKAkVBVUZpOwkFHFxBVWRyRUZjAwYJHFNdWD8MF1ESD1JJMAkTJkhNbzhEWRgLBBQQGwoaGiYKCGsdCwpGHBJCPB0ERFPRj9Ga0K7RoNGb0ZvRu9GWQ0kSU11bNAQeHUkbChoNFwMnRkoVU1NZHnBvBBJaOg4KOwoENhsQClwYQFk2EVxZAA0XGm9C0bHRttGU0ZHRmNCK0IkVGnkGHxQZCQEKbxYDNzADF1dVXB93FREaH0BGZCYOSBEOAAxdUkdCLQoeUQYHABp+RRImFxBYFdCR0IrQi9CP0ZxXVVQLAAM/BAgnUhcARm9QWiwAWVcECQwFekxsMQALERxdU183CR8WBEBGZA==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "click Зелений\nclick Синій\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true,
+    "style": true
+  },
+  "timeout": 10,
+  "version": 1
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Сума двох чисел",
+  "description": "Прочитайте два цілі числа з вводу (кожне на окремому рядку) і виведіть їх суму.",
+  "mode": "console",
+  "reference_code": "ENC:OEVNWR0GG0Y7CxY2G0xMGzpQFmRFGRcAQAYAIhASa0ZNb0JCW1gtTVc6SU9DD3JORiFGbg==",
+  "console_cases_text": "=== Тест 1\n3\n5\n=== Тест 2 [x2]\n10\n20\n=== Тест 3\n-4\n7\n=== Тест 4\n0\n0\n",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06
+  },
+  "timeout": 10,
+  "version": 1
+}

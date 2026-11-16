@@ -1,0 +1,16 @@
+{
+  "title": "Конвертер температури",
+  "description": "Створіть поле введення (Entry) для температури в градусах Цельсія, кнопку «Конвертувати» та напис (Label) для результату. При натисканні кнопки в написі має з'явитися температура у градусах Фаренгейта за формулою F = C * 9/5 + 32.",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFM3EQIAVFVPGjlLIy0bFhwaQl1ZLUx6HBocHRd8FQcgBExMOEJXRSwJBFlJSBsFfCkHIQoITUBfXUJ1RQQcDBxSSXVMbDEKFxBeRBxGOAYbUV1iZQo3A0YgAAoTV0JGHnBfellUSE8NclhGJQMLBEYYV1gtFwlXEw0bRntMbGNPREVUEA8WOkVaWU1IQE5nRU1jXFZvEhASFisAAwwYHEENPQsAKghMEVdIRgsqEQJREkFGZFgRDW0tERFGX1weKwofDVhIGwsqEVtk0bXRmtGY0IDQhdGy0bTQmtGX0YDQu9GMT0NOMQoLLg4KAQ9TXVgvAAINXUYfDzEOTmplFgpdRBxbOAweFRsHH0Z7bw==",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "type 0\nclick Конвертувати\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}

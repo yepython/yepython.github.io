@@ -1,0 +1,16 @@
+{
+  "title": "Факторіал",
+  "description": "Напишіть функцію factorial(n), яка повертає факторіал числа n (n >= 0). Факторіал 0 = 1.",
+  "mode": "functions",
+  "reference_code": "ENC:PQAWWRIJDBo9Fw8iA0wLGwo4FnlFUBASSAFOblhGclVuRRIQEhZ5RVALERwaHDxFV0lPREUSQldCLBceWRpIRU40BAU3ABYMU1waWHlIUEhdYg==",
+  "console_cases_text": "",
+  "function_cases_text": "factorial(0)\nfactorial(1)\nfactorial(5)\nfactorial(7)\n",
+  "requirements_text": "require def factorial\nrequire recursion\nforbid call eval\n",
+  "actions_text": "",
+  "options": {
+    "console_float_tol": 1e-06,
+    "func_case_timeout": 3.0
+  },
+  "timeout": 10,
+  "version": 1
+}

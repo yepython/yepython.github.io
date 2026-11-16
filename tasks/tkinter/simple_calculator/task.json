@@ -1,0 +1,16 @@
+{
+  "title": "Простий калькулятор",
+  "description": "Створіть два поля введення (Entry), кнопки «+» і «-» та напис (Label) для результату. При натисканні «+» у написі має з'явитися сума чисел з полів, при натисканні «-» — різниця (перше мінус друге).",
+  "mode": "gui",
+  "reference_code": "ENC:MAgAFgYcTxo5DAg3ChZFU0MSQjJvegsbBxtOb0USKEEwDhoZOFNoRU1ZAANBKzwRFDpHFgpdRBs8PFReCRULBEZ7bwNxT1lFRlscczcRAgBcGgABJkxsJl1KFVNTWR5wbwIcBx0DGnJYRjcESilTUldacRcfFgBETxo3HRJ+SENMOEJXRSwJBFcECQwFekxsSQsBAxJRVlJxTEpzVEhPTjNFW2MGChEaVQMYPgAEUV1BZU5yRUYhT1lFW15GHjxXXh4RHEdHe29GY09EF1dDR1otSxMWGg4GCXoRAzsbWRZGQhpXeU5QG11BZWQ2AABjHBEHGhkIPHlFUFkVSFJOOwsSawpVS1VVRh5wTHpZVEhPDHJYRioBEE1XAhxRPBFYUF1iT05yRRQmHBEJRh5RWTcDGR5cHAoWJlgVNx1MBBIdElRwTHpzAANBLCcREiwBTBddX0YaeREVAQBVSEV1SUYgAAkIU15WCzgBFFBaGA4NOU1PSRsPS3BFRkI2C1gLGwcbQnIRAzsbWUIfFx4WOgodFBUGC1MhEARqQRQEUVsaH1MXHxYARgIPOwsKLAAUTRs6",
+  "console_cases_text": "",
+  "function_cases_text": "",
+  "requirements_text": "forbid call eval\n",
+  "actions_text": "type 8\ntype[2] 3\nclick +\nclick -\n",
+  "options": {
+    "ignore_order": true,
+    "dialogs": true
+  },
+  "timeout": 10,
+  "version": 1
+}
