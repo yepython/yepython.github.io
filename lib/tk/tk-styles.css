@@ -27,6 +27,17 @@
 .tkw[hidden] {
   display: none;
 }
+/* Мінімізоване вікно лишається у вигляді смуги заголовка. */
+.tkw-minimized .tkw-client {
+  height: 0 !important;
+  min-height: 0 !important;
+  visibility: hidden;
+}
+.tkw-minimized .tk-menubar,
+.tkw-minimized .tk-gamepad,
+.tkw-minimized .tkw-resize {
+  display: none;
+}
 .tkw-title {
   cursor: default;
   background: #fff;
@@ -42,14 +53,7 @@
   right: 0;
   min-width: 0;
   overflow: hidden;
-}
-.tkw-icon {
-  flex: 0 1 16px;
-  min-width: 0;
-  width: 16px;
-  height: 16px;
-  margin: 0 7px 0 8px;
-  display: flex;
+  padding-left: 8px;
 }
 .tkw-text {
   white-space: nowrap;
