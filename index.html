@@ -615,14 +615,15 @@
         var examMode = false;
         if (window.location.search !== '') {
             const params = new URL(window.location).searchParams;
-            var viewEmbed = params.get("view") === "embed";
+            var modes = params.getAll("mode");
+            viewEmbed = modes.indexOf("embed") !== -1;
             var loadFromURL = params.get("load") || '';
             var runFromURL = params.get("run") || '';
             var codeParam = params.get("code");
             var runCodeParam = params.get("runcode");
             var pasteParam = params.get("paste");
-            robotMode = params.get("mode") === "robot";
-            examMode = params.get("mode") === "exam";
+            robotMode = modes.indexOf("robot") !== -1;
+            examMode = modes.indexOf("exam") !== -1;
 
             if (runCodeParam) {
                 runCodeParam = runCodeParam.replace(/\s/g, "+");

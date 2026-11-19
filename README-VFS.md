@@ -17,6 +17,7 @@
 - [Діалоги tkinter та easygui](#діалоги-tkinter-та-easygui)
 - [Приклади](#приклади)
 - [Обмеження та усунення проблем](#обмеження-та-усунення-проблем)
+- [Параметри запуску через адресний рядок](#параметри-запуску-через-адресний-рядок)
 - [Де шукати код](#де-шукати-код)
 
 ---
@@ -401,13 +402,130 @@ img.save('/images/logo_small.png')
 
 ---
 
+## Параметри запуску через адресний рядок
+
+ЄPython читає **тільки рядок запиту** (query string) — частину адреси після `?`. Розбір відбувається через `URL.searchParams.get()` (для `mode` — через `getAll()`, щоб можна було поєднати кілька значень) у файлах `index.html`, `lib/checker.js`, `lib/langloader.js`, `lib/skulpt/robot/robot-ui.js`. З цього випливає:
+
+- порядок ключів у URL не має значення;
+- якщо ключ повторено, `get()` повертає **перше** значення (виняток — `mode`: там `getAll()` враховує всі значення);
+- значення вже розкодовані браузером (`%20` і `+` перетворюються на пробіл);
+- фрагмент після `#` та `window.name` застосунком **не використовуються**;
+- назви ключів і значень чутливі до регістру: потрібно `mode=embed`, а не `mode=Embed`;
+- усі ключі можна комбінувати, але є пріоритети (див. нижче).
+
+### Перелік ключів
+
+| Ключ | Значення | Що робить | Приклад |
+|---|---|---|---|
+| `load` | URL `.py`-файлу або JSON | Робить GET-запит (`XMLHttpRequest`) і підставляє відповідь у редактор. **Не запускає** код і не пише у VFS | `?load=https://example.com/scripts/hello.py` |
+| `run` | URL `.py`-файлу або JSON | Те саме, що `load`, але додатково запускає код через 300 мс | `?run=https://example.com/scripts/demo.py` |
+| `code` | Base64 (UTF-8) | Код одразу в редакторі. Якщо рядок є коректним JSON, він вважається картою файлів `PythonIDE.files`. Має пріоритет над `runcode` | `?code=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=` |
+| `runcode` | Base64 (UTF-8) | Те саме, що `code`, але з автоматичним запуском | `?runcode=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=` |
+| `paste` | ідентифікатор сніпета dpaste.com | Завантажує `https://dpaste.com/<id>.txt` у редактор. Діє, тільки якщо немає вмісту з `code`/`runcode` | `?paste=AbCdEf12` |
+| `assets` | URL JSON-файлу | Додає відповідь як `PythonIDE.files['assets.json']` і показує нову вкладку. **Не пише у VFS** | `?assets=https://example.com/assets.json` |
+| `mode` | `embed`, `robot`, `exam` (точно; ключ можна повторити) | `embed` — ховає логотип (`#logo`) і вкладки файлів (`#file_tabs`), режим вбудовування в `<iframe>`; `robot` — чекає на `window.RMApp` і відкриває вікно карти; `exam` — додає клас `exam-mode`, ліниво підвантажує `lib/checker.js?v=12` і активує кнопки Task/Test/Submit | `?mode=embed`, `?mode=exam`, `?mode=robot`, `?mode=embed&mode=robot` |
+| `task` | URL JSON, `file`, `test` | Працює **лише разом із `mode=exam`**. `file` — вибір локального `.json`, `test` — читання `localStorage.yepython_test_task`, інше — `fetch()` JSON | `?mode=exam&task=https://example.com/task.json` |
+| `lang` | код мови | Задає мову інтерфейсу й зберігає її в `localStorage.epython_lang`, щоб інші сторінки підхопили автоматично | `?lang=uk`, `?lang=en` |
+| `world` | URL `.world` (ZIP) або `file` | Світ карт для робота. `file` відкриває вибір локального архіву; шлях без схеми доповнюється `https://`; ліміт 32 МБ | `?mode=robot&world=ed_info.github.io/mymaps.world` |
+
+### Коди мови для `lang`
+
+Підтримуються: `uk pl cs sk bg sr hr en de nl sv da no fr es it pt ro lt lv`.
+
+- регістр не має значення, `uk-UA` і `uk_UA` стають `uk`;
+- `nb` і `nn` нормалізуються в `no`;
+- невідоме значення ігнорується — використовується збережена або мова браузера;
+- Tk-вікна розрізняють фактично лише `uk` та `en` (решта має англійський запасний варіант).
+
+### Пріоритет і конфлікти
+
+Обробка йде в такому порядку (незалежно від порядку ключів у URL):
+
+1. `runcode` декодується першим і вмикає прапорець автозапуску.
+2. `run` перезаписує адресу з `load` і теж вмикає автозапуск.
+3. `code` декодується **після** `runcode`, тому замінює його текст, але **не скасовує** автозапуск.
+4. `paste` підставляє адресу dpaste тільки тоді, коли вміст із `code`/`runcode` порожній.
+5. Отже, дійсний пріоритет адреси завантаження: **`paste` > `run` > `load`**, а пріоритет тексту редактора: **`code` > `runcode` > (`paste`/`run`/`load`) > порожній редактор**.
+6. Якщо ввімкнено автозапуск, `initEditor()` викликає `PythonIDE.runCode()` через 300 мс.
+7. Вміст, який удається розібрати як JSON, стає картою файлів редактора; інакше він потрапляє у `mycode.py`.
+8. `task` ігнорується без `mode=exam`; `world` читається модулем робота незалежно від інших ключів (зазвичай використовується з `mode=robot`).
+9. `mode=embed`, `lang`, `assets` діють незалежно від решти; значення `mode` можна комбінувати, повторюючи ключ, наприклад `?mode=embed&mode=robot`.
+
+### Як отримати Base64 для `code` / `runcode`
+
+У Python:
+
+```python
+import base64
+src = 'print("Привіт, світе!")'
+print(base64.b64encode(src.encode('utf-8')).decode())
+# cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
+```
+
+У консолі браузера:
+
+```js
+btoa(unescape(encodeURIComponent('print("Привіт, світе!")')))
+```
+
+Під час декодування ЄPython заміняє всі пробільні символи у рядку на `+`, тому Base64 можна переносити в URL без ручного екранування `+`.
+
+### Готові приклади
+
+```text
+https://yepython.pp.ua/?mode=embed
+https://yepython.pp.ua/?mode=embed&run=https://example.com/scripts/demo.py
+https://yepython.pp.ua/?load=https://example.com/scripts/hello.py
+https://yepython.pp.ua/?code=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
+https://yepython.pp.ua/?runcode=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
+https://yepython.pp.ua/?paste=AbCdEf12
+https://yepython.pp.ua/?assets=https://example.com/assets.json
+https://yepython.pp.ua/?mode=exam&task=https://example.com/task.json
+https://yepython.pp.ua/?mode=exam&task=file
+https://yepython.pp.ua/?mode=exam&task=test
+https://yepython.pp.ua/teacher_app.html?lang=en
+https://yepython.pp.ua/?mode=robot&world=ed_info.github.io/mymaps.world
+https://yepython.pp.ua/?mode=embed&lang=uk&runcode=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
+```
+
+> Для `task=file` автоматичне відкриття вікна вибору в `index.html` спрацьовує лише на точний рядок `file` (малі літери). Сам `checker.js` порівнює значення без урахування регістру.
+
+### Чого в URL **немає**
+
+Наступні ключі не читаються застосунком — це або внутрішні змінні JavaScript, або застарілі/хибні приклади:
+
+`exam`, `exam=1`, `test=...`, `file=...`, `runImmediately`, `loadFromURL`, `py_file`, `viewEmbed`, `mml_stored`, `mml`, `debug`, `share`, `project`, `autorun`, `example`, `sample`, `param=embed`, а також **колишній** `view=embed`.
+
+Правильні аналоги: `mode=embed`, `mode=exam`, `task=test`, `task=file`.
+
+### Стара назва ключа
+
+Колишній параметр `view=embed` і хибний приклад `?param=embed` більше не підтримуються. Правильний ключ — **`mode=embed`**; відповідні приклади в `help/index.html` оновлено.
+
+> У вбудованій довідці (`help/index.html`, розділ про запускачі) досі є окреме застаріле твердження, ніби код передається після `#`. Насправді застосунок читає `?code=`.
+
+### Важливо для VFS
+
+Жоден із наведених ключів **не записує файли до віртуальної ФС** (`epythonfs_filesystem`, `epythonfs_file_N`). Вони лише:
+
+- підставляють текст у редактор (`code`, `runcode`, `load`, `run`, `paste`);
+- додають вкладку `assets.json` до списку файлів проєкту (`assets`);
+- задають завдання для режиму іспиту (`task`) або світ карт (`world`);
+- змінюють вигляд і мову (`view`, `lang`).
+
+Щоб працювати саме з VFS, використовуйте **Розпорядник файлів**, бічну панель проєкту або `open()` / `os` із Python.
+
+> Віддалені `load`/`run`/`assets`/`task`/`world` підлягають звичайним браузерним обмеженням CORS: сервер має дозволити запит зі сторінки ЄPython.
+
+---
+
 ## Де шукати код
 
 | Файл | Призначення |
 |---|---|
 | `lib/jsfs.js` | реалізація `FileSystem`, ключі `epythonfs_*`, шляхи, `read/write/mkdir/rm/mv/ls` |
 | `lib/filedialog.js` | UI й логіка Розпорядника файлів |
-| `index.html` | кнопка бічної панелі, контейнери `#file_sidebar`, `#save`, `#filemanager` |
+| `index.html` | кнопка бічної панелі, контейнери `#file_sidebar`, `#save`, `#filemanager`; розбір `mode` (`embed`/`robot`/`exam`), `load`, `run`, `code`, `runcode`, `paste`, `assets` |
 | `lib/lib.js` | `PythonIDE.files`, `projectAssets`, синхронізація з VFS, `.yepp`, `open()`-хук `writeFile` |
 | `lib/customfile.js` | Python `open()` поверх VFS |
 | `lib/skulpt/os/__init__.js` | `os`, `os.path`, `os.walk`, `os.scandir` |
@@ -416,4 +534,8 @@ img.save('/images/logo_small.png')
 | `lib/tk/tk-engine.js` | Tk-діалоги `tk_getOpenFile`, `tk_getSaveFile`, `tk_chooseDirectory` |
 | `lib/skulpt/tkinter/filedialog.py` | Python-обгортки над Tk-діалогами |
 | `lib/skulpt/easygui/easygui.py` | `fileopenbox`, `filesavebox`, `diropenbox` та інші easygui-вікна |
-| `help/index.html` | розділ «Файлова система ЄPython» у вбудованій довідці |
+| `lib/langloader.js` | параметр `lang`, нормалізація кодів, `localStorage.epython_lang` |
+| `lib/checker.js` | режим іспиту: `task=<URL>`, `task=file`, `task=test`, `localStorage.yepython_test_task` |
+| `lib/skulpt/robot/robot-ui.js` | параметр `world`, завантаження `.world`, вибір локального архіву |
+| `lib/tk/tk-window-system.js` | читання `lang` для Tk-вікон (`uk`/`en`) |
+| `help/index.html` | розділи «Файлова система ЄPython» і «Параметри запуску середовища» у вбудованій довідці |

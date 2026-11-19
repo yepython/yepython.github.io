@@ -1021,9 +1021,9 @@ result = math.sqrt(<span class="hljs-number">16</span>)
 <p><img src="media/ch21/image87.jpeg" alt="Робота з файлами"></p>
 <h2 id="параметри-запуску-середовища">Параметри запуску середовища</h2>
 <p>Користувач може запускати середовище у різних конфігураціях через параметри адресного рядка. </p>
-<p> <strong><code>view=embed</code></strong></p>
-<p>Приховує логотип і вкладки файлів — режим "вбудовування" (наприклад, для <code>&lt;iframe&gt;</code> на іншому сайті).</p>
-<pre><code data-highlighted="yes" class="hljs language-ruby"><span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/yepython.pp.ua/</span><span class="hljs-string">?v</span>iew=embed
+<p> <strong><code>mode=embed</code></strong></p>
+<p>Приховує логотип і вкладки файлів — режим "вбудовування" (наприклад, для <code>&lt;iframe&gt;</code> на іншому сайті). Ключ <code>mode</code> також використовується для значень <code>robot</code> і <code>exam</code>; щоб поєднати режими, повторіть ключ, наприклад <code>?mode=embed&amp;mode=robot</code>.</p>
+<pre><code data-highlighted="yes" class="hljs language-ruby"><span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/yepython.pp.ua/</span><span class="hljs-string">?m</span>ode=embed
 </code></pre>
 <p><strong><code>load=&lt;URL&gt;</code></strong></p>
 <p>Завантажує вміст .py-файлу за вказаною адресою (звичайний GET-запит через <code>XMLHttpRequest</code>) і підставляє його як код у редактор.</p>
@@ -1051,14 +1051,14 @@ result = math.sqrt(<span class="hljs-number">16</span>)
 </code></pre>
 <h2 id="комбінування-параметрів">Комбінування параметрів</h2>
 <p>Параметри можна поєднувати. Найпоширеніший сценарій — вбудований, автоматично запущений приклад коду:</p>
-<pre><code data-highlighted="yes" class="hljs language-bash">https://yepython.pp.ua/?view=embed&amp;run=https://example.com/scripts/demo.py
+<pre><code data-highlighted="yes" class="hljs language-bash">https://yepython.pp.ua/?mode=embed&amp;run=https://example.com/scripts/demo.py
 </code></pre>
 <p>або передача коду напряму без зовнішнього файлу:</p>
-<pre><code data-highlighted="yes" class="hljs language-ruby"><span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/yepython.pp.ua/</span><span class="hljs-string">?v</span>iew=embed&amp;runcode=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
+<pre><code data-highlighted="yes" class="hljs language-ruby"><span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/yepython.pp.ua/</span><span class="hljs-string">?m</span>ode=embed&amp;runcode=cHJpbnQoItCf0YDQuNCy0ZbRgiwg0YHQstGW0YIhIik=
 </code></pre>
 <h3 id="практичне-застосування">Практичне застосування</h3>
 <ul>
-<li><strong><code>view=embed</code> + <code>run</code>/<code>runcode</code></strong> — ідеально для вставки живого прикладу коду на освітній сайт чи в блог через <code>&lt;iframe&gt;</code>, де учень одразу бачить результат виконання.</li>
+<li><strong><code>mode=embed</code> + <code>run</code>/<code>runcode</code></strong> — ідеально для вставки живого прикладу коду на освітній сайт чи в блог через <code>&lt;iframe&gt;</code>, де учень одразу бачить результат виконання.</li>
 <li><strong><code>load</code>/<code>run</code> з URL</strong> — зручно для викладача, який хоче поділитися посиланням, що відкриває конкретний файл-завдання з хмарного сховища чи GitHub (raw-посилання).</li>
 <li><strong><code>code</code>/<code>runcode</code></strong> — зручно генерувати програмно (наприклад, кнопка "Спробувати онлайн" на документації), коли короткий фрагмент коду треба передати без окремого файлу.</li>
 <li><strong><code>assets</code></strong> — для завдань, де потрібні супутні дані (CSV, JSON, зображення), які підвантажуються разом із кодом.</li>
@@ -1088,7 +1088,7 @@ b = <span class="hljs-number">12</span>
 <p><img src="media/ch21/image90.png" alt="Запускач створено"></p>
 <p><em>Запускач створено</em></p>
 <h3 id="приховування-логотипу-та-вкладок-файлів">Приховування логотипу та вкладок файлів</h3>
-<p>Ви можете приховувати логотип середовища та вкладки файлів - це суттєво економить місце у вікні вебоглядача і може бути доречним, коли ви додаєте ЄPython до свого власного сайту або навчального онлайн-курсу. Для цього в адресному рядку прописуємо <strong>?param=embed</strong> (як на зразку):</p>
+<p>Ви можете приховувати логотип середовища та вкладки файлів - це суттєво економить місце у вікні вебоглядача і може бути доречним, коли ви додаєте ЄPython до свого власного сайту або навчального онлайн-курсу. Для цього в адресному рядку прописуємо <strong>?mode=embed</strong> (як на зразку):</p>
 <p><img src="media/ch21/image91.jpeg" alt="Приховування логотипу"></p>
 <h2 id="додавання-середовища-до-сайту-або-блогу">Додавання середовища до сайту або блогу</h2>
 <p>Ви можете додати функціонал ЄPython до власного сайту, блогу або системи дистанційного навчання за допомогою тегів <strong>&lt;iframe&gt;&lt;/iframe&gt;</strong>, додавши наступний вміст для фрейму без коду (фрейм - кадр, прямокутна ділянка, в якій буде відображатися ЄPython):</p>
@@ -1110,14 +1110,14 @@ b = <span class="hljs-number">12</span>
 <pre><code class="language-html hljs language-xml" data-highlighted="yes"><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span>
   <span class="hljs-attr">width</span>=<span class="hljs-string">"900"</span>
   <span class="hljs-attr">height</span>=<span class="hljs-string">"400"</span>
-  <span class="hljs-attr">src</span>=<span class="hljs-string">"https://yepython.pp.ua/?view=embed"</span>&gt;</span>
+  <span class="hljs-attr">src</span>=<span class="hljs-string">"https://yepython.pp.ua/?mode=embed"</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span>
 </code></pre>
 <p>З кодом програми:</p>
 <pre><code class="language-html hljs language-xml" data-highlighted="yes"><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span>
   <span class="hljs-attr">width</span>=<span class="hljs-string">"900"</span>
   <span class="hljs-attr">height</span>=<span class="hljs-string">"400"</span>
-  <span class="hljs-attr">src</span>=<span class="hljs-string">"https://yepython.pp.ua/?view=embed&amp;code=Zm9yIGkgaW4gcmFuZ2UoNSk6CiAgICBwcmludChpKQ=="</span>&gt;</span>
+  <span class="hljs-attr">src</span>=<span class="hljs-string">"https://yepython.pp.ua/?mode=embed&amp;code=Zm9yIGkgaW4gcmFuZ2UoNSk6CiAgICBwcmludChpKQ=="</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span>
 </code></pre>
 <h3 id="атрибути-фрейму">Атрибути фрейму</h3>
